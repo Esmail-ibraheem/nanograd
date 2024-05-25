@@ -1,2 +1,2 @@
 # omniGPT
-The fastest and most efficient repository for fine-tuning GPTs, implementing techniques like LoRA, adapters, quantization, FlashAttention, and sentiment analysis using PPO.
+The fastest and most efficient repository for fine-tuning GPTs, implementing  various Efficient Parameters fine-tuning (PEFT) techniques like LoRA, adapters, quantization, FlashAttention, and sentiment analysis using PPO.
