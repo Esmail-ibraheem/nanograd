@@ -6,15 +6,15 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 - **`GPT Model from Scratch:`**
   Implement a GPT model from the ground up using Python, offering full transparency and flexibility.
 
-- Efficient Fine-Tuning with PEFT Techniques:
+- **`Efficient Fine-Tuning with PEFT Techniques:`**
   LoRA (Low-Rank Adaptation): Fine-tune models efficiently by reducing the number of trainable parameters.
   Adapters: Insert small trainable modules within the model to enable rapid fine-tuning on new tasks.
   Quantization: Optimize the model for faster inference by reducing the precision of weights without significant loss in accuracy.
 
-- Custom Tokenization:
+- **`Custom Tokenization:`**
   Implement a Byte Pair Encoding (BPE) tokenizer from scratch, tailored for the specific needs of your model and dataset.
 
-- CUDA-Optimized Kernels:
+- **`CUDA-Optimized Kernels:`**
   Integrate custom CUDA kernels for critical GPT operations to leverage GPU acceleration, significantly improving training and inference speed.
   
 ## omniGPT overview:
