@@ -34,7 +34,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 We welcome contributions from the community. Please read our contributing guidelines and submit your pull requests.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is licensed under the MIT License. See the [LICENSE file](https://github.com/Esmail-ibraheem/omniGPT/tree/main#) for more details.
 
 
 ---
