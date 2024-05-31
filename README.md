@@ -25,3 +25,27 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 
 ## fine-tuning (PEFT):
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/LoRAoverview.jpeg" alt="LoRAs" ></p> 
+
+
+---
+
+
+## Contributing
+We welcome contributions from the community. Please read our contributing guidelines and submit your pull requests.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+
+---
+
+## Notes and Acknowledgments
+- Hugging-Face Transformers
+- litgpt 
+- NVIDIA FasterTransformer
+- OpenAI for pioneering the GPT architecture
+
+---
+
+## Contact
+For any inquiries or feedback, please open an issue on GitHub or reach out to the project maintainer at esm.agumaan@gmail.com.
