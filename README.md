@@ -3,7 +3,7 @@ The fastest and most efficient repository for fine-tuning GPTs, implementing var
 omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained Transformer) model from scratch in Python, complemented by state-of-the-art fine-tuning techniques and optimized for performance with CUDA. This project encompasses everything from tokenization to model training, making it a robust toolkit for developing and fine-tuning large language models.
 
 **_Key Features_**
-- GPT Model from Scratch:
+- **`GPT Model from Scratch:`**
   Implement a GPT model from the ground up using Python, offering full transparency and flexibility.
 
 - Efficient Fine-Tuning with PEFT Techniques:
