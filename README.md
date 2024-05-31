@@ -36,6 +36,11 @@ We welcome contributions from the community. Please read our contributing guidel
 ## License
 This project is licensed under the MIT License. See the [LICENSE file](https://github.com/Esmail-ibraheem/omniGPT?tab=MIT-1-ov-file#) for more details.
 
+---
+
+## Citation
+```BibTex
+```
 
 ---
 
