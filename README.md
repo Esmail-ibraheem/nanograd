@@ -19,6 +19,9 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
   <a href="https://en.wikipedia.org/wiki/C%2B%2B">
     <img src="https://img.shields.io/badge/Language-C++-red" alt="C++">
   </a>
+  <a href="https://pytorch.org/">
+    <img src="https://img.shields.io/badge/Framework-PyTorch-EE4C2C" alt="PyTorch">
+  </a>
 </p>
 
 **_Key Features_**
