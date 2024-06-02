@@ -40,6 +40,14 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 
 ## Citation
 ```BibTex
+@misc{Gumaan2024-omniGPT,
+  title   = "omniGPT",
+  author  = "Gumaan, Esmail",
+  howpublished = {\url{https://github.com/Esmail-ibraheem/omniGPT}},
+  year    = "2024",
+  month   = "",
+  note    = "[Online; accessed 2024-05-24]",
+}
 ```
 
 ---
