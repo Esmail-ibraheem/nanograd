@@ -11,6 +11,20 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 [![Jupyter Notebook](https://img.shields.io/badge/Tool-Jupyter%20Notebook-orange)](https://en.wikipedia.org/wiki/Project_Jupyter)
 [![C++](https://img.shields.io/badge/Language-C++-red)](https://en.wikipedia.org/wiki/C%2B%2B)
 
+<p align="center">
+  <a href="https://en.wikipedia.org/wiki/Python_(programming_language)">
+    <img src="https://img.shields.io/badge/Language-Python-blue" alt="Python">
+  </a>
+  <a href="https://en.wikipedia.org/wiki/CUDA">
+    <img src="https://img.shields.io/badge/Language-CUDA-green" alt="CUDA">
+  </a>
+  <a href="https://en.wikipedia.org/wiki/Project_Jupyter">
+    <img src="https://img.shields.io/badge/Tool-Jupyter%20Notebook-orange" alt="Jupyter Notebook">
+  </a>
+  <a href="https://en.wikipedia.org/wiki/C%2B%2B">
+    <img src="https://img.shields.io/badge/Language-C++-red" alt="C++">
+  </a>
+</p>
 
 **_Key Features_**
 - **`GPT Model from Scratch:`**
