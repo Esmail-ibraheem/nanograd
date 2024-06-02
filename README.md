@@ -7,10 +7,6 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 </p>
 
 
-```
-✅ flash attention    ✅ LoRA                  ✅ Adapter
-✅ Quantization       ✅ GPT_kernels for GPUs  ✅ sentiment analysis     
-```
 
 **_Key Features_**
 - **`GPT Model from Scratch:`**
