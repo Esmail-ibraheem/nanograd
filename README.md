@@ -1,6 +1,12 @@
 # omniGPT🚀                                                   
 The fastest and most efficient repository for fine-tuning GPTs, implementing various PEFT techniques like LoRA and adapters, as well as quantization, FlashAttention, and sentiment analysis using PPO.
 omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained Transformer) model from scratch in Python, complemented by state-of-the-art fine-tuning techniques and optimized for performance with CUDA. This project encompasses everything from tokenization to model training, making it a robust toolkit for developing and fine-tuning large language models.
+<p align="center">
+✅ flash attention    ✅ LoRA                  ✅ Adapter<br>
+✅ Quantization       ✅ GPT_kernels for GPUs  ✅ sentiment analysis     
+</p>
+
+
 ```
 ✅ flash attention    ✅ LoRA                  ✅ Adapter
 ✅ Quantization       ✅ GPT_kernels for GPUs  ✅ sentiment analysis     
