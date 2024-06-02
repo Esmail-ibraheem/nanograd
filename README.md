@@ -6,11 +6,6 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 ✅ Quantization       ✅ GPT_kernels for GPUs  ✅ sentiment analysis     
 </p>
 
-[![Python](https://img.shields.io/badge/Language-Python-blue)](https://en.wikipedia.org/wiki/Python_(programming_language))
-[![CUDA](https://img.shields.io/badge/Language-CUDA-green)](https://en.wikipedia.org/wiki/CUDA)
-[![Jupyter Notebook](https://img.shields.io/badge/Tool-Jupyter%20Notebook-orange)](https://en.wikipedia.org/wiki/Project_Jupyter)
-[![C++](https://img.shields.io/badge/Language-C++-red)](https://en.wikipedia.org/wiki/C%2B%2B)
-
 <p align="center">
   <a href="https://en.wikipedia.org/wiki/Python_(programming_language)">
     <img src="https://img.shields.io/badge/Language-Python-blue" alt="Python">
