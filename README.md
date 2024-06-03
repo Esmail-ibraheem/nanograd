@@ -60,7 +60,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 
 ---
 
-## Citation
+## Citations
 ```BibTex
 @misc{Gumaan2024-omniGPT,
   title   = "omniGPT",
@@ -70,6 +70,16 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
   month   = "",
   note    = "[Online; accessed 2024-05-24]",
 }
+```
+
+```BibTex
+@article{Gumaan2024omnigpt,
+  title={omniGPT: Comprehensive Survey of Generative Pre-Trained Transformers with PEFT and CUDA Optimization},
+  author={Esmail Gumaan},
+  year={2024},
+  journal={حاليا مدري},
+}
+
 ```
 
 ---
