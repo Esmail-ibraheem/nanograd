@@ -73,7 +73,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ```
 
 ```BibTex
-@article{Gumaan2024omnigpt,
+@article{Gumaan2024omniGPT,
   title={omniGPT: Comprehensive Survey of Generative Pre-Trained Transformers with PEFT and CUDA Optimization},
   author={Esmail Gumaan},
   year={2024},
