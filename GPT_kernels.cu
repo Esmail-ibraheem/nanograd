@@ -1314,7 +1314,7 @@ void invokeSumLengthDimension(float*       out_buf,
     dim3 blockSize(256);
 
     sum_length_dimension<<<gridSize, blockSize, 0, stream>>>(out_buf, in_buf, batch_size, input_length, hidden_dim);
-}
+} 
 
 #define INSTANTIATE_INVOKE_SUM_LENGTH_DIMENSION(T)                                                                     \
     template void invokeSumLengthDimension(float*       out_buf,                                                       \
