@@ -4,7 +4,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 
 <p align="center">
   <a href="#flash-attention">
-    <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="Flash Attention">
+    <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="✅Flash Attention">
   </a>
   <a href="#LoRA">
     <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
@@ -24,14 +24,6 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 </p>
 
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="Flash Attention">
-  <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
-  <img src="https://img.shields.io/badge/Feature-Adapter-brightgreen" alt="Adapter">
-  <img src="https://img.shields.io/badge/Feature-Quantization-brightgreen" alt="Quantization">
-  <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-brightgreen" alt="GPT Kernels for GPUs">
-  <img src="https://img.shields.io/badge/Feature-Sentiment%20Analysis-brightgreen" alt="Sentiment Analysis">
-</p>
 
 <p align="center">
 ✅ flash attention    ✅ LoRA                  ✅ Adapter<br>
