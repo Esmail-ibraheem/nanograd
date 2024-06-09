@@ -3,6 +3,28 @@ The fastest and most efficient repository for fine-tuning GPTs, implementing var
 omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained Transformer) model from scratch in Python, complemented by state-of-the-art fine-tuning techniques and optimized for performance with CUDA. This project encompasses everything from tokenization to model training, making it a robust toolkit for developing and fine-tuning large language models.
 
 <p align="center">
+  <a href="#flash-attention">
+    <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="Flash Attention">
+  </a>
+  <a href="#LoRA">
+    <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
+  </a>
+  <a href="#Adapter">
+    <img src="https://img.shields.io/badge/Feature-Adapter-brightgreen" alt="Adapter">
+  </a>
+  <a href="#Quantization">
+    <img src="https://img.shields.io/badge/Feature-Quantization-brightgreen" alt="Quantization">
+  </a>
+  <a href="#GPT_kernels-for-GPUs">
+    <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-brightgreen" alt="GPT Kernels for GPUs">
+  </a>
+  <a href="#Sentiment-Analysis">
+    <img src="https://img.shields.io/badge/Feature-Sentiment%20Analysis-brightgreen" alt="Sentiment Analysis">
+  </a>
+</p>
+
+
+<p align="center">
   <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="Flash Attention">
   <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
   <img src="https://img.shields.io/badge/Feature-Adapter-brightgreen" alt="Adapter">
