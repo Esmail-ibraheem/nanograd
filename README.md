@@ -4,24 +4,25 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 
 <p align="center">
   <a href="#flash attention">
-    <img src="https://img.shields.io/badge/Feature-flash%20attention-electric-blue" alt="Flash Attention">
+    <img src="https://img.shields.io/badge/Feature-flash%20attention-%237DF9FF" alt="Flash Attention">
   </a>
   <a href="#LoRA">
-    <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
+    <img src="https://img.shields.io/badge/Feature-LoRA-%23228B22" alt="LoRA">
   </a>
   <a href="#Adapter">
-    <img src="https://img.shields.io/badge/Feature-Adapter-brightgreen" alt="Adapter">
+    <img src="https://img.shields.io/badge/Feature-Adapter-%23FF7F50" alt="Adapter">
   </a>
   <a href="#Quantization">
-    <img src="https://img.shields.io/badge/Feature-Quantization-brightgreen" alt="Quantization">
+    <img src="https://img.shields.io/badge/Feature-Quantization-%23800080" alt="Quantization">
   </a>
   <a href="#GPT_kernels-for-GPUs">
-    <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-brightgreen" alt="GPT Kernels for GPUs">
+    <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-%23FFD700" alt="GPT Kernels for GPUs">
   </a>
   <a href="#Sentiment-Analysis">
-    <img src="https://img.shields.io/badge/Feature-Sentiment%20Analysis-brightgreen" alt="Sentiment Analysis">
+    <img src="https://img.shields.io/badge/Feature-Sentiment%20Analysis-%23FFD700" alt="Sentiment Analysis">
   </a>
 </p>
+
 
 
 
