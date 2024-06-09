@@ -7,13 +7,13 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
     <img src="https://img.shields.io/badge/Feature-flash%20attention-%23FFD700" alt="Flash Attention">
   </a>
   <a href="#LoRA">
-    <img src="https://img.shields.io/badge/Feature-LoRA-%23228B22" alt="LoRA">
+    <img src="https://img.shields.io/badge/Feature-LoRA-%23FF7F50" alt="LoRA">
   </a>
   <a href="#Adapter">
-    <img src="https://img.shields.io/badge/Feature-Adapter-%23228B22" alt="Adapter">
+    <img src="https://img.shields.io/badge/Feature-Adapter-%23FF7F50" alt="Adapter">
   </a>
   <a href="#Quantization">
-    <img src="https://img.shields.io/badge/Feature-Quantization-%23228B22" alt="Quantization">
+    <img src="https://img.shields.io/badge/Feature-Quantization-%23FF7F50" alt="Quantization">
   </a>
   <a href="#GPT_kernels-for-GPUs">
     <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-%23228B22" alt="GPT Kernels for GPUs">
