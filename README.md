@@ -4,7 +4,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 
 <p align="center">
   <a href="#flash-attention">
-    <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="✅Flash Attention">
+    <img src="https://img.shields.io/badge/Feature-flash%20attention-brightgreen" alt="Flash Attention">
   </a>
   <a href="#LoRA">
     <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
@@ -24,29 +24,6 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 </p>
 
 
-
-<p align="center">
-✅ flash attention    ✅ LoRA                  ✅ Adapter<br>
-✅ Quantization       ✅ GPT_kernels for GPUs  ✅ sentiment analysis     
-</p>
-
-<p align="center">
-  <a href="https://en.wikipedia.org/wiki/Python_(programming_language)">
-    <img src="https://img.shields.io/badge/Language-Python-blue" alt="Python">
-  </a>
-  <a href="https://en.wikipedia.org/wiki/CUDA">
-    <img src="https://img.shields.io/badge/Language-CUDA-green" alt="CUDA">
-  </a>
-  <a href="https://en.wikipedia.org/wiki/Project_Jupyter">
-    <img src="https://img.shields.io/badge/Tool-Jupyter%20Notebook-orange" alt="Jupyter Notebook">
-  </a>
-  <a href="https://en.wikipedia.org/wiki/C%2B%2B">
-    <img src="https://img.shields.io/badge/Language-C++-red" alt="C++">
-  </a>
-  <a href="https://pytorch.org/">
-    <img src="https://img.shields.io/badge/Framework-PyTorch-EE4C2C" alt="PyTorch">
-  </a>
-</p>
 
 **_Key Features_**
 - **`GPT Model from Scratch:`**
