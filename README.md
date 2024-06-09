@@ -4,7 +4,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 
 <p align="center">
   <a href="#flash attention">
-    <img src="https://img.shields.io/badge/Feature-flash%20attention-Electric-Blue" alt="Flash Attention">
+    <img src="https://img.shields.io/badge/Feature-flash%20attention-ElectricBlue" alt="Flash Attention">
   </a>
   <a href="#LoRA">
     <img src="https://img.shields.io/badge/Feature-LoRA-brightgreen" alt="LoRA">
