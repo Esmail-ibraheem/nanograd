@@ -42,8 +42,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 - **`CUDA-Optimized Kernels:`**
   Integrate custom CUDA kernels for critical GPT operations to leverage GPU acceleration, significantly improving training and inference speed.
   
-## omniGPT overview:
-<p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/omniGPT-architecture.drawio.svg" alt="omniGPT overview" ></p> 
+
 
 ## GPT architecture:
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
