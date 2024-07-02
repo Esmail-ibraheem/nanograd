@@ -28,12 +28,10 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 
 **_Key Features_**
 - **`Transformers from Scratch:`**
-  Implement a GPT model from the ground up using Python, offering full transparency and flexibility.
+  Implement a GPT and llama models from the ground up using Pytorch, offering full transparency and flexibility.
 
 - **`Efficient Pre-training and Fine-tuning:`**
-  LoRA (Low-Rank Adaptation): Fine-tune models efficiently by reducing the number of trainable parameters.
-  Adapters: Insert small trainable modules within the model to enable rapid fine-tuning on new tasks.
-  Quantization: Optimize the model for faster inference by reducing the precision of weights without significant loss in accuracy.
+  Used the instructions from LitGPT repo for pre-training and fine-tuning the model for Both datasets: `Arabic` and `English`, here are the [instructions](#Continued-Pre-training) section
 
 - **`Custom Tokenization:`**
   Implement a Byte Pair Encoding (BPE) tokenizer from scratch, tailored for the specific needs of your model and dataset.
