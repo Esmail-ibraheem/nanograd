@@ -105,7 +105,7 @@ you can choose a model from the models that litgpt support it: `litgpt download 
 to download a pre-trained model, write this: `litgpt download --repo_id microsoft/phi-2`
 
 ### 3- Prepare your data
-this command will create a folder called "custom_texts" has 2 text file, you can replace the text files, with your own dataset:
+this command will create a folder called "custom_texts" which has 2 text files, you can replace the text files, with your dataset:
 ```
 # 2) Pretain the model
 litgpt pretrain \
