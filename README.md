@@ -94,4 +94,4 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ---
 
 ## Contact
-For any inquiries or feedback, please open an issue on GitHub or reach out to the project maintainer at [mainainer's email](esm.agumaan@gmail.com).
+For any inquiries or feedback, please open an issue on GitHub or reach out to the project maintainer at [maintainer's email](esm.agumaan@gmail.com).
