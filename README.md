@@ -27,10 +27,10 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 
 
 **_Key Features_**
-- **`GPT Model from Scratch:`**
+- **`Transformers from Scratch:`**
   Implement a GPT model from the ground up using Python, offering full transparency and flexibility.
 
-- **`Efficient Fine-Tuning with PEFT Techniques:`**
+- **`Efficient Pre-training and Fine-tuning:`**
   LoRA (Low-Rank Adaptation): Fine-tune models efficiently by reducing the number of trainable parameters.
   Adapters: Insert small trainable modules within the model to enable rapid fine-tuning on new tasks.
   Quantization: Optimize the model for faster inference by reducing the precision of weights without significant loss in accuracy.
@@ -46,7 +46,7 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 ## GPT architecture:
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
-## fine-tuning (PEFT):
+## Continued-Pre-training:
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/LoRAoverview.jpeg" alt="LoRAs" ></p> 
 
 
@@ -94,4 +94,4 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ---
 
 ## Contact
-For any inquiries or feedback, please open an issue on GitHub or reach out to the project maintainer at esm.agumaan@gmail.com.
+For any inquiries or feedback, please open an issue on GitHub or reach out to the project maintainer at [esm.agumaan@gmail.com](mainainer's email).
