@@ -15,8 +15,8 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
   <a href="https://github.com/Esmail-ibraheem/omniGPT?tab=readme-ov-file#fine-tuning-peft">
     <img src="https://img.shields.io/badge/Feature-Quantization-%23FF7F50" alt="Quantization">
   </a>
-  <a href="#GPT_kernels-for-GPUs">
-    <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-%23228B22" alt="GPT Kernels for GPUs">
+  <a href="#Cuda-GPT-Llama">
+    <img src="https://img.shields.io/badge/Cuda-GPT-Llama%20for%20GPUs-%23228B22" alt="Model Cuda">
   </a>
   <a href="#Llama">
     <img src="https://img.shields.io/badge/Model-Llama%20model-%23FFD700" alt="Llama model">
