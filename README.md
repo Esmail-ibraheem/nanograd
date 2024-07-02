@@ -3,8 +3,8 @@ The fastest and most efficient repository for fine-tuning GPTs, implementing var
 omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained Transformer) model from scratch in Python, complemented by state-of-the-art fine-tuning techniques and optimized for performance with CUDA. This project encompasses everything from tokenization to model training, making it a robust toolkit for developing and fine-tuning large language models.
 
 <p align="center">
-  <a href="#flash attention">
-    <img src="https://img.shields.io/badge/Feature-flash%20attention-%23FFD700" alt="Flash Attention">
+  <a href="#GPT">
+    <img src="https://img.shields.io/badge/Feature-GPT%20model-%23FFD700" alt="GPT">
   </a>
   <a href="https://github.com/Esmail-ibraheem/omniGPT?tab=readme-ov-file#fine-tuning-peft">
     <img src="https://img.shields.io/badge/Feature-LoRA-%23FF7F50" alt="LoRA">
