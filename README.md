@@ -104,6 +104,19 @@ you can choose a model from the models that litgpt support it: `litgpt download 
 
 to download a pre-trained model, write this: `litgpt download --repo_id microsoft/phi-2`
 
+### 3- Prepare your data
+this command will create a folder called "custom_dataset" has 2 text file, you can replace the text files, with your own dataset:
+```
+# 2) Pretain the model
+litgpt pretrain \
+  --model_name pythia-160m \
+  --tokenizer_dir checkpoints/EleutherAI/pythia-160m \
+  --initial_checkpoint_dir checkpoints/EleutherAI/pythia-160m \
+  --data TextFiles \
+  --data.train_data_path "custom_texts" \
+  --out_dir out/custom_model
+```
+
 ---
 
 
