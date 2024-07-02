@@ -4,7 +4,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
 
 <p align="center">
   <a href="#GPT">
-    <img src="https://img.shields.io/badge/Feature-GPT%20model-%23FFD700" alt="GPT">
+    <img src="https://img.shields.io/badge/Model-GPT%20model-%23FFD700" alt="GPT">
   </a>
   <a href="https://github.com/Esmail-ibraheem/omniGPT?tab=readme-ov-file#fine-tuning-peft">
     <img src="https://img.shields.io/badge/Feature-LoRA-%23FF7F50" alt="LoRA">
