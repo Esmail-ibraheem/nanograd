@@ -106,7 +106,7 @@ to download a pre-trained model, write this: `litgpt download --repo_id microsof
 
 ### 3- Prepare your data
 this command will create a folder called "custom_texts" which has 2 text files, you can replace the text files, with your dataset:
-```
+```Bash
 # 2) Pretain the model
 litgpt pretrain \
   --model_name pythia-160m \
@@ -115,6 +115,15 @@ litgpt pretrain \
   --data TextFiles \
   --data.train_data_path "custom_texts" \
   --out_dir out/custom_model
+```
+
+### 4- Deploy the model
+
+First, verify the model works well:
+```Bash
+# 3) Chat with the model
+litgpt chat \
+  --checkpoint_dir out/custom_model/final
 ```
 
 ---
