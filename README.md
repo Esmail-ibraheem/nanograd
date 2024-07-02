@@ -75,11 +75,11 @@ litgpt serve \
 you can choose a model from the models that litgpt supported it: `litgpt download list`
 | Model                   | Model size                 | Author                    | Reference                               |
 |-------------------------|----------------------------|---------------------------|-----------------------------------------|
-| CodeGemma               | 7B                         | Google                    | [Google Team, Google Deepmind](https://deepmind.com/) |
-| Code Llama              | 7B, 13B, 34B, 70B          | Meta AI                   | [Rozière et al. 2023](https://example.com) |
-| Danube2                 | 1.8B                       | H2O.ai                    | [H2O.ai](https://h2o.ai)                |
-| Dolly                   | 3B, 7B, 12B                | Databricks                | [Conover et al. 2023](https://example.com) |
-| Falcon                  | 7B, 40B, 180B              | TII UAE                   | [TII 2023](https://example.com)         |
+| CodeGemma               | 7B                         | Google                    | [Google Team, Google Deepmind](https://ai.google.dev/gemma/docs/codegemma) |
+| Code Llama              | 7B, 13B, 34B, 70B          | Meta AI                   | [Rozière et al. 2023](https://arxiv.org/abs/2308.12950) |
+| Danube2                 | 1.8B                       | H2O.ai                    | [H2O.ai](https://h2o.ai/platform/danube-1-8b/)                |
+| Dolly                   | 3B, 7B, 12B                | Databricks                | [Conover et al. 2023](https://www.databricks.com/blog/2023/04/12/dolly-first-open-commercially-viable-instruction-tuned-llm) |
+| Falcon                  | 7B, 40B, 180B              | TII UAE                   | [TII 2023](https://falconllm.tii.ae/)         |
 | FreeWilly2 (Stable Beluga 2) | 70B                | Stability AI              | [Stability AI 2023](https://example.com)|
 | Function Calling Llama 2 | 7B                        | Trellis                   | [Trellis et al. 2023](https://example.com) |
 | Gemma                   | 2B, 7B                     | Google                    | [Google Team, Google Deepmind](https://deepmind.com/) |
