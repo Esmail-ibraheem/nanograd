@@ -72,7 +72,7 @@ litgpt serve \
 ```
 ### 2- Choose the model
 
-you can choose a model from the models that litgpt supported it: `litgpt download list`
+you can choose a model from the models that litgpt support it: `litgpt download list`
 | Model                   | Model size                 | Author                    | Reference                               |
 |-------------------------|----------------------------|---------------------------|-----------------------------------------|
 | CodeGemma               | 7B                         | Google                    | [Google Team, Google Deepmind](https://ai.google.dev/gemma/docs/codegemma) |
