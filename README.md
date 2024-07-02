@@ -102,7 +102,7 @@ you can choose a model from the models that litgpt support it: `litgpt download 
 | TinyLlama               | 1.1B                       | Zhang et al.              | [Zhang et al. 2023](https://github.com/jzhang38/TinyLlama)|
 | Vicuna                  | 7B, 13B, 33B               | LMSYS                     | [Li et al. 2023](https://lmsys.org/blog/2023-03-30-vicuna/)   |
 
-
+to download a pre-trained model, write this: `litgpt download --repo_id microsoft/phi-2`
 
 ---
 
