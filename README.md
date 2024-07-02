@@ -73,7 +73,34 @@ litgpt serve \
 ### 2- Choose the model
 
 you can choose a model from the models that litgpt supported it: `litgpt download list`
-![image](https://github.com/Esmail-ibraheem/OmniGPT/assets/113830751/b2e05328-26da-4094-8d80-501e7171769c)
+| Model                   | Model size                 | Author                    | Reference                               |
+|-------------------------|----------------------------|---------------------------|-----------------------------------------|
+| CodeGemma               | 7B                         | Google                    | [Google Team, Google Deepmind](https://deepmind.com/) |
+| Code Llama              | 7B, 13B, 34B, 70B          | Meta AI                   | [Rozière et al. 2023](https://example.com) |
+| Danube2                 | 1.8B                       | H2O.ai                    | [H2O.ai](https://h2o.ai)                |
+| Dolly                   | 3B, 7B, 12B                | Databricks                | [Conover et al. 2023](https://example.com) |
+| Falcon                  | 7B, 40B, 180B              | TII UAE                   | [TII 2023](https://example.com)         |
+| FreeWilly2 (Stable Beluga 2) | 70B                | Stability AI              | [Stability AI 2023](https://example.com)|
+| Function Calling Llama 2 | 7B                        | Trellis                   | [Trellis et al. 2023](https://example.com) |
+| Gemma                   | 2B, 7B                     | Google                    | [Google Team, Google Deepmind](https://deepmind.com/) |
+| Llama 2                 | 7B, 13B, 70B               | Meta AI                   | [Touvron et al. 2023](https://example.com) |
+| Llama 3                 | 88B, 70B                   | Meta AI                   | [Meta AI 2024](https://example.com)     |
+| LongChat                | 7B, 13B                    | LMSYS                     | [LongChat Team 2023](https://example.com) |
+| MicroLlama              | 300M                       | Ken Wang                  | [MicroLlama repo](https://example.com)  |
+| Mixtral MoE             | 8x7B                       | Mistral AI                | [Mistral AI 2023](https://example.com)  |
+| Mistral                 | 7B                         | Mistral AI                | [Mistral AI 2023](https://example.com)  |
+| Nous-Hermes             | 7B, 13B, 70B               | NousResearch              | [Org page](https://example.com)         |
+| OpenLLaMA               | 3B, 7B, 13B                | OpenLM Research           | [Geng & Liu 2023](https://example.com)  |
+| Phi 1.5 & 2             | 1.3B, 2.7B                 | Microsoft Research        | [Li et al. 2023](https://example.com)   |
+| Phi 3                   | 3.8B                       | Microsoft Research        | [Abdin et al. 2024](https://example.com)|
+| Platypus                | 7B, 13B, 70B               | Lee et al.                | [Lee, Hunter, and Ruiz 2023](https://example.com) |
+| Pythia                  | (14, 31, 70, 160, 410)M, (1.1, 4.2, 8.6, 9, 12)B | EleutherAI | [Biderman et al. 2023](https://example.com) |
+| RedPajama-INCITE        | 3B, 7B                     | Together                  | [Together 2023](https://example.com)    |
+| StableCode              | 3B                         | Stability AI              | [Stability AI 2023](https://example.com)|
+| StableLM                | 3B, 7B                     | Stability AI              | [Stability AI 2023](https://example.com)|
+| StableLM Zephyr         | 3B                         | Stability AI              | [Stability AI 2023](https://example.com)|
+| TinyLlama               | 1.1B                       | Zhang et al.              | [Zhang et al. 2023](https://example.com)|
+| Vicuna                  | 7B, 13B, 33B               | LMSYS                     | [Li et al. 2023](https://example.com)   |
 
 
 
