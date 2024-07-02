@@ -10,7 +10,7 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
     <img src="https://img.shields.io/badge/Feature-Pretraining-%23FF7F50" alt="Pretraining">
   </a>
   <a href="#Fine-tuning">
-    <img src="https://img.shields.io/badge/Feature-Fine-tuning-%23FF7F50" alt="Fine-tuning">
+    <img src="https://img.shields.io/badge/Feature-Fine_tuning-%23FF7F50" alt="Fine-tuning">
   </a>
   <a href="https://github.com/Esmail-ibraheem/omniGPT?tab=readme-ov-file#fine-tuning-peft">
     <img src="https://img.shields.io/badge/Feature-Quantization-%23FF7F50" alt="Quantization">
