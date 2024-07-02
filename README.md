@@ -1,6 +1,6 @@
 # OmniGPT (Transformers):      
 The fastest and most efficient repository for continued-pre-training, and fine-tuning GPTs inspired from litgpt from lightning AI,
-omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained Transformer) model from scratch in Python, complemented by state-of-the-art fine-tuning techniques and optimized for performance with CUDA. This project encompasses everything from tokenization to model training, making it a robust toolkit for developing and fine-tuning large language models.
+omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained Transformers) models from scratch in Python, complemented by state-of-the-art Pre-training and fine-tuning techniques and optimized for performance with CUDA. This project encompasses everything from tokenization to model training, making it a robust toolkit for developing and fine-tuning large language models.
 
 <p align="center">
   <a href="#GPT">
