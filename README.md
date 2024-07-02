@@ -18,8 +18,8 @@ omniGPT is an ambitious project aimed at building a GPT (Generative Pre-trained 
   <a href="#GPT_kernels-for-GPUs">
     <img src="https://img.shields.io/badge/Feature-GPT_kernels%20for%20GPUs-%23228B22" alt="GPT Kernels for GPUs">
   </a>
-  <a href="#Sentiment-Analysis">
-    <img src="https://img.shields.io/badge/Feature-Sentiment%20Analysis-%23FFD700" alt="Sentiment Analysis">
+  <a href="#Llama">
+    <img src="https://img.shields.io/badge/Model-Llama%20model-%23FFD700" alt="Llama model">
   </a>
 </p>
 
