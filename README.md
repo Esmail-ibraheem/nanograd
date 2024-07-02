@@ -44,8 +44,31 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 ## GPT architecture:
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
-## Continued-Pre-training:
+## Continued-Pre-training: Continue Pretraining an LLM
+In this section we're going to learn how to continue pretraining an LLM with LitGPT. Here's the full code, which we'll break down into steps:
+```
+# 1) Download the model (or use your own)
+litgpt download \
+  --repo_id EleutherAI/pythia-160m \
+  --tokenizer_only True
 
+# 2) Continue pretraining the model
+litgpt pretrain \
+  --model_name pythia-160m \
+  --tokenizer_dir checkpoints/EleutherAI/pythia-160m \
+  --initial_checkpoint_dir checkpoints/EleutherAI/pythia-160m \
+  --data TextFiles \
+  --data.train_data_path "custom_texts" \
+  --out_dir out/custom_model
+
+# 3) Chat with the model
+litgpt chat \
+  --checkpoint_dir out/custom_model/final
+
+# 4) Deploy the model
+litgpt serve \
+  --checkpoint_dir out/custom_model/final
+```
 
 ---
 
