@@ -125,6 +125,12 @@ First, verify the model works well:
 litgpt chat \
   --checkpoint_dir out/custom_model/final
 ```
+Now deploy the model:
+```Bash
+# 4) Deploy the model
+litgpt serve \
+  --checkpoint_dir out/custom_model/final
+```
 
 ---
 
