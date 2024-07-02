@@ -46,7 +46,7 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 
 ## Continued-Pre-training: Continue Pretraining an LLM
 In this section we're going to learn how to continue pretraining an LLM with LitGPT. Here's the full code, which we'll break down into steps:
-```
+```Bash
 # 1) Download the model (or use your own)
 litgpt download \
   --repo_id EleutherAI/pythia-160m \
