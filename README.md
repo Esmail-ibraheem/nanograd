@@ -44,7 +44,8 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 ## GPT architecture:
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
-## Continued-Pre-training: Continue Pretraining an LLM
+## Continued-Pre-training: 
+### 1- Continue Pretraining an LLM
 In this section we're going to learn how to continue pretraining an LLM with LitGPT. Here's the full code, which we'll break down into steps:
 ```Bash
 # 1) Download the model (or use your own)
@@ -69,6 +70,12 @@ litgpt chat \
 litgpt serve \
   --checkpoint_dir out/custom_model/final
 ```
+### 2- Choose the model
+
+you can choose a model from the models that litgpt supported it: `litgpt download list`
+![image](https://github.com/Esmail-ibraheem/OmniGPT/assets/113830751/b2e05328-26da-4094-8d80-501e7171769c)
+
+
 
 ---
 
