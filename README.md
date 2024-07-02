@@ -45,7 +45,6 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
 ## Continued-Pre-training:
-<p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/LoRAoverview.jpeg" alt="LoRAs" ></p> 
 
 
 ---
