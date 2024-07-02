@@ -132,6 +132,8 @@ litgpt serve \
   --checkpoint_dir out/custom_model/final
 ```
 
+**_for more check this lightning ai studio: [pre-training LLMs](https://lightning.ai/lightning-ai/studios/litgpt-continue-pretraining) _**
+
 ---
 
 
