@@ -28,7 +28,7 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
 
 **_Key Features_**
 - **`Transformers from Scratch:`**
-  Implement a GPT and llama models from the ground up using Pytorch, offering full transparency and flexibility.
+  Implement GPT and llama [models](#models-implementation) from the ground up using Pytorch, offering full transparency and flexibility.
 
 - **`Efficient Pre-training and Fine-tuning:`**
   Used the instructions from LitGPT repo for pre-training and fine-tuning the model for Both datasets: `Arabic` and `English`, here are the [instructions](#Continued-Pre-training) section
@@ -41,7 +41,7 @@ OmniGPT is an ambitious project inspired by [LitGPT](https://github.com/Lightnin
   
 
 
-## GPT architecture:
+## models implementation:
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
 ## Continued-Pre-training: 
