@@ -124,7 +124,7 @@ litgpt pretrain \
 > Crucial information necessary for users to succeed.
 
 > [!WARNING]  
-> Using this approach is only recommended for small datasets. Since text data is highly compressible, it is often stored in compressed format, and often in file formats where documents can be loaded row by row without having to load entire files at once. In other words, this TextFiles approach is only feasible to store the data in plain text files due to the limited size. For datasets that take up multiple gigabytes, we recommend preprocessing it with another way...
+> Using this approach is only recommended for small datasets. Since text data is highly compressible, it is often stored in compressed format, and often in file formats where documents can be loaded row by row without having to load entire files at once. In other words, this `TextFiles` approach is only feasible to store the data in plain text files due to the limited size. For datasets that take up multiple gigabytes, we recommend preprocessing it with another way...
 
 ### 4- Deploy the model
 
