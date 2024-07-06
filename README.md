@@ -174,9 +174,12 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 
 ## Notes and Acknowledgments
 - Hugging-Face Transformers
-- litgpt 
+- Lightning AI
 - NVIDIA FasterTransformer
 - OpenAI for pioneering the GPT architecture
+
+> [!NOTE]
+> I have developed this project "OmniGPT" to gain my skills in developing models and pre-training and fine-tuning with LitGPT and LitData, if you notice that I developed GPT and Llama models using both Python and Cuda, for accessible training using either GPU or CPU and building the tokenizers. this code is an integration between litGPT and Transformers gpt2.
 
 ---
 
