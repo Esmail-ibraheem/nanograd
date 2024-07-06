@@ -179,7 +179,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 - OpenAI for pioneering the GPT architecture
 
 > [!NOTE]
-> I have developed this project "OmniGPT" to gain my skills in developing models and pre-training and fine-tuning with LitGPT and LitData, if you notice that I developed GPT and Llama models using both Python and Cuda, for accessible training using either GPU or CPU and building the tokenizers. this code is an integration between litGPT and Transformers gpt2.
+> I developed the project 'OmniGPT' to enhance my skills in developing, pre-training, and fine-tuning models with LitGPT and LitData. Notably, I worked on developing GPT and LLaMA models using both Python and CUDA, facilitating training on either GPU or CPU and building the tokenizers. This project integrates LitGPT and Transformers' GPT-2.
 
 ---
 
