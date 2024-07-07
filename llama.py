@@ -1,241 +1,79 @@
-
-"""Full definition of a LLaMA Language Model, all of it in this single file.
-
-Based on the nanoGPT implementation: https://github.com/karpathy/nanoGPT.
-"""
-
-import torch 
-import torch.nn as nn 
-import numpy as np 
-import torch.nn.functional as F 
-
+import glob
 import math
-from dataclasses import dataclass
-from typing import List, Optional, Tuple, Union
+import sys
+import time
+from pathlib import Path
+from typing import Optional, Tuple, Union
+import math
+import lightning as L
+import torch
+from lightning.fabric.strategies import FSDPStrategy, XLAStrategy
+from torch.utils.data import DataLoader
+from functools import partial
+# support running without installing as a package
+wd = Path(__file__).parent.parent.resolve()
+sys.path.append(str(wd))
+# from apex.optimizers import FusedAdam #torch optimizer has a cuda backend, which is faster actually
+from litgpt.model import GPT, Block, Config, CausalSelfAttention
+from .packed_dataset import CombinedDataset, PackedDataset
+from .speed_monitor import SpeedMonitorFabric as Monitor
+from .speed_monitor import estimate_flops, measure_flops
+from litgpt.utils import chunked_cross_entropy, get_default_supported_precision, num_parameters, step_csv_logger, lazy_load
+from pytorch_lightning.loggers import WandbLogger
+from litgpt import FusedCrossEntropyLoss
+import random
+import torch.nn as nn 
 
-from typing_extensions import Self
+model_name = "tiny_LLaMA_1b" 
+name = "tinyllama_1b"
+out_dir = Path("out") / name
 
-from lit_llama.utils import find_multiple
-
-
-MaskCache = torch.Tensor
-RoPECache = torch.Tensor
-KVCache = Tuple[torch.Tensor, torch.Tensor]
-
-
-@dataclass
-class LLaMAConfig:
-    block_size: int = 2048
-    vocab_size: int = 32000
-    padded_vocab_size: Optional[int] = None
-    n_layer: int = 32
-    n_head: int = 32
-    n_embd: int = 4096
-
-    def __post_init__(self):
-        if self.padded_vocab_size is None:
-            self.padded_vocab_size = find_multiple(self.vocab_size, 64)
-
-    @classmethod
-    def from_name(cls, name: str) -> Self:
-        return cls(**llama_configs[name])
-
-
-llama_configs = {
-    "7B": dict(n_layer=32, n_head=32, n_embd=4096),
-    "13B": dict(n_layer=40, n_head=40, n_embd=5120),
-    "30B": dict(n_layer=60, n_head=52, n_embd=6656),
-    "65B": dict(n_layer=80, n_head=64, n_embd=8192),
-}
-
-
-class LLaMA(nn.Module):
-    def __init__(self, config: LLaMAConfig) -> None:
-        super().__init__()
-        assert config.padded_vocab_size is not None
-        self.config = config
-
-        self.lm_head = nn.Linear(config.n_embd, config.padded_vocab_size, bias=False)
-        self.transformer = nn.ModuleDict(
-            dict(
-                wte=nn.Embedding(config.padded_vocab_size, config.n_embd),
-                h=nn.ModuleList(Block(config) for _ in range(config.n_layer)),
-                ln_f=RMSNorm(config.n_embd),
-            )
-        )
-
-        self.rope_cache: Optional[RoPECache] = None
-        self.mask_cache: Optional[MaskCache] = None
-        self.kv_caches: List[KVCache] = []
-
-    def _init_weights(self, module: nn.Module) -> None:
-        if isinstance(module, nn.Linear):
-            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02 / math.sqrt(2 * self.config.n_layer))
-        elif isinstance(module, nn.Embedding):
-            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02 / math.sqrt(2 * self.config.n_layer))
-
-    def forward(
-        self, idx: torch.Tensor, max_seq_length: Optional[int] = None, input_pos: Optional[torch.Tensor] = None
-    ) -> Union[torch.Tensor, Tuple[torch.Tensor, List[KVCache]]]:
-        B, T = idx.size()
-
-        block_size = self.config.block_size
-        if max_seq_length is None:
-            max_seq_length = block_size
-        assert T <= max_seq_length, f"Cannot forward sequence of length {T}, max seq length is only {max_seq_length}"
-        assert max_seq_length <= block_size, f"Cannot attend to {max_seq_length}, block size is only {block_size}"
-        assert T <= block_size, f"Cannot forward sequence of length {T}, block size is only {block_size}"
-
-        if self.rope_cache is None:
-            self.rope_cache = self.build_rope_cache(idx)
-        if self.mask_cache is None:
-            self.mask_cache = self.build_mask_cache(idx)
-
-        if input_pos is not None:
-            rope = self.rope_cache.index_select(0, input_pos)
-            mask = self.mask_cache.index_select(2, input_pos)
-            mask = mask[:, :, :, :max_seq_length]
-        else:
-            rope = self.rope_cache[:T]
-            mask = self.mask_cache[:, :, :T, :T]
-
-        # forward the model itself
-        x = self.transformer.wte(idx)  # token embeddings of shape (b, t, n_embd)
-
-        if input_pos is None:  # proxy for use_cache=False
-            for block in self.transformer.h:
-                x, _ = block(x, rope, mask, max_seq_length)
-        else:
-            if not self.kv_caches:
-                head_size = self.config.n_embd // self.config.n_head
-                cache_shape = (B, self.config.n_head, max_seq_length, head_size)
-                self.kv_caches = [
-                    (torch.zeros(cache_shape, device=x.device, dtype=x.dtype), torch.zeros(cache_shape, device=x.device, dtype=x.dtype))
-                    for _ in range(self.config.n_layer)
-                ]
-            for i, block in enumerate(self.transformer.h):
-                x, self.kv_caches[i] = block(x, rope, mask, max_seq_length, input_pos, self.kv_caches[i])
-
-        x = self.transformer.ln_f(x)
-
-        logits = self.lm_head(x)  # (b, t, vocab_size)
-
-        return logits
-
-    @classmethod
-    def from_name(cls, name: str) -> Self:
-        return cls(LLaMAConfig.from_name(name))
-
-    def build_rope_cache(self, idx: torch.Tensor) -> RoPECache:
-        return build_rope_cache(
-            seq_len=self.config.block_size,
-            n_elem=self.config.n_embd // self.config.n_head,
-            dtype=idx.dtype,
-            device=idx.device,
-        )
-
-    def build_mask_cache(self, idx: torch.Tensor) -> MaskCache:
-        ones = torch.ones((self.config.block_size, self.config.block_size), device=idx.device, dtype=torch.bool)
-        return torch.tril(ones).unsqueeze(0).unsqueeze(0)
-
-    def reset_cache(self) -> None:
-        self.kv_caches.clear()
-        if self.mask_cache.device.type == "xla":
-            # https://github.com/Lightning-AI/lit-parrot/pull/83#issuecomment-1558150179
-            self.rope_cache = None
-            self.mask_cache = None
+# Hyperparameters
+num_of_devices = 8
+global_batch_size = 512
+learning_rate = 4e-4
+micro_batch_size = 8
+max_step = 715256 * 2
+warmup_steps = 2000
+log_step_interval = 10
+eval_iters = 100
+save_step_interval = 5000
+eval_step_interval = 5000
 
 
-class Block(nn.Module):
-    def __init__(self, config: LLaMAConfig) -> None:
-        super().__init__()
-        self.rms_1 = RMSNorm(config.n_embd)
-        self.attn = CausalSelfAttention(config)
-        self.rms_2 = RMSNorm(config.n_embd)
-        self.mlp = MLP(config)
+weight_decay = 1e-1
+beta1 = 0.9
+beta2 = 0.95
+grad_clip = 1.0
+decay_lr = True
+min_lr = 4e-5
 
-    def forward(
-        self,
-        x: torch.Tensor,
-        rope: RoPECache,
-        mask: MaskCache,
-        max_seq_length: int,
-        input_pos: Optional[torch.Tensor] = None,
-        kv_cache: Optional[KVCache] = None,
-    ) -> Tuple[torch.Tensor, Optional[KVCache]]:
-        h, new_kv_cache = self.attn(self.rms_1(x), rope, mask, max_seq_length, input_pos, kv_cache)
-        x = x + h
-        x = x + self.mlp(self.rms_2(x))
-        return x, new_kv_cache
+batch_size = global_batch_size // num_of_devices
+gradient_accumulation_steps = batch_size // micro_batch_size
+assert gradient_accumulation_steps > 0
+warmup_iters = warmup_steps * gradient_accumulation_steps
 
 
-class CausalSelfAttention(nn.Module):
-    def __init__(self, config: LLaMAConfig) -> None:
-        super().__init__()
-        assert config.n_embd % config.n_head == 0
 
-        # key, query, value projections for all heads, but in a batch
-        self.c_attn = nn.Linear(config.n_embd, 3 * config.n_embd, bias=False)
-        # output projection
-        self.c_proj = nn.Linear(config.n_embd, config.n_embd, bias=False)
 
-        self.n_head = config.n_head
-        self.n_embd = config.n_embd
-        self.block_size = config.block_size
+max_iters = max_step * gradient_accumulation_steps
+lr_decay_iters = max_iters
+log_iter_interval = log_step_interval * gradient_accumulation_steps
 
-    def forward(
-        self,
-        x: torch.Tensor,
-        rope: RoPECache,
-        mask: MaskCache,
-        max_seq_length: int,
-        input_pos: Optional[torch.Tensor] = None,
-        kv_cache: Optional[KVCache] = None,
-    ) -> Tuple[torch.Tensor, Optional[KVCache]]:
-        B, T, C = x.size()  # batch size, sequence length, embedding dimensionality (n_embd)
 
-        # calculate query, key, values for all heads in batch and move head forward to be the batch dim
-        q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+# Treat all dataset equally by their size. If you want to use a different weight for a dataset, add it to the list with the weight.
+train_data_config = [
+    ("train_slim", 0.693584),
+    ("train_star", 0.306416),
+]
 
-        head_size = C // self.n_head
-        k = k.view(B, T, self.n_head, head_size)
-        q = q.view(B, T, self.n_head, head_size)
-        v = v.view(B, T, self.n_head, head_size)
+val_data_config = [
+    ("validation", 1.0),
+]
 
-        q = apply_rope(q, rope)
-        k = apply_rope(k, rope)
-
-        k = k.transpose(1, 2)  # (B, nh, T, hs)
-        q = q.transpose(1, 2)  # (B, nh, T, hs)
-        v = v.transpose(1, 2)  # (B, nh, T, hs)
-
-        if kv_cache is not None:
-            cache_k, cache_v = kv_cache
-            # check if reached token limit
-            if input_pos[-1] >= max_seq_length:
-                input_pos = torch.tensor(max_seq_length - 1, device=input_pos.device)
-                # shift 1 position to the left
-                cache_k = torch.roll(cache_k, -1, dims=2)
-                cache_v = torch.roll(cache_v, -1, dims=2)
-            k = cache_k.index_copy(2, input_pos, k)
-            v = cache_v.index_copy(2, input_pos, v)
-            kv_cache = k, v
-
-        # causal self-attention; Self-attend: (B, nh, T, hs) x (B, nh, hs, T) -> (B, nh, T, T)
-        #  att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-        #  att = att.masked_fill(mask[:,:,:T,:T] == 0, float('-inf'))
-        #  att = F.softmax(att, dim=-1)
-        #  y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
-
-        # efficient attention using Flash Attention CUDA kernels
-        y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask, dropout_p=0.0)
-
-        y = y.transpose(1, 2).contiguous().view(B, T, C)  # re-assemble all head outputs side by side
-
-        # output projection
-        y = self.c_proj(y)
-
-        return y, kv_cache
+hparams = {k: v for k, v in locals().items() if isinstance(v, (int, float, str)) and not k.startswith("_")}
+logger = step_csv_logger("out", name, flush_logs_every_n_steps=log_iter_interval)
+wandb_logger = WandbLogger()
 
 
 class LlamaRotaryEmbeddings(nn.Module):
@@ -316,87 +154,322 @@ def precompute_theta_pos_frequencies(head_dim: int, seq_len: int, device: str, t
     return freqs_complex
 
 
-class MLP(nn.Module):
-    def __init__(self, config: LLaMAConfig) -> None:
-        super().__init__()
-        hidden_dim = 4 * config.n_embd
-        n_hidden = int(2 * hidden_dim / 3)
-        n_hidden = find_multiple(n_hidden, 256)
+def setup(
+    devices: int = 8,
+    train_data_dir: Path = Path("data/redpajama_sample"),
+    val_data_dir: Optional[Path] = None,
+    precision: Optional[str] = None,
+    tpu: bool = False,
+    resume: Union[bool, Path] = False,
+) -> None:
+    precision = precision or get_default_supported_precision(training=True, tpu=tpu)
 
-        self.c_fc1 = nn.Linear(config.n_embd, n_hidden, bias=False)
-        self.c_fc2 = nn.Linear(config.n_embd, n_hidden, bias=False)
-        self.c_proj = nn.Linear(n_hidden, config.n_embd, bias=False)
+    if devices > 1:
+        if tpu:
+            # For multi-host TPU training, the device count for Fabric is limited to the count on a single host.
+            devices = "auto"
+            strategy = XLAStrategy(sync_module_states=False)
+        else:
+            strategy = FSDPStrategy(
+                auto_wrap_policy={Block},
+                activation_checkpointing_policy=None,
+                state_dict_type="full",
+                limit_all_gathers=True,
+                cpu_offload=False,
+            )
+    else:
+        strategy = "auto"
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = F.silu(self.c_fc1(x)) * self.c_fc2(x)
-        x = self.c_proj(x)
-        return x
-
-
-class RMSNorm(nn.Module):
-    """Root Mean Square Layer Normalization.
-
-    Derived from https://github.com/bzhangGo/rmsnorm/blob/master/rmsnorm_torch.py. BSD 3-Clause License:
-    https://github.com/bzhangGo/rmsnorm/blob/master/LICENSE.
-    """
-
-    def __init__(self, size: int, dim: int = -1, eps: float = 1e-5) -> None:
-        super().__init__()
-        self.scale = nn.Parameter(torch.ones(size))
-        self.eps = eps
-        self.dim = dim
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # NOTE: the original RMSNorm paper implementation is not equivalent
-        # norm_x = x.norm(2, dim=self.dim, keepdim=True)
-        # rms_x = norm_x * d_x ** (-1. / 2)
-        # x_normed = x / (rms_x + self.eps)
-        norm_x = torch.mean(x * x, dim=self.dim, keepdim=True)
-        x_normed = x * torch.rsqrt(norm_x + self.eps)
-        return self.scale * x_normed
+    fabric = L.Fabric(devices=devices, strategy=strategy, precision=precision, loggers=[logger, wandb_logger])
+    fabric.print(hparams)
+    #fabric.launch(main, train_data_dir, val_data_dir, resume)
+    main(fabric, train_data_dir, val_data_dir, resume)
 
 
-def build_rope_cache(
-    seq_len: int, n_elem: int, dtype: torch.dtype, device: torch.device, base: int = 10000
-) -> RoPECache:
-    """Enhanced Transformer with Rotary Position Embedding.
+def main(fabric, train_data_dir, val_data_dir, resume):
+    monitor = Monitor(fabric, window_size=2, time_unit="seconds", log_iter_interval=log_iter_interval)
 
-    Derived from: https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/labml_nn/
-    transformers/rope/__init__.py. MIT License:
-    https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/license.
-    """
-    # $\Theta = {\theta_i = 10000^{\frac{2(i-1)}{d}}, i \in [1, 2, ..., \frac{d}{2}]}$
-    theta = 1.0 / (base ** (torch.arange(0, n_elem, 2, dtype=dtype, device=device) / n_elem))
+    if fabric.global_rank == 0:
+        out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Create position indexes `[0, 1, ..., seq_len - 1]`
-    seq_idx = torch.arange(seq_len, dtype=dtype, device=device)
+    config = Config.from_name(model_name)
 
-    # Calculate the product of position index and $\theta_i$
-    idx_theta = torch.outer(seq_idx, theta).float()
-
-    cache = torch.stack([torch.cos(idx_theta), torch.sin(idx_theta)], dim=-1)
-
-    # this is to mimic the behaviour of complex32, else we will get different results
-    if dtype in (torch.float16, torch.bfloat16, torch.int8):
-        cache = cache.half()
-    return cache
-
-
-def apply_rope(x: torch.Tensor, rope_cache: RoPECache) -> torch.Tensor:
-    # truncate to support variable sizes
-    T = x.size(1)
-    rope_cache = rope_cache[:T]
-
-    # cast because the reference does
-    xshaped = x.float().reshape(*x.shape[:-1], -1, 2)
-    rope_cache = rope_cache.view(1, xshaped.size(1), 1, xshaped.size(3), 2)
-    x_out2 = torch.stack(
-        [
-            xshaped[..., 0] * rope_cache[..., 0] - xshaped[..., 1] * rope_cache[..., 1],
-            xshaped[..., 1] * rope_cache[..., 0] + xshaped[..., 0] * rope_cache[..., 1],
-        ],
-        -1,
+    train_dataloader, val_dataloader = create_dataloaders(
+        batch_size=micro_batch_size,
+        block_size=config.block_size,
+        fabric=fabric,
+        train_data_dir=train_data_dir,
+        val_data_dir=val_data_dir,
+        seed=3407,
     )
+    if val_dataloader is None:
+        train_dataloader = fabric.setup_dataloaders(train_dataloader)
+    else:
+        train_dataloader, val_dataloader = fabric.setup_dataloaders(train_dataloader, val_dataloader)
 
-    x_out2 = x_out2.flatten(3)
-    return x_out2.type_as(x)
+    fabric.seed_everything(3407)  # same seed for every process to init model (FSDP)
+
+    fabric.print(f"Loading model with {config.__dict__}")
+    t0 = time.perf_counter()
+    with fabric.init_module(empty_init=False):
+        model = GPT(config)
+        model.apply(partial(model._init_weights ,n_layer=config.n_layer))
+ 
+
+    fabric.print(f"Time to instantiate model: {time.perf_counter() - t0:.02f} seconds.")
+    fabric.print(f"Total parameters {num_parameters(model):,}")
+
+    model = fabric.setup(model)
+    optimizer = torch.optim.AdamW(
+        model.parameters(), lr=learning_rate, weight_decay=weight_decay, betas=(beta1, beta2), foreach=False
+    )
+    # optimizer = FusedAdam(model.parameters(), lr=learning_rate, weight_decay=weight_decay, betas=(beta1, beta2),adam_w_mode=True)
+    optimizer = fabric.setup_optimizers(optimizer)
+
+    state = {"model": model, "optimizer": optimizer, "hparams": hparams, "iter_num": 0, "step_count": 0}
+
+    if resume is True:
+        resume = sorted(out_dir.glob("*.pth"))[-1]
+    if resume :
+        fabric.print(f"Resuming training from {resume}")
+        fabric.load(resume, state)
+
+    train_time = time.perf_counter()
+    train(fabric, state, train_dataloader, val_dataloader, monitor, resume)
+    fabric.print(f"Training time: {(time.perf_counter()-train_time):.2f}s")
+    if fabric.device.type == "cuda":
+        fabric.print(f"Memory used: {torch.cuda.max_memory_allocated() / 1e9:.02f} GB")
+
+
+def train(fabric, state, train_dataloader, val_dataloader, monitor, resume): # train function
+    model = state["model"]
+    optimizer = state["optimizer"]
+
+    if val_dataloader is not None:
+        validate(fabric, model, val_dataloader)  # sanity check
+
+    with torch.device("meta"):
+        meta_model = GPT(model.config)
+        # "estimated" is not as precise as "measured". Estimated is optimistic but widely used in the wild.
+        # When comparing MFU or FLOP numbers with other projects that use estimated FLOPs,
+        # consider passing `SpeedMonitor(flops_per_batch=estimated_flops)` instead
+        estimated_flops = estimate_flops(meta_model) * micro_batch_size
+        fabric.print(f"Estimated TFLOPs: {estimated_flops * fabric.world_size / 1e12:.2f}")
+        x = torch.randint(0, 1, (micro_batch_size, model.config.block_size))
+        # measured_flos run in meta. Will trigger fusedRMSNorm error
+        #measured_flops = measure_flops(meta_model, x)
+        #fabric.print(f"Measured TFLOPs: {measured_flops * fabric.world_size / 1e12:.2f}")
+        del meta_model, x
+
+    total_lengths = 0
+    total_t0 = time.perf_counter()
+
+    # if fabric.device.type == "xla":
+    #     import torch_xla.core.xla_model as xm
+
+    #     xm.mark_step()
+    
+    
+    initial_iter = state["iter_num"]
+    curr_iter = 0
+            
+    loss_func = FusedCrossEntropyLoss()
+    for  train_data in train_dataloader:
+        # resume loader state. This is not elegant but it works. Should rewrite it in the future.
+        if resume:
+            if curr_iter < initial_iter:
+                curr_iter += 1
+                continue
+            else:
+                resume = False
+                curr_iter = -1
+                fabric.barrier()
+                fabric.print("resume finished, taken {} seconds".format(time.perf_counter() - total_t0))
+        if state["iter_num"] >= max_iters:
+            break
+        
+        # determine and set the learning rate for this iteration
+        lr = get_lr(state["iter_num"]) if decay_lr else learning_rate
+        for param_group in optimizer.param_groups:
+            param_group["lr"] = lr
+
+        iter_t0 = time.perf_counter()
+
+        input_ids = train_data[:, 0 : model.config.block_size].contiguous()
+        targets = train_data[:, 1 : model.config.block_size + 1].contiguous()
+        is_accumulating = (state["iter_num"] + 1) % gradient_accumulation_steps != 0
+        with fabric.no_backward_sync(model, enabled=is_accumulating):
+            logits = model(input_ids)
+            loss = loss_func(logits, targets)
+            # loss = chunked_cross_entropy(logits, targets, chunk_size=0)
+            fabric.backward(loss / gradient_accumulation_steps)
+
+        if not is_accumulating:
+            fabric.clip_gradients(model, optimizer, max_norm=grad_clip)
+            optimizer.step()
+            optimizer.zero_grad()
+            state["step_count"] += 1
+        # elif fabric.device.type == "xla":
+        #     xm.mark_step()
+        state["iter_num"] += 1
+        # input_id: B L 
+        total_lengths += input_ids.size(1)
+        t1 = time.perf_counter()
+        fabric.print(
+                f"iter {state['iter_num']} step {state['step_count']}: loss {loss.item():.4f}, iter time:"
+                f" {(t1 - iter_t0) * 1000:.2f}ms{' (optimizer.step)' if not is_accumulating else ''}"
+                f" remaining time: {(t1 - total_t0) / (state['iter_num'] - initial_iter) * (max_iters - state['iter_num']) / 3600:.2f} hours. " 
+                # print days as well
+                f" or {(t1 - total_t0) / (state['iter_num'] - initial_iter) * (max_iters - state['iter_num']) / 3600 / 24:.2f} days. "
+            )
+ 
+        monitor.on_train_batch_end(
+            state["iter_num"] * micro_batch_size,
+            t1 - total_t0,
+            # this assumes that device FLOPs are the same and that all devices have the same batch size
+            fabric.world_size,
+            state["step_count"],
+            flops_per_batch=estimated_flops,
+            lengths=total_lengths,
+            train_loss = loss.item()
+        )
+
+            
+            
+        # validation data_loader
+        if val_dataloader is not None and not is_accumulating and state["step_count"] % eval_step_interval == 0:
+            
+            t0 = time.perf_counter()
+            val_loss = validate(fabric, model, val_dataloader)
+            t1 = time.perf_counter() - t0
+            monitor.eval_end(t1)
+            fabric.print(f"step {state['iter_num']}: val loss {val_loss:.4f}, val time: {t1 * 1000:.2f}ms")
+            fabric.log_dict({"metric/val_loss": val_loss.item(), "total_tokens": model.config.block_size * (state["iter_num"] + 1) * micro_batch_size * fabric.world_size}, state["step_count"])
+            fabric.log_dict({"metric/val_ppl": math.exp(val_loss.item()), "total_tokens": model.config.block_size * (state["iter_num"] + 1) * micro_batch_size * fabric.world_size}, state["step_count"])
+            fabric.barrier()
+        if not is_accumulating and state["step_count"] % save_step_interval == 0:
+            checkpoint_path = out_dir / f"iter-{state['iter_num']:06d}-ckpt.pth"
+            fabric.print(f"Saving checkpoint to {str(checkpoint_path)!r}")
+            fabric.save(checkpoint_path, state)
+
+        
+@torch.no_grad() # validation function. 
+def validate(fabric: L.Fabric, model: torch.nn.Module, val_dataloader: DataLoader) -> torch.Tensor:
+    fabric.print("Validating ...")
+    model.eval()
+
+    losses = torch.zeros(eval_iters, device=fabric.device)
+    for k, val_data in enumerate(val_dataloader):
+        if k >= eval_iters:
+            break
+        input_ids = val_data[:, 0 : model.config.block_size].contiguous()
+        targets = val_data[:, 1 : model.config.block_size + 1].contiguous()
+        logits = model(input_ids)
+        loss = chunked_cross_entropy(logits, targets, chunk_size=0)
+
+        # loss_func = FusedCrossEntropyLoss()
+        # loss = loss_func(logits, targets)
+        losses[k] = loss.item()
+        
+    out = losses.mean()
+
+    model.train()
+    return out
+
+
+def create_dataloader( # create dataloader 
+    batch_size: int, block_size: int, data_dir: Path, fabric, shuffle: bool = True, seed: int = 12345, split="train"
+) -> DataLoader:
+    datasets = []
+    data_config = train_data_config if split == "train" else val_data_config
+    for prefix, _ in data_config:
+        filenames = sorted(glob.glob(str(data_dir / f"{prefix}*")))
+        random.seed(seed)
+        random.shuffle(filenames)
+
+        dataset = PackedDataset(
+            filenames,
+            # n_chunks control the buffer size. 
+            # Note that the buffer size also impacts the random shuffle
+            # (PackedDataset is an IterableDataset. So the shuffle is done by prefetch a buffer and shuffle the buffer)
+            n_chunks=8,
+            block_size=block_size,
+            shuffle=shuffle,
+            seed=seed+fabric.global_rank,
+            num_processes=fabric.world_size,
+            process_rank=fabric.global_rank,
+        )
+        datasets.append(dataset)
+
+    if not datasets:
+        raise RuntimeError(
+            f"No data found at {data_dir}. Make sure you ran prepare_redpajama.py to create the dataset."
+        )
+
+    weights = [weight for _, weight in data_config]
+    sum_weights = sum(weights)
+    weights = [el / sum_weights for el in weights]
+
+    combined_dataset = CombinedDataset(datasets=datasets, seed=seed, weights=weights)
+
+    return DataLoader(combined_dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
+
+
+def create_dataloaders( # create dataloades
+    batch_size: int,
+    block_size: int,
+    fabric,
+    train_data_dir: Path = Path("data/redpajama_sample"),
+    val_data_dir: Optional[Path] = None,
+    seed: int = 12345,
+) -> Tuple[DataLoader, DataLoader]:
+    # Increase by one because we need the next word as well
+    effective_block_size = block_size + 1
+    train_dataloader = create_dataloader(
+        batch_size=batch_size,
+        block_size=effective_block_size,
+        fabric=fabric,
+        data_dir=train_data_dir,
+        shuffle=True,
+        seed=seed,
+        split="train"
+    )
+    val_dataloader = (
+        create_dataloader(
+            batch_size=batch_size,
+            block_size=effective_block_size,
+            fabric=fabric,
+            data_dir=val_data_dir,
+            shuffle=False,
+            seed=seed,
+            split="validation"
+        )
+        if val_data_dir
+        else None
+    )
+    return train_dataloader, val_dataloader
+
+
+# learning rate decay scheduler (cosine with warmup)
+def get_lr(it):
+    # 1) linear warmup for warmup_iters steps
+    if it < warmup_iters:
+        return learning_rate * it / warmup_iters
+    # 2) if it > lr_decay_iters, return min learning rate
+    if it > lr_decay_iters:
+        return min_lr
+    # 3) in between, use cosine decay down to min learning rate
+    decay_ratio = (it - warmup_iters) / (lr_decay_iters - warmup_iters)
+    assert 0 <= decay_ratio <= 1
+    coeff = 0.5 * (1.0 + math.cos(math.pi * decay_ratio))  # coeff ranges 0..1
+    return min_lr + coeff * (learning_rate - min_lr)
+
+
+if __name__ == "__main__":
+    # Uncomment this line if you see an error: "Expected is_sm80 to be true, but got false"
+    # torch.backends.cuda.enable_flash_sdp(False)
+    torch.set_float32_matmul_precision("high")
+
+    from jsonargparse import CLI
+
+    CLI(setup)
