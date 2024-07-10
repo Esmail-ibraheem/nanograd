@@ -153,25 +153,16 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 
 ## Citations
 ```BibTex
-@misc{Gumaan2024-omniGPT,
-  title   = "omniGPT",
+@misc{Gumaan2024-nanograd,
+  title   = "nanograd",
   author  = "Gumaan, Esmail",
-  howpublished = {\url{https://github.com/Esmail-ibraheem/omniGPT}},
+  howpublished = {\url{https://github.com/Esmail-ibraheem/nanograd}},
   year    = "2024",
   month   = "",
   note    = "[Online; accessed 2024-05-24]",
 }
 ```
 
-```BibTex
-@article{Gumaan2024omniGPT,
-  title={omniGPT: Comprehensive Survey of Generative Pre-Trained Transformers with PEFT and CUDA Optimization},
-  author={Esmail Gumaan},
-  year={2024},
-  journal={حاليا مدري},
-}
-
-```
 
 ---
 
