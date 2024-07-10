@@ -11,6 +11,9 @@ nanograd is an ambitious project inspired by **micrograd from Andrej Karpathy** 
   <a href="#Fine-tuning">
     <img src="https://img.shields.io/badge/Feature-Fine_tuning-%23FF7F50" alt="Fine-tuning">
   </a>
+  <a href="#Stable diffusion">
+    <img src="https://img.shields.io/badge/Model-Stable%20diffusion-%23FFD700" alt="Stable diffusion">
+  </a>
   <a href="https://github.com/Esmail-ibraheem/omniGPT?tab=readme-ov-file#fine-tuning-peft">
     <img src="https://img.shields.io/badge/Feature-Quantization-%23FF7F50" alt="Quantization">
   </a>
