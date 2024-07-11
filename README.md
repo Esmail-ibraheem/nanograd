@@ -1,6 +1,7 @@
 # nanograd:
-![llama_3](https://github.com/Esmail-ibraheem/nanograd/assets/113830751/364af6bc-59c6-4c8a-8e0e-61d5673c2aa8)
-
+<p align="center">
+  <img src="https://github.com/Esmail-ibraheem/nanograd/blob/main/assets/llama_3.jpg" alt="Your Image Description" width="250" height=250">
+</p>
 nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy but not like micrograd, designed to build Generative Pre-trained Transformers (GPT) models, and stable diffusion from scratch in Python. It is optimized for performance with CUDA and utilizes state-of-the-art pre-training and fine-tuning techniques. This project covers everything from tokenization to model training, providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, nanograd sets a new standard in AI research and development.
 
 ## nano Features
