@@ -1,5 +1,5 @@
-# microNet:      
-micronet is an ambitious project inspired by **micrograd**  from Andrej Karpathy but not like micrograd, designed to build Generative Pre-trained Transformers (GPT) models, and stable diffusion from scratch in Python. It is optimized for performance with CUDA and utilizes state-of-the-art pre-training and fine-tuning techniques. This project covers everything from tokenization to model training, providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, micronet sets a new standard in AI research and development.
+# nanograd:      
+nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy but not like micrograd, designed to build Generative Pre-trained Transformers (GPT) models, and stable diffusion from scratch in Python. It is optimized for performance with CUDA and utilizes state-of-the-art pre-training and fine-tuning techniques. This project covers everything from tokenization to model training, providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, nanograd sets a new standard in AI research and development.
 
 <p align="center">
   <a href="#GPT">
@@ -153,10 +153,10 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 
 ## Citations
 ```BibTex
-@misc{Gumaan2024-micronet,
-  title   = "micronet",
+@misc{Gumaan2024-nanograd,
+  title   = "nanograd",
   author  = "Gumaan, Esmail",
-  howpublished = {\url{https://github.com/Esmail-ibraheem/micronet}},
+  howpublished = {\url{https://github.com/Esmail-ibraheem/nanograd}},
   year    = "2024",
   month   = "",
   note    = "[Online; accessed 2024-05-24]",
@@ -173,7 +173,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 - OpenAI for pioneering the GPT architecture
 
 > [!NOTE]
-> I developed the project 'micronet' to enhance my skills in developing, pre-training, and fine-tuning models with LitGPT and LitData. This project is based on the Transformers architecture, specifically utilizing the Generative Pre-trained Transformer (GPT) and LLaMA models. Notably, I worked on developing GPT and LLaMA models using both Python and CUDA, facilitating training on either GPU or CPU and building the tokenizers. This project integrates LitGPT and Transformers' GPT-2.
+> I developed the project 'nanograd' to enhance my skills in developing, pre-training, and fine-tuning models with LitGPT and LitData. This project is based on the Transformers architecture, specifically utilizing the Generative Pre-trained Transformer (GPT) and LLaMA models. Notably, I worked on developing GPT and LLaMA models using both Python and CUDA, facilitating training on either GPU or CPU and building the tokenizers. This project integrates LitGPT and Transformers' GPT-2.
 
 ---
 
