@@ -3,7 +3,7 @@
 </p>
 
 
-# What is nanograd:
+# nanograd:
 nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy but not like micrograd, designed to build Generative Pre-trained Transformers (GPT) models, and stable diffusion from scratch in Python. It is optimized for performance with CUDA and utilizes state-of-the-art pre-training and fine-tuning techniques. This project covers everything from tokenization to model training, providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, nanograd sets a new standard in AI research and development.
 
 ## nano Features
