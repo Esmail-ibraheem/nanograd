@@ -9,19 +9,9 @@ nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy
 |---|------------------------------|---|------------------------------|---|------------------------------|
 | ✔️ | Transformer                 | ✔️ | Neural network architecture | ✔️ | Data pipeline               |
 | ✔️ | Flash attention             | ✔️ | Reduce GPU memory (fp4/8/16/32) | ✔️ | From scratch implementations|
-| ✔️ | No abstractions             | ✔️ | FSDP                        | ✔️ | 1-1000+ GPUs/TPUs           |
-| ✔️ | Beginner friendly           | ✔️ | LoRA, QLoRA, Adapter         | ✔️ | 20+ LLMs                    |
+| ✔️ | Beginner friendly             | ✔️ | Beginner friendly                        | ✔️ | 1-1000+ GPUs/TPUs           |
+   
 
-
-## nanograd Features
-| ✔️ | LlAMa                       | ✔️ | GPT                          |
-|---|------------------------------|---|------------------------------|
-| ✔️ | Stable diffusion            | ✔️ | Transformer                  |
-| ✔️ | Neural network architecture | ✔️ | Data pipeline                |
-| ✔️ | Flash attention             | ✔️ | Reduce GPU memory (fp4/8/16/32) |
-| ✔️ | From scratch implementations| ✔️ | No abstractions              |
-| ✔️ | Beginner friendly           | ✔️ | 1-1000+ GPUs/TPUs            |
-          
 
 
 
