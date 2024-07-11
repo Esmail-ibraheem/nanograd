@@ -6,7 +6,7 @@ nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy
 | ✔️ | LlAMa                       | ✔️ | GPT                          | ✔️ | Stable diffusion            |
 |---|------------------------------|---|------------------------------|---|------------------------------|
 | ✔️ | Transformers                 | ✔️ | Neural network architectures | ✔️ | Data pipeline               |
-| ✔️ | Flash attention             | ✔️ | Reduce GPU memory (fp4/8/16/32) | ✔️ | From scratch implementations|
+| ✔️ | Flash attention             | ✔️ | BioGPT | ✔️ | From scratch implementations|
 | ✔️ | Beginner friendly             | ✔️ | No Abstraction                        | ✔️ | 1-1000+ GPUs/TPUs           |
    
 
