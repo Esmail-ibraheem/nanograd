@@ -12,31 +12,6 @@ nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy
           
 
 
-<p align="center">
-  <a href="#GPT">
-    <img src="https://img.shields.io/badge/Model-GPT%20model-%23FFD700" alt="GPT">
-  </a>
-  <a href="#Pretraining">
-    <img src="https://img.shields.io/badge/Feature-Pretraining-%23FF7F50" alt="Pretraining">
-  </a>
-  <a href="#Fine-tuning">
-    <img src="https://img.shields.io/badge/Feature-Fine_tuning-%23FF7F50" alt="Fine-tuning">
-  </a>
-  <a href="#Stable diffusion">
-    <img src="https://img.shields.io/badge/Model-Stable%20diffusion-%23FFD700" alt="Stable diffusion">
-  </a>
-  <a href="https://github.com/Esmail-ibraheem/omniGPT?tab=readme-ov-file#fine-tuning-peft">
-    <img src="https://img.shields.io/badge/Feature-Quantization-%23FF7F50" alt="Quantization">
-  </a>
-  <a href="#Cuda-GPT-Llama">
-    <img src="https://img.shields.io/badge/Cuda-GPT_Llama%20for%20GPUs-%23228B22" alt="Model Cuda">
-  </a>
-  <a href="#Llama">
-    <img src="https://img.shields.io/badge/Model-Llama%20model-%23FFD700" alt="Llama model">
-  </a>
-</p>
-
-
 
 
 
