@@ -11,8 +11,8 @@ nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy
 | ✔️ | Neural network architecture | ✔️ | Data pipeline                |
 | ✔️ | Flash attention             | ✔️ | Reduce GPU memory (fp4/8/16/32) |
 | ✔️ | From scratch implementations| ✔️ | No abstractions              |
-| ✔️ | FSDP                        | ✔️ | 1-1000+ GPUs/TPUs            |
-| ✔️ | Beginner friendly           
+| ✔️ | Beginner friendly           | ✔️ | 1-1000+ GPUs/TPUs            |
+          
 
 
 <p align="center">
