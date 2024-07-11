@@ -6,7 +6,6 @@ nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy
 20+ high-performance LLMs with recipes to pretrain, finetune, deploy at scale.
 
 | ✔️ | LlAMa                       | ✔️ | GPT                          |
-|---|------------------------------|---|------------------------------|
 | ✔️ | Stable diffusion            | ✔️ | Transformer                  |
 | ✔️ | Neural network architecture | ✔️ | Data pipeline                |
 | ✔️ | Flash attention             | ✔️ | Reduce GPU memory (fp4/8/16/32) |
