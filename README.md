@@ -15,7 +15,7 @@ nanograd is an ambitious project inspired by **micrograd**  from Andrej Karpathy
 
 
 
-**_Key Features_**
+**_Key Features highlight_**
 - **`Transformers from Scratch:`**
   Implement GPT and llama [models](#models-implementation) from the ground up using Pytorch, offering full transparency and flexibility.
 
