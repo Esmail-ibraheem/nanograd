@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/Esmail-ibraheem/nanograd/blob/main/assets/llama_3.jpg" alt="Your Image Description" width="1000" height=1000">
+  <img src="https://github.com/Esmail-ibraheem/nanograd/blob/main/assets/llama_3.jpg" alt="Your Image Description" width="500" height=1000">
 </p>
 
 
