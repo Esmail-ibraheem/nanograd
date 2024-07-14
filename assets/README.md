@@ -101,4 +101,3 @@ from nanograd.RL import QLearning, other_algorithms
 
 ---
 
-By following this documentation outline, you can ensure your team is on the same page and has a clear understanding of the project's goals, features, and development plan.
