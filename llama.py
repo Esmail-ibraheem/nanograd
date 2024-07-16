@@ -1,80 +1,62 @@
-import glob
 import math
-import sys
-import time
-from pathlib import Path
-from typing import Optional, Tuple, Union
-import math
-import lightning as L
+import warnings
+from typing import Optional, Tuple 
+# Cache # i am not sure about that (cache) i do not think that cache on the typing lib.
+ 
 import torch
-from lightning.fabric.strategies import FSDPStrategy, XLAStrategy
-from torch.utils.data import DataLoader
-from functools import partial
-# support running without installing as a package
-wd = Path(__file__).parent.parent.resolve()
-sys.path.append(str(wd))
-# from apex.optimizers import FusedAdam #torch optimizer has a cuda backend, which is faster actually
-from litgpt.model import GPT, Block, Config, CausalSelfAttention
-from .packed_dataset import CombinedDataset, PackedDataset
-from .speed_monitor import SpeedMonitorFabric as Monitor
-from .speed_monitor import estimate_flops, measure_flops
-from litgpt.utils import chunked_cross_entropy, get_default_supported_precision, num_parameters, step_csv_logger, lazy_load
-from pytorch_lightning.loggers import WandbLogger
-from litgpt import FusedCrossEntropyLoss
-import random
-import torch.nn as nn 
-
-model_name = "tiny_LLaMA_1b" 
-name = "tinyllama_1b"
-out_dir = Path("out") / name
-
-# Hyperparameters
-num_of_devices = 8
-global_batch_size = 512
-learning_rate = 4e-4
-micro_batch_size = 8
-max_step = 715256 * 2
-warmup_steps = 2000
-log_step_interval = 10
-eval_iters = 100
-save_step_interval = 5000
-eval_step_interval = 5000
+import torch.nn.functional as F 
+import torch.utils.checkpoint
+from torch import nn  
+ 
+from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS
+from transformers.utils import logging 
+from transformers.cache_utils import Cache
 
 
-weight_decay = 1e-1
-beta1 = 0.9
-beta2 = 0.95
-grad_clip = 1.0
-decay_lr = True
-min_lr = 4e-5
+from .config import LlamaConfig
 
-batch_size = global_batch_size // num_of_devices
-gradient_accumulation_steps = batch_size // micro_batch_size
-assert gradient_accumulation_steps > 0
-warmup_iters = warmup_steps * gradient_accumulation_steps
+logger = logging.get_logger(__name__)
 
+_CONFIG_FOR_DOC = "LlamaConfig"
 
+def _get_unpad_data(attention_mask):
+    seqlens_in_batch = attention_mask.sum(-1, dtype=torch.int32)
+    indices = torch.nonzero(seqlens_in_batch.flatten(), as_tuple=False).flatten()
+    max_seqlens_in_batch = seqlens_in_batch.max().item()
+    cu_seqlens = F.pad(torch.cumsum(seqlens_in_batch, dim=0, dtype=torch.int32), (1,0))
+    return (
+        indices,
+        cu_seqlens,
+        max_seqlens_in_batch
+    )
 
+class LlamaRMSNorm(nn.Module):
+    def __init__(self, hidden_size, eps=1e-6) -> None:
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(hidden_size))
+        self.variance_eps = eps 
+    
+    def forward(self, hidden_states):
+        input_dtype = hidden_states.dtype 
+        hidden_states = hidden_states.to(torch.int32)
+        variance = hidden_states.pow(2).mean(-1, keepdim=True)
+        hidden_states = hidden_states * torch.rsqrt(variance, self.variance_eps)
+        return self.weight * hidden_states.to(input_dtype)
 
-max_iters = max_step * gradient_accumulation_steps
-lr_decay_iters = max_iters
-log_iter_interval = log_step_interval * gradient_accumulation_steps
+class LlamaFixedRMSNorm(nn.Module):
+    def __init__(self, dim, eps=1e-6) -> None:
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(dim))
+        self.eps = eps 
+    
+    def _norm(self, x:torch.Tensor):
+        return x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
+    
+    def forward(self, x:torch.Tensor):
+        return self.weight * self._norm(x.float()).type_as(x)
 
-
-# Treat all dataset equally by their size. If you want to use a different weight for a dataset, add it to the list with the weight.
-train_data_config = [
-    ("train_slim", 0.693584),
-    ("train_star", 0.306416),
-]
-
-val_data_config = [
-    ("validation", 1.0),
-]
-
-hparams = {k: v for k, v in locals().items() if isinstance(v, (int, float, str)) and not k.startswith("_")}
-logger = step_csv_logger("out", name, flush_logs_every_n_steps=log_iter_interval)
-wandb_logger = WandbLogger()
-
+ALL_LAYERNORM_LAYERS.append(LlamaRMSNorm)
+ALL_LAYERNORM_LAYERS.append(LlamaFixedRMSNorm)
 
 class LlamaRotaryEmbeddings(nn.Module):
     def __init__(self, dim, max_position_embddings=2048, base=10000, device=None, scaling_factor=1.0) -> None:
@@ -153,323 +135,345 @@ def precompute_theta_pos_frequencies(head_dim: int, seq_len: int, device: str, t
     freqs_complex = torch.polar(torch.ones_like(freqs), freqs)
     return freqs_complex
 
+def apply_rotary_embeddings(x: torch.Tensor, freqs_complex: int, device:str):
+    x_complex = torch.view_as_complex(x.float().reshape(*x.shape[:-1], -1, 2))
+    freqs_complex = freqs_complex.unsqueeze(0).unsqueeze(2)
+    x_rotated = x_complex * freqs_complex
+    x_out = torch.view_as_real(x_rotated)
+    x_out = torch.reshape(*x.shape)
+    return x_out.type_as(x).to(device)
 
-def setup(
-    devices: int = 8,
-    train_data_dir: Path = Path("data/redpajama_sample"),
-    val_data_dir: Optional[Path] = None,
-    precision: Optional[str] = None,
-    tpu: bool = False,
-    resume: Union[bool, Path] = False,
-) -> None:
-    precision = precision or get_default_supported_precision(training=True, tpu=tpu)
-
-    if devices > 1:
-        if tpu:
-            # For multi-host TPU training, the device count for Fabric is limited to the count on a single host.
-            devices = "auto"
-            strategy = XLAStrategy(sync_module_states=False)
-        else:
-            strategy = FSDPStrategy(
-                auto_wrap_policy={Block},
-                activation_checkpointing_policy=None,
-                state_dict_type="full",
-                limit_all_gathers=True,
-                cpu_offload=False,
+def repeat_kv(x:torch.Tensor, n_rep: int):
+    batch_size, seq_len, n_kv_heads, head_dim = x.shape 
+    if n_rep == 1:
+        return x
+    return (
+        x[:, :, :, None, :]
+        .expand(batch_size, seq_len, n_kv_heads, n_rep, head_dim)
+        .reshape(batch_size, seq_len, n_kv_heads * n_rep, head_dim)
+    )
+class LlamaScalableGroupedQueryAttention(nn.Module):
+    def __init__(self, config: LlamaConfig, layer_idx: int) -> None:
+        super().__init__()
+        self.config = config
+        self.layer_idx = layer_idx
+        if layer_idx is None:
+            logger.warning_once(
+                f"Instantiating {self.__class__.__name__} without passing a `layer_idx` is not recommended and will "
+                "lead to errors during the forward call if caching is used. Please make sure to provide a `layer_idx` "
+                "when creating this class."
             )
-    else:
-        strategy = "auto"
+        self.attention_dropout = config.attention_dropout
+        self.hidden_size = config.hidden_size
+        self.num_heads = config.num_attention_heads
+        self.head_dim = self.hidden_size // self.num_heads
+        self.num_key_value_heads = config.num_key_value_heads
+        self.num_key_value_heads_groups = self.num_heads // self.num_key_value_heads
+        self.max_position_embeddings = config.max_position_embeddings
+        self.rope_theta = config.rope_theta
+        self.is_causal = True 
 
-    fabric = L.Fabric(devices=devices, strategy=strategy, precision=precision, loggers=[logger, wandb_logger])
-    fabric.print(hparams)
-    #fabric.launch(main, train_data_dir, val_data_dir, resume)
-    main(fabric, train_data_dir, val_data_dir, resume)
-
-
-def main(fabric, train_data_dir, val_data_dir, resume):
-    monitor = Monitor(fabric, window_size=2, time_unit="seconds", log_iter_interval=log_iter_interval)
-
-    if fabric.global_rank == 0:
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-    config = Config.from_name(model_name)
-
-    train_dataloader, val_dataloader = create_dataloaders(
-        batch_size=micro_batch_size,
-        block_size=config.block_size,
-        fabric=fabric,
-        train_data_dir=train_data_dir,
-        val_data_dir=val_data_dir,
-        seed=3407,
-    )
-    if val_dataloader is None:
-        train_dataloader = fabric.setup_dataloaders(train_dataloader)
-    else:
-        train_dataloader, val_dataloader = fabric.setup_dataloaders(train_dataloader, val_dataloader)
-
-    fabric.seed_everything(3407)  # same seed for every process to init model (FSDP)
-
-    fabric.print(f"Loading model with {config.__dict__}")
-    t0 = time.perf_counter()
-    with fabric.init_module(empty_init=False):
-        model = GPT(config)
-        model.apply(partial(model._init_weights ,n_layer=config.n_layer))
- 
-
-    fabric.print(f"Time to instantiate model: {time.perf_counter() - t0:.02f} seconds.")
-    fabric.print(f"Total parameters {num_parameters(model):,}")
-
-    model = fabric.setup(model)
-    optimizer = torch.optim.AdamW(
-        model.parameters(), lr=learning_rate, weight_decay=weight_decay, betas=(beta1, beta2), foreach=False
-    )
-    # optimizer = FusedAdam(model.parameters(), lr=learning_rate, weight_decay=weight_decay, betas=(beta1, beta2),adam_w_mode=True)
-    optimizer = fabric.setup_optimizers(optimizer)
-
-    state = {"model": model, "optimizer": optimizer, "hparams": hparams, "iter_num": 0, "step_count": 0}
-
-    if resume is True:
-        resume = sorted(out_dir.glob("*.pth"))[-1]
-    if resume :
-        fabric.print(f"Resuming training from {resume}")
-        fabric.load(resume, state)
-
-    train_time = time.perf_counter()
-    train(fabric, state, train_dataloader, val_dataloader, monitor, resume)
-    fabric.print(f"Training time: {(time.perf_counter()-train_time):.2f}s")
-    if fabric.device.type == "cuda":
-        fabric.print(f"Memory used: {torch.cuda.max_memory_allocated() / 1e9:.02f} GB")
-
-
-def train(fabric, state, train_dataloader, val_dataloader, monitor, resume): # train function
-    model = state["model"]
-    optimizer = state["optimizer"]
-
-    if val_dataloader is not None:
-        validate(fabric, model, val_dataloader)  # sanity check
-
-    with torch.device("meta"):
-        meta_model = GPT(model.config)
-        # "estimated" is not as precise as "measured". Estimated is optimistic but widely used in the wild.
-        # When comparing MFU or FLOP numbers with other projects that use estimated FLOPs,
-        # consider passing `SpeedMonitor(flops_per_batch=estimated_flops)` instead
-        estimated_flops = estimate_flops(meta_model) * micro_batch_size
-        fabric.print(f"Estimated TFLOPs: {estimated_flops * fabric.world_size / 1e12:.2f}")
-        x = torch.randint(0, 1, (micro_batch_size, model.config.block_size))
-        # measured_flos run in meta. Will trigger fusedRMSNorm error
-        #measured_flops = measure_flops(meta_model, x)
-        #fabric.print(f"Measured TFLOPs: {measured_flops * fabric.world_size / 1e12:.2f}")
-        del meta_model, x
-
-    total_lengths = 0
-    total_t0 = time.perf_counter()
-
-    # if fabric.device.type == "xla":
-    #     import torch_xla.core.xla_model as xm
-
-    #     xm.mark_step()
+        if (self.head_dim * self.num_heads) != self.hidden_size:
+            raise ValueError(
+                f"hidden_size must be divisible by num_heads (got `hidden_size`: {self.hidden_size}"
+                f" and `num_heads`: {self.num_heads})."
+            )
+        
+        self.query_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
+        self.key_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.value_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+        self.output_proj = nn.Linear(self.hidden_size, self.hidden_size, bias=config.attention_bias)
+        self._init_rope()
     
-    
-    initial_iter = state["iter_num"]
-    curr_iter = 0
-            
-    loss_func = FusedCrossEntropyLoss()
-    for  train_data in train_dataloader:
-        # resume loader state. This is not elegant but it works. Should rewrite it in the future.
-        if resume:
-            if curr_iter < initial_iter:
-                curr_iter += 1
-                continue
+    def _init_rope(self):
+        if self.config.rope_scaling is None:
+            self.emb_rotary = LlamaRotaryEmbeddings(
+                self.head_dim,
+                max_position_embeddings=self.max_position_embeddings,
+                base=self.rope_theta
+            )
+        else :
+            scaling_type = self.config.rope_scaling["type"]
+            scaling_factor = self.config.rope_scaling["factor"]
+            if scaling_type == "linear":
+                self.emb_rotary = LlamaLinearScalingRotaryEmbeddings(
+                    self.head_dim,
+                    max_position_embeddings=self.max_position_embeddings,
+                    scaling_factor=scaling_factor,
+                    base=self.rope_theta
+                )
+            elif scaling_type == "dynamic":
+                self.emb_rotary = LlamaDynamicNTKScalingRotaryEmbeddings(
+                    self.head_dim,
+                    max_position_embeddings=self.max_position_embeddings,
+                    scaling_factor=scaling_factor,
+                    base=self.rope_theta
+                )
             else:
-                resume = False
-                curr_iter = -1
-                fabric.barrier()
-                fabric.print("resume finished, taken {} seconds".format(time.perf_counter() - total_t0))
-        if state["iter_num"] >= max_iters:
-            break
+                raise ValueError(f"Unkown scaling type of RoPE {scaling_type}")
+    
+    def forward(
+        self, 
+        hidden_states: torch.Tensor = None,
+        attention_mask: Optional[torch.Tensor] = None ,
+        position_ids: Optional[torch.LongTensor] = None,
+        past_key_value: Optional[Cache] = None, 
+        attention_output: bool = False,
+        position_cache: Optional[torch.LongTensor] = None 
+    )->Tuple[torch.Tensor, Optional[torch.Tensor], Tuple[Optional[torch.Tensor]]]:
+        bsz, q_len, _ = hidden_states.size()
+
+        if self.config.pretraining_tp > 1:
+            key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
+            query_slices = self.query_proj.weight.split((self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0)
+
+            key_slices = self.key_proj.weight.split(key_value_slicing, dim=0)
+            value_slices = self.value_proj.weight.split(key_value_slicing, dim=0)
+
+            query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
+            query_states = torch.cat(query_states, dim=-1)
+
+            key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
+            key_states = torch.cat(key_states, dim=-1)
+            
+            value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
+            value_states = torch.cat(value_states, dim=-1)
         
-        # determine and set the learning rate for this iteration
-        lr = get_lr(state["iter_num"]) if decay_lr else learning_rate
-        for param_group in optimizer.param_groups:
-            param_group["lr"] = lr
+        else:
+            query_states = self.query_proj(hidden_states)
+            key_states = self.key_proj(hidden_states)
+            value_states = self.value_proj(hidden_states)
+        
+        query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1,2)
+        key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1,2)
+        value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1,2)
 
-        iter_t0 = time.perf_counter()
+        past_key_value = getattr(self, "past_key_value", past_key_value)
+        cos, sin = self.emb_rotary(value_states, position_ids)
+        query_states, key_states = apply_rotary_embeddings(query_states, key_states, cos, sin)
 
-        input_ids = train_data[:, 0 : model.config.block_size].contiguous()
-        targets = train_data[:, 1 : model.config.block_size + 1].contiguous()
-        is_accumulating = (state["iter_num"] + 1) % gradient_accumulation_steps != 0
-        with fabric.no_backward_sync(model, enabled=is_accumulating):
-            logits = model(input_ids)
-            loss = loss_func(logits, targets)
-            # loss = chunked_cross_entropy(logits, targets, chunk_size=0)
-            fabric.backward(loss / gradient_accumulation_steps)
+        key_states = repeat_kv(key_states, self.num_key_value_heads_groups)
+        value_states = repeat_kv(value_states, self.num_key_value_heads_groups)
 
-        if not is_accumulating:
-            fabric.clip_gradients(model, optimizer, max_norm=grad_clip)
-            optimizer.step()
-            optimizer.zero_grad()
-            state["step_count"] += 1
-        # elif fabric.device.type == "xla":
-        #     xm.mark_step()
-        state["iter_num"] += 1
-        # input_id: B L 
-        total_lengths += input_ids.size(1)
-        t1 = time.perf_counter()
-        fabric.print(
-                f"iter {state['iter_num']} step {state['step_count']}: loss {loss.item():.4f}, iter time:"
-                f" {(t1 - iter_t0) * 1000:.2f}ms{' (optimizer.step)' if not is_accumulating else ''}"
-                f" remaining time: {(t1 - total_t0) / (state['iter_num'] - initial_iter) * (max_iters - state['iter_num']) / 3600:.2f} hours. " 
-                # print days as well
-                f" or {(t1 - total_t0) / (state['iter_num'] - initial_iter) * (max_iters - state['iter_num']) / 3600 / 24:.2f} days. "
+        if past_key_value is not None:
+            cache_kwargs = {"sin": sin, "cos": cos, "position_cache": position_cache}
+            key_states, value_states = past_key_value.update(key_states, value_states, self.layer_idx, cache_kwargs)
+        
+        attention_weights = torch.matmul(query_states, key_states.transpose(3,2)) / math.sqrt(self.head_dim)
+
+        if attention_mask is not None:
+            causal_mask = attention_mask[:, :, :, :key_states.shape[-2]]
+            attention_weights = attention_weights + causal_mask
+        
+        attention_weights = nn.functional.softmax(attention_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+        attention_weights = nn.functional.dropout(attention_weights, p=self.config.attention_dropout, training=self.training)
+        output_attention = torch.matmul(attention_weights, value_states)
+
+        if output_attention.size() != (bsz, self.num_heads, q_len, self.head_dim):
+            raise ValueError(
+                f"`attn_output` should be of size {(bsz, self.num_heads, q_len, self.head_dim)}, but is"
+                f" {attention_output.size()}"
             )
- 
-        monitor.on_train_batch_end(
-            state["iter_num"] * micro_batch_size,
-            t1 - total_t0,
-            # this assumes that device FLOPs are the same and that all devices have the same batch size
-            fabric.world_size,
-            state["step_count"],
-            flops_per_batch=estimated_flops,
-            lengths=total_lengths,
-            train_loss = loss.item()
-        )
+        output_attention = output_attention.transpose(1,2).contiguous()
+        output_attention = output_attention.reshape(bsz, q_len, self.hidden_size)
 
-            
-            
-        # validation data_loader
-        if val_dataloader is not None and not is_accumulating and state["step_count"] % eval_step_interval == 0:
-            
-            t0 = time.perf_counter()
-            val_loss = validate(fabric, model, val_dataloader)
-            t1 = time.perf_counter() - t0
-            monitor.eval_end(t1)
-            fabric.print(f"step {state['iter_num']}: val loss {val_loss:.4f}, val time: {t1 * 1000:.2f}ms")
-            fabric.log_dict({"metric/val_loss": val_loss.item(), "total_tokens": model.config.block_size * (state["iter_num"] + 1) * micro_batch_size * fabric.world_size}, state["step_count"])
-            fabric.log_dict({"metric/val_ppl": math.exp(val_loss.item()), "total_tokens": model.config.block_size * (state["iter_num"] + 1) * micro_batch_size * fabric.world_size}, state["step_count"])
-            fabric.barrier()
-        if not is_accumulating and state["step_count"] % save_step_interval == 0:
-            checkpoint_path = out_dir / f"iter-{state['iter_num']:06d}-ckpt.pth"
-            fabric.print(f"Saving checkpoint to {str(checkpoint_path)!r}")
-            fabric.save(checkpoint_path, state)
+        if self.config.pretraining_tp > 2:
+            output_attention = output_attention.split(self.hidden_size // self.config.pretraining_tp, dim=2)
+            output_slices = self.output_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
+            output_attention = sum([F.linear(output_attention[i], output_slices[i]) for i in range(self.config.pretraining_tp)])
+        else:
+            output_attention = self.output_proj(output_attention)
 
+        if not attention_output :
+            attention_weights = None 
+
+        return attention_weights, output_attention, past_key_value
+
+class LlamaFixedGroupedQueryAttention(nn.Module):
+    def __init__(self, config: LlamaConfig):
+        super().__init__()
+        self.n_kv_heads = config.n_heads if config.n_kv_heads is None else config.n_kv_heads
+        self.n_heads_q = config.n_heads
+        self.n_rep = self.n_heads_q // self.n_kv_heads
+        self.head_dim = config.dim // config.n_heads
+
+        self.wq = nn.Linear(config.dim, config.n_heads * self.head_dim, bias=False)
+        self.wk = nn.Linear(config.dim, self.n_kv_heads * self.head_dim, bias=False)
+        self.wv = nn.Linear(config.dim, self.n_kv_heads * self.head_dim, bias=False)
+        self.wo = nn.Linear(config.n_heads * self.head_dim, config.dim, bias=False)
+
+        self.cache_k = torch.zeros((config.max_batch_size, config.max_seq_len, self.n_kv_heads, self.head_dim))
+        self.cache_v = torch.zeros((config.max_batch_size, config.max_seq_len, self.n_kv_heads, self.head_dim))
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        start_pos: int,
+        freqs_complex: torch.Tensor
+    ):
+        batch_size, seq_len, _ = x.shape  # (B, 1, Dim)
+
+        xq = self.wq(x)
+        xk = self.wk(x)
+        xv = self.wv(x)
+
+        xq = xq.view(batch_size, seq_len, self.n_heads_q, self.head_dim)
+        xk = xk.view(batch_size, seq_len, self.n_kv_heads, self.head_dim)
+        xv = xv.view(batch_size, seq_len, self.n_kv_heads, self.head_dim)
+
+        xq = apply_rotary_embeddings(xq, freqs_complex, device=x.device)
+        xk = apply_rotary_embeddings(xk, freqs_complex, device=x.device)
+
+        self.cache_k[:batch_size, start_pos : start_pos + seq_len] = xk
+        self.cache_v[:batch_size, start_pos : start_pos + seq_len] = xv
+
+        keys = self.cache_k[:batch_size, : start_pos + seq_len]
+        values = self.cache_v[:batch_size, : start_pos + seq_len]
+
+        keys = repeat_kv(keys, self.n_rep)
+        values = repeat_kv(values, self.n_rep)
+
+        xq = xq.transpose(1, 2)
+        keys = keys.transpose(1, 2)
+        values = values.transpose(1, 2)
+
+        scores = torch.matmul(xq, keys.transpose(2, 3)) / math.sqrt(self.head_dim)
+        scores = F.softmax(scores.float(), dim=-1).type_as(xq)
+        output = torch.matmul(scores, values)
+        output = (output.transpose(1, 2).contiguous().view(batch_size, seq_len, -1))
+        return self.wo(output) # (B, 1, Dim) -> (B, 1, Dim)
+
+class MultiHeadAttention(nn.Module):
+    def MultiHeadAttention(self):
+        d_model, batch, heads, key, value = 512, 32, 8, (512 // 8), (512 // 8)
         
-@torch.no_grad() # validation function. 
-def validate(fabric: L.Fabric, model: torch.nn.Module, val_dataloader: DataLoader) -> torch.Tensor:
-    fabric.print("Validating ...")
-    model.eval()
+        m = 5 # suppose we have already cached "m" tokens 
+        previous_key = torch.rand(batch, heads, m, key)
+        previous_value = torch.rand(batch, heads, m, value)
 
-    losses = torch.zeros(eval_iters, device=fabric.device)
-    for k, val_data in enumerate(val_dataloader):
-        if k >= eval_iters:
-            break
-        input_ids = val_data[:, 0 : model.config.block_size].contiguous()
-        targets = val_data[:, 1 : model.config.block_size + 1].contiguous()
-        logits = model(input_ids)
-        loss = chunked_cross_entropy(logits, targets, chunk_size=0)
+        X = torch.rand(batch, d_model) # query
+        M = torch.rand(batch, d_model) # key and value 
 
-        # loss_func = FusedCrossEntropyLoss()
-        # loss = loss_func(logits, targets)
-        losses[k] = loss.item()
+        P_q = torch.rand(heads, d_model, key)
+        P_k = torch.rand(heads, d_model, key)
+        P_v = torch.rand(heads, d_model, value)
+        P_o = torch.rand(heads, d_model, value)
+
+        q = torch.einsum("bd,hdk->bhk", X, P_q)
+        new_k = torch.concat([previous_key, torch.einsum("bd,hdk->bhk", M, P_k).unsqueeze(2)], axis=2)
+        new_v = torch.concat([previous_value, torch.einsum("bd,hdk->bhk", M, P_v).unsqueeze(2)], axis=2)
+
+        logits = torch.einsum("bhk,bhmk->bhm", q, new_k)
+        weights = torch.softmax(logits, dim=-1)
+        output = torch.einsum("bhm,bhmv->bhv", weights, new_v)
+        y = torch.einsum("bhv,hdv->bd", output, P_o)
+
+        return y, new_k, new_v
+
+
+class MultiQueryAttention:
+    def MultiQueryAttention(self):
+        d_model, batch, heads, key, value = 512, 32, 8, (512 // 8), (512 // 8)
         
-    out = losses.mean()
+        m = 5 # suppose we have already cached "m" tokens 
+        previous_key = torch.rand(batch, m, key)
+        previous_value = torch.rand(batch,  m, value)
 
-    model.train()
-    return out
+        X = torch.rand(batch, d_model) # query
+        M = torch.rand(batch, d_model) # key and value 
 
+        P_q = torch.rand(heads, d_model, key)
+        P_k = torch.rand(d_model, key)
+        P_v = torch.rand(d_model, value)
+        P_o = torch.rand(heads, d_model, value)
 
-def create_dataloader( # create dataloader 
-    batch_size: int, block_size: int, data_dir: Path, fabric, shuffle: bool = True, seed: int = 12345, split="train"
-) -> DataLoader:
-    datasets = []
-    data_config = train_data_config if split == "train" else val_data_config
-    for prefix, _ in data_config:
-        filenames = sorted(glob.glob(str(data_dir / f"{prefix}*")))
-        random.seed(seed)
-        random.shuffle(filenames)
+        q = torch.einsum("bd,hdk->bhk", X, P_q)
+        k = torch.concat([previous_key, torch.einsum("bd,dk->bk", M, P_k).unsqueeze(1)], axis=1)
+        v = torch.concat([previous_value, torch.einsum("bd,dv->bv", M, P_v).unsqueeze(1)], axis=1)
 
-        dataset = PackedDataset(
-            filenames,
-            # n_chunks control the buffer size. 
-            # Note that the buffer size also impacts the random shuffle
-            # (PackedDataset is an IterableDataset. So the shuffle is done by prefetch a buffer and shuffle the buffer)
-            n_chunks=8,
-            block_size=block_size,
-            shuffle=shuffle,
-            seed=seed+fabric.global_rank,
-            num_processes=fabric.world_size,
-            process_rank=fabric.global_rank,
-        )
-        datasets.append(dataset)
+        logits = torch.einsum("bhk,bmk->bhm", q, k)
+        weights = torch.softmax(logits, dim=-1)
+        output = torch.einsum("bhm,bhmv->bhv", weights, v)
+        y = torch.einsum("bhv,hdv->bd", output, P_o)
 
-    if not datasets:
-        raise RuntimeError(
-            f"No data found at {data_dir}. Make sure you ran prepare_redpajama.py to create the dataset."
-        )
+        return y, k, v
 
-    weights = [weight for _, weight in data_config]
-    sum_weights = sum(weights)
-    weights = [el / sum_weights for el in weights]
+LLAMA_ATTENTIONS_CLASSES = {
+    "GQA": LlamaScalableGroupedQueryAttention,
+    "MHA": MultiHeadAttention,
+    "MQA": MultiQueryAttention,
+}
 
-    combined_dataset = CombinedDataset(datasets=datasets, seed=seed, weights=weights)
+class LlamaMLP(nn.Module):
+    def __init__(self, config: LlamaConfig) -> None:
+        super().__init__()
+        hidden_dim = 4 * config.dim
+        hidden_dim = int(2 * hidden_dim / 3)
+        if config.ffn_dim_multiplier is not None:
+            hidden_dim = int(hidden_dim * config.ffn_dim_multiplier)
+        hidden_dim = config.multiple_of * ((hidden_dim * config.multiple_of - 1) // config.multiple_of)
 
-    return DataLoader(combined_dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
+        self.weight_1 = nn.Linear(config.dim, hidden_dim, bias=False)
+        self.weight_2 = nn.Linear(hidden_dim, config.dim, bias=False)
+        self.weight_3 = nn.Linear(config.dim, hidden_dim, bias=False)
+    
+    def forward(self, x:torch.Tensor):
+        swish = F.silu(self.weight_1(x))
+        x_V = self.weight_3(x)
+        x = swish * x_V 
+        x = self.weight_2(x)
+        return x
 
+class LlamaEncoderBlock(nn.Module):
+    def __init__(self, config: LlamaConfig) -> None:
+        super().__init__()
+        self.n_heads = config.n_heads
+        self.dim = config.dim
+        self.head_dim = config.dim // config.n_heads
 
-def create_dataloaders( # create dataloades
-    batch_size: int,
-    block_size: int,
-    fabric,
-    train_data_dir: Path = Path("data/redpajama_sample"),
-    val_data_dir: Optional[Path] = None,
-    seed: int = 12345,
-) -> Tuple[DataLoader, DataLoader]:
-    # Increase by one because we need the next word as well
-    effective_block_size = block_size + 1
-    train_dataloader = create_dataloader(
-        batch_size=batch_size,
-        block_size=effective_block_size,
-        fabric=fabric,
-        data_dir=train_data_dir,
-        shuffle=True,
-        seed=seed,
-        split="train"
-    )
-    val_dataloader = (
-        create_dataloader(
-            batch_size=batch_size,
-            block_size=effective_block_size,
-            fabric=fabric,
-            data_dir=val_data_dir,
-            shuffle=False,
-            seed=seed,
-            split="validation"
-        )
-        if val_data_dir
-        else None
-    )
-    return train_dataloader, val_dataloader
+        self.attention = LlamaFixedGroupedQueryAttention(config)
+        # self.self_attn = LLAMA_ATTENTIONS_CLASSES[config._attn_implementation](config=config, layer_idx=self.layer_idx)
+        self.MLP = LlamaMLP(config)
 
+        self.attention_norm = LlamaFixedRMSNorm(config.dim, eps=config.norm_eps)
+        self.ff_norm = LlamaFixedRMSNorm(config.dim, eps=config.norm_eps)
+    
+    def forward(self, x:torch.Tensor, start_pos: int, freqs_complex: torch.Tensor):
+        h = x + self.attention.forward(self.attention_norm(x), start_pos, freqs_complex)
+        out = h + self.MLP.forward(self.ff_norm(h))
+        return out 
 
-# learning rate decay scheduler (cosine with warmup)
-def get_lr(it):
-    # 1) linear warmup for warmup_iters steps
-    if it < warmup_iters:
-        return learning_rate * it / warmup_iters
-    # 2) if it > lr_decay_iters, return min learning rate
-    if it > lr_decay_iters:
-        return min_lr
-    # 3) in between, use cosine decay down to min learning rate
-    decay_ratio = (it - warmup_iters) / (lr_decay_iters - warmup_iters)
-    assert 0 <= decay_ratio <= 1
-    coeff = 0.5 * (1.0 + math.cos(math.pi * decay_ratio))  # coeff ranges 0..1
-    return min_lr + coeff * (learning_rate - min_lr)
+class Transformer(nn.Module):
 
+    def __init__(self, config: LlamaConfig):
+        super().__init__()
 
-if __name__ == "__main__":
-    # Uncomment this line if you see an error: "Expected is_sm80 to be true, but got false"
-    # torch.backends.cuda.enable_flash_sdp(False)
-    torch.set_float32_matmul_precision("high")
+        assert config.vocab_size != -1, "Vocab size must be set"
 
-    from jsonargparse import CLI
+        self.config = config
+        self.vocab_size = config.vocab_size
+        self.n_layers = config.n_layers
+        self.tok_embeddings = nn.Embedding(self.vocab_size, config.dim)
 
-    CLI(setup)
+        self.layers = nn.ModuleList()
+        for layer_id in range(config.n_layers):
+            self.layers.append(LlamaEncoderBlock(config))
+
+        self.norm = LlamaFixedRMSNorm(config.dim, eps=config.norm_eps)
+        self.output = nn.Linear(config.dim, self.vocab_size, bias=False)
+
+        self.freqs_complex = precompute_theta_pos_frequencies(self.config.dim // self.config.n_heads, self.config.max_seq_len * 2, device=self.config.device)
+
+    def forward(self, tokens: torch.Tensor, start_pos: int):
+        batch_size, seq_len = tokens.shape
+        assert seq_len == 1, "Only one token at a time can be processed"
+
+        h = self.tok_embeddings(tokens)
+
+        freqs_complex = self.freqs_complex[start_pos:start_pos + seq_len]
+        
+        for layer in self.layers:
+            h = layer(h, start_pos, freqs_complex)
+        h = self.norm(h)
+        output = self.output(h).float()
+        return output
