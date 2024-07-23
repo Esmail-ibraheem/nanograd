@@ -1,0 +1,115 @@
+Building a neural net engine inspired by micrograd and tinygrad built upon Pytorch like API, Featrure will be 
+as follows:
+1- GPT model with checkpoints.
+2- Llama model with checkpoints.
+3- stable diffusion. 
+4- Reinforcement learning techniques.
+
+Team: me, i need data engineer, low level programmer.
+
+Adding also the features of cleaning data, building like litdata from lightning ai, something like pytorch 
+what do to the data from cleaning to pipeline operations (on the data engineer) . 
+creating website for it "nanograd: your ultimate neural net engine: LLMs, diffusion models"
+GPT architecture from litgpt and biogpt from huggingface transformers. 
+llama architecture from litllama and Xllama.
+the checkpoints already/going to download. like microsoft/phi2 for the gpt, and the llama-7B checkpoints.
+stable diffusion as it is from Umar Jamil and my DDPM repo.
+and implemented backpropagation and gradient descent from scratch, as functions and classes and matmul either using pytpytopytorch or cuda.
+from nanograd.optimizers import Adam 
+from nanograd.optimizers import Sophia-G
+from nanograd.norm import batch_norm 
+from nanograd.norm import layer_norm
+---
+nanograd.llama(prompt="", dataset="")
+nanograd.CNN(input_neurons=, output_neurons=)
+nanograd.RNN()
+nanograd.gpt()
+nanograd.sd() # stable diffusion 
+nanograd.backprop()
+nanograd.transformer()
+nanograd.translator()
+from nanograd.data import pipeline
+from nanograd.cuda import llamacuda
+from nanograd.data import checkpoints
+from nanograd.RL import Q*
+ظ‰طnanograd.gradio
+or something else from web UIs lilke gradio or streamlit 
+maybe adding some computer vision programms either real time or simulator
+building the nanograd computer called "nano computer" by using Raspberry pi and install ubuntu os on it, 
+then testing the nanograd Library (API) on it (nanograd on nano computer)= my logo command.
+----------------------------------------------------------
+
+
+
+
+how it is going to work:
+from nanograd.nn import modules 
+	modules.RNN
+	modules.CNN
+	modules.transformer()
+
+from nanograd.nn import optimizers 
+	optimizers.Adam()
+	opetimizers.AdamW()
+
+from nanograd.models import llama
+	llama.generate()
+
+from nanograd.models import stable_diffusion
+as sd 
+sd.generate()
+
+f
+
+from nanograd.data import pipeline
+from nanograd.data import checkpoints
+
+from nanograd.RL import Q* 
+from nanograd.RL import g 
+
+--------------------------------------------------------------
+
+---------------------------------------------------
+
+first building the team: the AI stuff like the nn, RL, models = this is on me (**Esmail Gumaan**).
+the data stuff like pipeline, checkpoints etc... = this is on the amazing data engineer (**Ibraheem Sultan**) i hpe o
+
+for the low level programming such as cuda, c++ optimization techniques or ecosystem building like os = this is on the amazing programmer (**Ahmed AL-Kateeb**) 
+
+for the website prfile of the project on the Artist (**Ibraheem Al-Hitari**)
+
+# Some ideas before starting building the project: 
+	first understanding the princeples of the building a library to add it the python libraries.
+	second explain the different ideas for each other. to get big picture of what we are going to build.
+
+------------------------------------------------------
+
+from nanograd.activation_functions import ReLU
+from nanograd.activation_functions import sigmoid
+
+
+implement matrix multiplication (from nanograd.modules import matmul)
+
+from nanograd.nn import modules 
+module.CNN()
+
+from nanograd.nn import Optimizers
+Optimizers.Adam()
+
+
+from nanograd.model import Llama
+Llama.generate()
+
+from nanograd.model import sd
+sd.generate()
+
+from nanograd.models import GPT
+GPT.generate()
+
+in the cmd write the following: nanograd install ollama, nanograd generate_dataset, nanograd download --checkpoints microsoft/phi-2 
+Path[1]: nanograd download --checkpoints llama >> this is for the llama model download.sh 
+
+from nanograd.trainers import trainer 
+from nanograd.analysis import sentiment_analysis  (done)
+from nanograd.RL import ssdf
+
