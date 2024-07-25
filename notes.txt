@@ -39,6 +39,21 @@ building the nanograd computer called "nano computer" by using Raspberry pi and 
 then testing the nanograd Library (API) on it (nanograd on nano computer)= my logo command.
 ----------------------------------------------------------
 
+################################################################################################################
+#                                                                                                              #
+#	testing units:                                                                                             #    
+#	test the pretrain using nanograd command line .                                                            #               
+#	test the installation of the library using "pip install -e ."                                              #
+#                                                                                                               #          
+#	rewrite the generate_dataset, byte-pair encoding, stable stable_diffusion, Reinforcement learning algorithms.  #
+#                                                                                                               #
+################################################################################################################
+
+
+things to add to the nanograd library in the future 
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+cuda and pretraining Reinforcement learning$                                          $
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
 
 
 
