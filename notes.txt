@@ -32,22 +32,22 @@ from nanograd.data import pipeline
 from nanograd.cuda import llamacuda
 from nanograd.data import checkpoints
 from nanograd.RL import Q*
-ظ‰طnanograd.gradio
+nanograd.gradio
 or something else from web UIs lilke gradio or streamlit 
 maybe adding some computer vision programms either real time or simulator
 building the nanograd computer called "nano computer" by using Raspberry pi and install ubuntu os on it, 
 then testing the nanograd Library (API) on it (nanograd on nano computer)= my logo command.
 ----------------------------------------------------------
 
-################################################################################################################
-#                                                                                                              #
-#	testing units:                                                                                             #    
-#	test the pretrain using nanograd command line .                                                            #               
-#	test the installation of the library using "pip install -e ."                                              #
-#                                                                                                               #          
-#	rewrite the generate_dataset, byte-pair encoding, stable stable_diffusion, Reinforcement learning algorithms.  #
-#                                                                                                               #
-################################################################################################################
+#########################################################################################################################
+#                                                                                                              		#
+#	testing units:                                                                                         		#    
+#	test the pretrain using nanograd command line .                                                        		#               
+#	test the installation of the library using "pip install -e ."                                          		#
+#                                                                                                               	#          
+#	rewrite the generate_dataset, byte-pair encoding, stable stable_diffusion, Reinforcement learning algorithms.  	#
+#                                                                                                               	#
+#########################################################################################################################
 
 
 things to add to the nanograd library in the future 
