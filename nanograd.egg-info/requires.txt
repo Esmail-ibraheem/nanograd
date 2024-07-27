@@ -1,0 +1,6 @@
+torch
+argparse
+tensorboard
+wget
+transformers
+litgpt

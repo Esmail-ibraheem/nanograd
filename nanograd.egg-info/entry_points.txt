@@ -1,0 +1,2 @@
+[console_scripts]
+nanograd = nanograd.nanograd_CLI:main
