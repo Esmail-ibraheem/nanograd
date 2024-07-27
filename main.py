@@ -1,7 +1,3 @@
-import torch 
-import torch.nn as nn 
-from torch.nn import functional as F 
-
 from nanograd.models.llama import inference_llama 
 from nanograd.models.GPT import inference_gpt
 from nanograd.models import ollama
@@ -22,11 +18,6 @@ inference_gpt.use_model()
 # tokenizer.tokenize()
 
 
-# if __name__ == "__main__":
-#     inference.LLaMA(llama.Transformer, SentencePieceProcessor, config.LlamaConfig)
-
-
 # ollama.run() # test the model. 
-# chat.chat_with_models()
 # chat.chat_models()
-###################################################
+
