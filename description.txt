@@ -128,3 +128,8 @@ from nanograd.trainers import trainer
 from nanograd.analysis import sentiment_analysis  (done)
 from nanograd.RL import ssdf
 
+
+##########################################333
+
+
+Analysis lab: dataset generator from the Karpathy's course, diffusion models from this course https://www.youtube.com/watch?v=S_il77Ttrmg&t=948s&pp=ygUdZGlmZnVzaW9uIG1vZGVscyBmcm9tIHNjcmF0Y2g%3D
