@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     install_requires=[
-        'torch',
+        'torch', 
         'argparse',
         'tensorboard',
         'wget',
@@ -14,7 +14,6 @@ setup(
         'tiktoken',
         'sentencepiece',
         'tqdm',
-        'json',
         'regex',
     ],
     entry_points={
