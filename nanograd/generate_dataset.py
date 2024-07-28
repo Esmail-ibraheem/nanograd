@@ -1,17 +1,3 @@
-"""
-you give this script some words (one per line) and it will generate more things like it.
-uses super state of the art Transformer AI tech
-this code is intended to be super hackable. tune it to your needs.
-
-Changes from minGPT:
-- I removed the from_pretrained function where we init with GPT2 weights
-- I removed dropout layers because the models we train here are small,
-  it's not necessary to understand at this stage and at this scale.
-- I removed weight decay and all of the complexity around what parameters are
-  and are not weight decayed. I don't believe this should make a massive
-  difference at the scale that we operate on here.
-"""
-
 import os
 import sys
 import time
@@ -25,64 +11,41 @@ import torch.nn as nn
 from torch.nn import functional as F
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import DataLoader
-# from torch.utils.tensorboard import SummaryWriter
 
-# from nanograd.models.GPT import GPT
-# from nanograd.models.GPT import tokenizer
-
-# -----------------------------------------------------------------------------
+from nanograd.models.GPT import GPT
+from nanograd.models.GPT import tokenizer
 
 @dataclass
 class ModelConfig:
-    block_size: int = None # length of the input sequences of integers
-    vocab_size: int = None # the input integers are in range [0 .. vocab_size -1]
-    # parameters below control the sizes of each model slightly differently
+    block_size: int = None 
+    vocab_size: int = None 
     n_layer: int = 4
     n_embd: int = 64
     n_embd2: int = 64
     n_head: int = 4
 
-# -----------------------------------------------------------------------------
-# Transformer Language Model (*exactly* as used in GPT-2)
-
 class NewGELU(nn.Module):
-    """
-    Implementation of the GELU activation function currently in Google BERT repo (identical to OpenAI GPT).
-    Reference: Gaussian Error Linear Units (GELU) paper: https://arxiv.org/abs/1606.08415
-    """
     def forward(self, x):
         return 0.5 * x * (1.0 + torch.tanh(math.sqrt(2.0 / math.pi) * (x + 0.044715 * torch.pow(x, 3.0))))
 
 class CausalSelfAttention(nn.Module):
-    """
-    A vanilla multi-head masked self-attention layer with a projection at the end.
-    It is possible to use torch.nn.MultiheadAttention here but I am including an
-    explicit implementation here to show that there is nothing too scary here.
-    """
-
     def __init__(self, config):
         super().__init__()
         assert config.n_embd % config.n_head == 0
-        # key, query, value projections for all heads, but in a batch
         self.c_attn = nn.Linear(config.n_embd, 3 * config.n_embd)
-        # output projection
         self.c_proj = nn.Linear(config.n_embd, config.n_embd)
-        # causal mask to ensure that attention is only applied to the left in the input sequence
         self.register_buffer("bias", torch.tril(torch.ones(config.block_size, config.block_size))
                                      .view(1, 1, config.block_size, config.block_size))
         self.n_head = config.n_head
         self.n_embd = config.n_embd
 
     def forward(self, x):
-        B, T, C = x.size() # batch size, sequence length, embedding dimensionality (n_embd)
-
-        # calculate query, key, values for all heads in batch and move head forward to be the batch dim
+        B, T, C = x.size() 
         q, k ,v  = self.c_attn(x).split(self.n_embd, dim=2)
         k = k.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
         q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
         v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
 
-        # causal self-attention; Self-attend: (B, nh, T, hs) x (B, nh, hs, T) -> (B, nh, T, T)
         att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
         att = att.masked_fill(self.bias[:,:,:T,:T] == 0, float('-inf'))
         att = F.softmax(att, dim=-1)
@@ -94,8 +57,6 @@ class CausalSelfAttention(nn.Module):
         return y
 
 class Block(nn.Module):
-    """ an unassuming Transformer block """
-
     def __init__(self, config):
         super().__init__()
         self.ln_1 = nn.LayerNorm(config.n_embd)
@@ -115,8 +76,6 @@ class Block(nn.Module):
         return x
 
 class Transformer(nn.Module):
-    """ Transformer Language Model, exactly as seen in GPT-2 """
-
     def __init__(self, config):
         super().__init__()
         self.block_size = config.block_size
@@ -129,7 +88,6 @@ class Transformer(nn.Module):
         ))
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
 
-        # report number of parameters (note we don't count the decoder parameters in lm_head)
         n_params = sum(p.numel() for p in self.transformer.parameters())
         print("number of parameters: %.2fM" % (n_params/1e6,))
 
@@ -142,7 +100,6 @@ class Transformer(nn.Module):
         assert t <= self.block_size, f"Cannot forward sequence of length {t}, block size is only {self.block_size}"
         pos = torch.arange(0, t, dtype=torch.long, device=device).unsqueeze(0) # shape (1, t)
 
-        # forward the GPT model itself
         tok_emb = self.transformer.wte(idx) # token embeddings of shape (b, t, n_embd)
         pos_emb = self.transformer.wpe(pos) # position embeddings of shape (1, t, n_embd)
         x = tok_emb + pos_emb
@@ -151,7 +108,6 @@ class Transformer(nn.Module):
         x = self.transformer.ln_f(x)
         logits = self.lm_head(x)
 
-        # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
@@ -324,10 +280,8 @@ class RNN(nn.Module):
         device = idx.device
         b, t = idx.size()
 
-        # embed all the integers up front and all at once for efficiency
         emb = self.wte(idx) # (b, t, n_embd)
 
-        # sequentially iterate over the inputs and update the RNN state each tick
         hprev = self.start.expand((b, -1)) # expand out the batch dimension
         hiddens = []
         for i in range(t):
