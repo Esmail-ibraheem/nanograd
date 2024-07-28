@@ -14,10 +14,12 @@ def generate_dataset():
     script_path = os.path.join(os.path.dirname(__file__), 'generate_dataset.py')
     subprocess.run(['python', script_path], check=True)
 
-def download_checkpoint(url):
-    command = ['litgpt', 'download', url]
+def download_checkpoint(repo_id):
+    command = [
+        'litgpt', 'download',
+        '--repo_id', repo_id
+    ]
     subprocess.run(command, check=True)
-    print(f"Checkpoint {url} downloaded successfully.")
 
 def pretrain_model(model_name, initial_checkpoint_dir, tokenizer_dir, out_dir, data_dir, train_data_path, lr_warmup_steps, lr):
     command = [
@@ -40,6 +42,10 @@ def run_llama():
     script_path = os.path.join(os.path.dirname(__file__), 'models', 'llama', 'inference_llama.py')
     subprocess.run(['python', script_path], check=True)
 
+def run_ollama(model_name):
+    command = ['ollama', 'run', model_name]
+    subprocess.run(command, check=True)
+
 def main():
     parser = argparse.ArgumentParser(description="Nanograd CLI")
     subparsers = parser.add_subparsers(dest='command', help="Sub-commands")
@@ -52,7 +58,7 @@ def main():
 
     download_parser = subparsers.add_parser('download', help="Download checkpoints or llama")
     download_parser.add_argument('type', type=str, choices=['checkpoints', 'llama'], help="Specify 'checkpoints' or 'llama' to download")
-    download_parser.add_argument('url', type=str, nargs='?', help="Hugging Face URL of the checkpoint (required for 'checkpoints')")
+    download_parser.add_argument('repo_id', type=str, nargs='?', help="Hugging Face URL of the checkpoint (required for 'checkpoints')")
 
     pretrain_parser = subparsers.add_parser('pretrain', help="Pretrain a model")
     pretrain_parser.add_argument('model_name', type=str, help="Model name for pretraining")
@@ -66,6 +72,9 @@ def main():
 
     run_gpt_parser = subparsers.add_parser('run_gpt', help="Run GPT inference")
     run_llama_parser = subparsers.add_parser('run_llama', help="Run LLaMA inference")
+    
+    run_parser = subparsers.add_parser('run', help="Run model inference")
+    run_parser.add_argument('model_name', type=str, help="Model name to run (e.g., 'llama2', 'aya')")
 
     args = parser.parse_args()
 
@@ -83,8 +92,8 @@ def main():
         if args.type == 'llama':
             download_llama()
         elif args.type == 'checkpoints':
-            if args.url:
-                download_checkpoint(args.url)
+            if args.repo_id:
+                download_checkpoint(args.repo_id)
             else:
                 print("URL is required for downloading checkpoints.")
         else:
@@ -104,16 +113,17 @@ def main():
         run_gpt()
     elif args.command == 'run_llama':
         run_llama()
+    elif args.command == 'run':
+        run_ollama(args.model_name)
     else:
         parser.print_help()
-
 
 nanograd = [
     "##     ##     ###     ##      ##  ########     ######   ########       ###       ########", 
     "###    ##   ##   ##   ###     ## ##      ##   ##   ##   ##     ##    ##   ##     ##      ##",
     "####   ##  ##     ##  ####    ## ##      ##  ##         ##     ##   ##      ##   ##       ##",
     "## ##  ## ##       ## ##  ##  ## ##      ##  ##  ####   ########   ##        ##  ##       ##",     
-    "##   #### ########### ##    #### ##      ##  ##    ##   ##    ##   ############  ##       ##" ,
+    "##   #### ########### ##    #### ##      ##  ##    ##   ##    ##   ############  ##       ##", 
     "##    ### ##       ## ##      ## ##      ##  ##    ##   ##    ##   ##        ##  ##      ##",
     "##     ## ##       ## ##      ##  ########    ######    ##     ##  ##        ##  ########"     
 ]
