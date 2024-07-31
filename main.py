@@ -1,5 +1,5 @@
 from nanograd.models.llama import inference_llama 
-from nanograd.models.GPT import inference_gpt
+from nanograd.models.GPT import inference_gpt 
 from nanograd.models import ollama
 from nanograd.models import chat
 
