@@ -145,7 +145,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ---
 
 ## Citations
-```BibTex
+```BibTex 
 @misc{Gumaan2024-nanograd,
   title   = "nanograd",
   author  = "Gumaan, Esmail",
