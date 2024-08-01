@@ -44,7 +44,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 ---
 
 ## Autograd implementation:
-The nanograd autograd engine provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
+The nanograd [autograd engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn) provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
 
 ### Key Features
 
