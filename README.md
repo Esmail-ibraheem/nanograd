@@ -41,8 +41,19 @@ nanograd is a neural net engine (**_command line interface and python library_**
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
 
+---
+
 ## Autograd implementation:
-Autograd engineز Implements backpropagation over a dynamically built DAG and a small neural networks library on top of it with a PyTorch-like API. Both are tiny, with about 100 and 50 lines of code respectively. The DAG only operates over scalar values, so e.g. we chop up each neuron into all of its individual tiny adds and multiplies. However, this is enough to build up entire deep neural nets doing binary classification, as the demo notebook shows. Potentially useful for educational purposes.
+The nanograd autograd engine provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
+
+### Key Features
+
+- **Backpropagation over DAG**: The engine dynamically builds a DAG during the forward pass and performs backpropagation through this graph. The DAG operates over scalar values, breaking down each neuron into individual adds and multiplies.
+- **Minimalistic Design**: The autograd engine consists of approximately 100 lines of code, and the accompanying neural network library is around 50 lines, emphasizing simplicity and clarity.
+- **Educational Value**: This implementation, though minimal, is capable of constructing and training entire deep neural networks for tasks like binary classification. It's particularly useful for educational purposes, offering insights into the inner workings of backpropagation and neural networks.
+
+
+---
 
 ## Continued-Pre-training: 
 ### 1- Continue Pretraining an LLM
