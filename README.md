@@ -40,6 +40,10 @@ nanograd is a neural net engine (**_command line interface and python library_**
 3. Bio GPT
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
+
+## Autograd implementation:
+
+
 ## Continued-Pre-training: 
 ### 1- Continue Pretraining an LLM
 In this section we're going to learn how to continue pretraining an LLM with LitGPT. Here's the full code, which we'll break down into steps:
