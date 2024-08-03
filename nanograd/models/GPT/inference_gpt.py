@@ -8,7 +8,6 @@ from nanograd.models.GPT import BioGPT_config
 
 def use_model():
 
-    # run `litgpt download EleutherAI/pythia-1b` to download the checkpoint first
     checkpoint_dir = Path("nanograd\models\GPT\checkpoints") / "EleutherAI" / "pythia-1b"
 
     torch.manual_seed(123)
