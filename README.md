@@ -25,14 +25,15 @@ nanograd is a neural net engine (**_command line interface and python library_**
 - **`Transformers from Scratch:`**
   Implement GPT and llama [models](#models-implementation) from the ground up using Pytorch, offering full transparency and flexibility.
 
-- **`Efficient Pre-training and Fine-tuning:`**
-  Used the instructions from LitGPT repo for pre-training and fine-tuning the model for Both datasets: `Arabic` and `English`, here are the [instructions](#Continued-Pre-training) section
+- **`Neural Network engine for scalar:`**
+  implementing the mathematical operations like Pytorch from addition to matric multiplication or (matmul), implementing the relu, and sigmoid activation functions,
+  training a simple neural network architecture (feedforward). 
 
 - **`Custom Tokenization:`**
   Implement a Byte Pair Encoding (BPE) tokenizer from scratch, tailored for the specific needs of your model and dataset.
 
-- **`CUDA-Optimized Kernels:`**
-  Integrate custom CUDA kernels for critical GPT operations to leverage GPU acceleration, significantly improving training and inference speed.
+- **`Command-Line Interface:`**
+  Providing a command line interface (CLI) to ease access to built-in models without writing a single code, means for programmers, or even normal users (:. 
   
 
 
