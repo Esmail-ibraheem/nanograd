@@ -1,8 +1,7 @@
 # ![nanograd](https://github.com/user-attachments/assets/09cca76c-cd3a-4335-9a34-c026854f5124) 
 
-<p align="center">
-  <img src="https://img.shields.io/badge/nanograd🧬-blue">
-</p>
+<h1 align="center">nanograd🧬</h1>
+
 
 
 
