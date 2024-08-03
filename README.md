@@ -1,6 +1,11 @@
 # ![nanograd](https://github.com/user-attachments/assets/09cca76c-cd3a-4335-9a34-c026854f5124) 
 
-<h1 align="center">nanograd🧬</h1>
+<p align="center">
+  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="50">
+    <rect width="200" height="50" fill="blue"/>
+    <text x="100" y="30" fill="white" font-size="24" font-family="Arial" text-anchor="middle">nanograd🧬</text>
+  </svg>
+</p>
 
 
 
