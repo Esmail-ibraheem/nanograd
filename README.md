@@ -3,7 +3,7 @@
 
 
 
-nanograd is a neural net engine (**_command line interface and python library_**) inspired by **[micrograd](https://github.com/karpathy/micrograd)** and **[tinygrad](https://github.com/tinygrad/tinygrad)**, built upon a PyTorch-like API. It aims to provide users with easy-to-use tools for creating and utilizing various **neural network architectures**, including `GPT`, `llama`, `stable diffusion`, and `transformers` from scratch in Python. It is optimized for performance with `CUDA` and utilizes state-of-the-art `pre-training` and `fine-tuning` techniques.  This library also offers `comprehensive data processing capabilities`. from model training to providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, nanograd sets a new standard in AI research and development. 
+nanograd is a neural net engine (**_command line interface and python library_**) inspired by **[micrograd](https://github.com/karpathy/micrograd)** and **[tinygrad](https://github.com/tinygrad/tinygrad)**, built upon a PyTorch-like API. It aims to provide users with easy-to-use tools for creating and utilizing various **neural network architectures**, including `GPT`, `llama`, `stable diffusion`, and `transformers` from scratch in Python. This library also offers `comprehensive data processing capabilities` from model training to providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, nanograd sets a new standard in AI research and development. 
 
 
  
@@ -26,14 +26,13 @@ nanograd is a neural net engine (**_command line interface and python library_**
   Implement GPT and llama [models](#models-implementation) from the ground up using Pytorch, offering full transparency and flexibility.
 
 - **`Neural Network engine for scalar:`**
-  implementing the mathematical operations like Pytorch from addition to matric multiplication or (matmul), implementing the relu, and sigmoid activation functions,
-  training a simple neural network architecture (feedforward). 
+  Implementing mathematical operations similar to PyTorch, from addition to matrix multiplication (matmul), including ReLU and sigmoid activation functions, and training a simple feedforward neural network architecture
 
 - **`Custom Tokenization:`**
   Implement a Byte Pair Encoding (BPE) tokenizer from scratch, tailored for the specific needs of your model and dataset.
 
 - **`Command-Line Interface:`**
-  Providing a command line interface (CLI) to ease access to built-in models without writing a single code, means for programmers, or even normal users (:. 
+  Providing a command line interface (CLI) to easily access built-in models without writing any code, making it accessible for both programmers and regular users (:. 
   
 
 
