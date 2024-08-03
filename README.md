@@ -32,7 +32,10 @@ nanograd is a neural net engine (**_command line interface and python library_**
   Implement a Byte Pair Encoding (BPE) tokenizer from scratch, tailored for the specific needs of your model and dataset.
 
 - **`Command-Line Interface:`**
-  Providing a command line interface (CLI) to easily access built-in models without writing any code, making it accessible for both programmers and regular users (:. 
+  Providing a command line interface (CLI) to easily access built-in models without writing any code, making it accessible for both programmers and regular users (:.
+
+- **`Reinforcement Learning with gym environments:`**
+  Currently providing some cool applications such as Carpole, and Mountain car, BipedalWalker with gym environments from OpenAI, and this feature is built upon tinygrad.
   
 
 
