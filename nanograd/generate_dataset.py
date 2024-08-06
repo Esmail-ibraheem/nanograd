@@ -1,11 +1,16 @@
 import os
+from re import S
 import sys
 import time
 import math
 import argparse
 from dataclasses import dataclass
 from typing import List
- 
+
+import json
+import regex as re
+import requests
+
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -23,6 +28,192 @@ class ModelConfig:
     n_embd: int = 64
     n_embd2: int = 64
     n_head: int = 4
+
+# -----------------------------------------------------------------------------
+
+def bytes_to_unicode():
+    bs = list(range(ord("!"), ord("~")+1))+list(range(ord("¡"), ord("¬")+1))+list(range(ord("®"), ord("ÿ")+1))
+    cs = bs[:] 
+     
+    n = 0
+    for b in range(2**8):
+        if b not in bs:
+            bs.append(b)
+            cs.append(2**8+n)
+            n += 1
+    cs = [chr(n) for n in cs]
+    d = dict(zip(bs, cs))   
+    return d
+
+def get_pairs(word):
+    pairs = set()
+    prev_char = word[0]
+    for char in word[1:]:
+        pairs.add((prev_char, char))
+        prev_char = char
+    return pairs
+
+class Encoder:              
+
+    def __init__(self, encoder, bpe_merges):
+        self.byte_encoder = bytes_to_unicode()
+        self.byte_decoder = {v:k for k, v in self.byte_encoder.items()}
+        self.encoder = encoder
+        self.decoder = {v:k for k,v in self.encoder.items()}
+        self.bpe_ranks = dict(zip(bpe_merges, range(len(bpe_merges))))
+        self.pat = re.compile(r"""'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""")
+        self.cache = {}
+
+    def bpe(self, token):
+        if token in self.cache:
+            return self.cache[token]
+        word = tuple(token) 
+        pairs = get_pairs(word) 
+
+        if not pairs:
+            return token
+
+        while True:
+            bigram = min(pairs, key = lambda pair: self.bpe_ranks.get(pair, float('inf')))
+            if bigram not in self.bpe_ranks:
+                break 
+            first, second = bigram
+            new_word = []
+            i = 0
+            while i < len(word):
+
+                try:
+                    j = word.index(first, i)
+                    new_word.extend(word[i:j])
+                    i = j
+                except:
+                    new_word.extend(word[i:])
+                    break
+
+                if word[i] == first and i < len(word)-1 and word[i+1] == second:
+                    new_word.append(first+second)
+                    i += 2
+                else:
+                    new_word.append(word[i])
+                    i += 1
+
+            new_word = tuple(new_word)
+            word = new_word
+            if len(word) == 1:
+                break
+            else:
+                pairs = get_pairs(word)
+
+        
+        word = ' '.join(word)
+
+        self.cache[token] = word
+        return word
+
+    def encode(self, text):
+        bpe_idx = []
+        tokens = re.findall(self.pat, text)
+        for token in tokens:
+            token_bytes = token.encode('utf-8')
+            token_translated = ''.join(self.byte_encoder[b] for b in token_bytes)
+            token_merged = self.bpe(token_translated).split(' ')
+            token_ix = [self.encoder[bpe_token] for bpe_token in token_merged]
+            bpe_idx.extend(token_ix)
+        return bpe_idx
+
+    def encode_and_show_work(self, text):
+        bpe_idx = []
+        parts = []
+        tokens = re.findall(self.pat, text)
+        for token in tokens:
+            token_bytes = token.encode('utf-8')
+            token_translated = ''.join(self.byte_encoder[b] for b in token_bytes)
+            token_merged = self.bpe(token_translated).split(' ')
+            token_ix = [self.encoder[bpe_token] for bpe_token in token_merged]
+            bpe_idx.extend(token_ix)
+            parts.append({
+                'token': token,
+                'token_bytes': token_bytes,
+                'token_translated': token_translated,
+                'token_merged': token_merged,
+                'token_ix': token_ix,
+            })
+        out = {
+            'bpe_idx': bpe_idx,
+            'tokens': tokens, 
+            'parts': parts, 
+        }
+        return out
+
+    def decode(self, bpe_idx):
+        tokens_merged = [self.decoder[token] for token in bpe_idx]
+        tokens_flat = ''.join(tokens_merged)
+        tokens_bytes = bytearray([self.byte_decoder[c] for c in tokens_flat])
+        text = tokens_bytes.decode('utf-8', errors='replace')
+        return text
+
+def get_file(local_file, remote_file):
+    if not os.path.isfile(local_file):
+        print(f"downloading {remote_file} to {local_file}")
+        response = requests.get(remote_file)
+        open(local_file, "wb").write(response.content)
+
+def get_encoder():
+    home_dir = os.path.expanduser('~')
+    cache_dir = os.path.join(home_dir, '.cache', 'mingpt')
+    os.makedirs(cache_dir, exist_ok=True)
+    encoder_local_file = os.path.join(cache_dir, 'encoder.json')
+    encoder_remote_file = 'https://openaipublic.blob.core.windows.net/gpt-2/models/124M/encoder.json'
+    get_file(encoder_local_file, encoder_remote_file)
+    with open(encoder_local_file, 'r') as f:
+        encoder = json.load(f)
+    assert len(encoder) == 50257 # 256 individual byte tokens, 50,000 merged tokens, and 1 special <|endoftext|> token
+
+    vocab_local_file = os.path.join(cache_dir, 'vocab.bpe')
+    vocab_remote_file = 'https://openaipublic.blob.core.windows.net/gpt-2/models/124M/vocab.bpe'
+    get_file(vocab_local_file, vocab_remote_file)
+    with open(vocab_local_file, 'r', encoding="utf-8") as f:
+        bpe_data = f.read()
+    bpe_merges = [tuple(merge_str.split()) for merge_str in bpe_data.split('\n')[1:-1]]
+    assert len(bpe_merges) == 50000 # 50,000 merged tokens
+
+    enc = Encoder(encoder, bpe_merges)
+    return enc
+
+class BPETokenizer:
+
+    def __init__(self):
+        self.encoder = get_encoder()
+
+    def __call__(self, text, return_tensors='pt'):
+        assert return_tensors == 'pt'
+        assert isinstance(text, str)
+        idx = [self.encoder.encode(text)]
+        out = torch.tensor(idx, dtype=torch.long)
+        return out
+
+    def decode(self, idx):
+        assert idx.ndim == 1
+        text = self.encoder.decode(idx.tolist())
+        return text
+
+def tokenize():
+
+    text = input("Enter your sentence to tokenize it: ")   
+    e = get_encoder()
+    r = e.encode_and_show_work(text)
+
+    print("Original text is:")
+    print(text)
+    print("First the text gets pre-tokenized, broken up into chunks, the outcome is:")
+    print(r['tokens'])
+    print("Then we iterate over each chunk and process them in turn...")
+    for part in r['parts']:
+        print(part)
+    print("and the final outcome is concatenating and flattening all the token_ix:")
+    print(r['bpe_idx'])
+    print("ready to feed into a Transformer!")
+
 
 class NewGELU(nn.Module):
     def forward(self, x):
@@ -114,18 +305,12 @@ class Transformer(nn.Module):
 
         return logits, loss
 
-# -----------------------------------------------------------------------------
 # Bag of Words (BoW) language model
 
 class CausalBoW(nn.Module):
-    """
-    Causal bag of words. Averages the preceding elements and looks suspiciously like
-    a CausalAttention module you'd find in a transformer, for no apparent reason at all ;)
-    """
     def __init__(self, config):
         super().__init__()
 
-        # used to mask out vectors and preserve autoregressive property
         self.block_size = config.block_size
         self.register_buffer("bias", torch.tril(torch.ones(config.block_size, config.block_size))
                             .view(1, config.block_size, config.block_size))
@@ -133,7 +318,6 @@ class CausalBoW(nn.Module):
     def forward(self, x):
         B, T, C = x.size() # batch size, sequence length, n_embd
 
-        # do the weighted average of all preceeding token features
         att = torch.zeros((B, T, T), device=x.device)
         att = att.masked_fill(self.bias[:,:T,:T] == 0, float('-inf'))
         att = F.softmax(att, dim=-1)
@@ -142,14 +326,11 @@ class CausalBoW(nn.Module):
         return y
 
 class BoWBlock(nn.Module):
-    """ collects BoW features and adds an MLP """
 
     def __init__(self, config):
         super().__init__()
 
-        # Causal BoW module
         self.cbow = CausalBoW(config)
-        # MLP assembler
         self.mlp = nn.ModuleDict(dict(
             c_fc    = nn.Linear(config.n_embd, config.n_embd2),
             c_proj  = nn.Linear(config.n_embd2, config.n_embd),
@@ -163,23 +344,14 @@ class BoWBlock(nn.Module):
         return x
 
 class BoW(nn.Module):
-    """
-    takes the previous block_size tokens, encodes them with a lookup table,
-    also encodes their positions with lookup table, then averages all of those
-    embeddings up and uses that to predict the next token.
-    """
 
     def __init__(self, config):
         super().__init__()
         self.block_size = config.block_size
         self.vocab_size = config.vocab_size
-        # token embedding
         self.wte = nn.Embedding(config.vocab_size, config.n_embd)
-        # position embedding
         self.wpe = nn.Embedding(config.block_size, config.n_embd)
-        # context block
         self.context_block = BoWBlock(config)
-        # language model head decoder layer
         self.lm_head = nn.Linear(config.n_embd, self.vocab_size)
 
     def get_block_size(self):
@@ -192,24 +364,18 @@ class BoW(nn.Module):
         assert t <= self.block_size, f"Cannot forward sequence of length {t}, block size is only {self.block_size}"
         pos = torch.arange(0, t, dtype=torch.long, device=device).unsqueeze(0) # shape (1, t)
 
-        # forward the token and position embedding layers
-        tok_emb = self.wte(idx) # token embeddings of shape (b, t, n_embd)
-        pos_emb = self.wpe(pos) # position embeddings of shape (1, t, n_embd)
-        # add and run through the decoder MLP
+        tok_emb = self.wte(idx) 
+        pos_emb = self.wpe(pos)
         x = tok_emb + pos_emb
-        # run the bag of words context module
         x = self.context_block(x)
-        # decode to next token probability
         logits = self.lm_head(x)
 
-        # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
 
         return logits, loss
 
-# -----------------------------------------------------------------------------
 """
 Recurrent Neural Net language model: either a vanilla RNN recurrence or a GRU.
 Did not implement an LSTM because its API is a bit more annoying as it has
@@ -218,12 +384,6 @@ practice works just as well.
 """
 
 class RNNCell(nn.Module):
-    """
-    the job of a 'Cell' is to:
-    take input at current time step x_{t} and the hidden state at the
-    previous time step h_{t-1} and return the resulting hidden state
-    h_{t} at the current timestep
-    """
     def __init__(self, config):
         super().__init__()
         self.xh_to_h = nn.Linear(config.n_embd + config.n_embd2, config.n_embd2)
@@ -246,16 +406,12 @@ class GRUCell(nn.Module):
         self.xh_to_hbar = nn.Linear(config.n_embd + config.n_embd2, config.n_embd2)
 
     def forward(self, xt, hprev):
-        # first use the reset gate to wipe some channels of the hidden state to zero
         xh = torch.cat([xt, hprev], dim=1)
         r = F.sigmoid(self.xh_to_r(xh))
         hprev_reset = r * hprev
-        # calculate the candidate new hidden state hbar
         xhr = torch.cat([xt, hprev_reset], dim=1)
         hbar = F.tanh(self.xh_to_hbar(xhr))
-        # calculate the switch gate that determines if each channel should be updated at all
         z = F.sigmoid(self.xh_to_z(xh))
-        # blend the previous hidden state and the new candidate hidden state
         ht = (1 - z) * hprev + z * hbar
         return ht
 
@@ -280,28 +436,26 @@ class RNN(nn.Module):
         device = idx.device
         b, t = idx.size()
 
-        emb = self.wte(idx) # (b, t, n_embd)
+        emb = self.wte(idx) 
 
-        hprev = self.start.expand((b, -1)) # expand out the batch dimension
+        hprev = self.start.expand((b, -1)) 
         hiddens = []
         for i in range(t):
-            xt = emb[:, i, :] # (b, n_embd)
-            ht = self.cell(xt, hprev) # (b, n_embd2)
+            xt = emb[:, i, :] 
+            ht = self.cell(xt, hprev)
             hprev = ht
             hiddens.append(ht)
 
         # decode the outputs
-        hidden = torch.stack(hiddens, 1) # (b, t, n_embd2)
+        hidden = torch.stack(hiddens, 1) 
         logits = self.lm_head(hidden)
 
-        # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
 
         return logits, loss
 
-# -----------------------------------------------------------------------------
 # MLP language model
 
 class MLP(nn.Module):
@@ -317,9 +471,7 @@ class MLP(nn.Module):
         super().__init__()
         self.block_size = config.block_size
         self.vocab_size = config.vocab_size
-        self.wte = nn.Embedding(config.vocab_size + 1, config.n_embd) # token embeddings table
-        # +1 in the line above for a special <BLANK> token that gets inserted if encoding a token
-        # before the beginning of the input sequence
+        self.wte = nn.Embedding(config.vocab_size + 1, config.n_embd) 
         self.mlp = nn.Sequential(
             nn.Linear(self.block_size * config.n_embd, config.n_embd2),
             nn.Tanh(),
@@ -331,26 +483,22 @@ class MLP(nn.Module):
 
     def forward(self, idx, targets=None):
 
-        # gather the word embeddings of the previous 3 words
         embs = []
         for k in range(self.block_size):
-            tok_emb = self.wte(idx) # token embeddings of shape (b, t, n_embd)
+            tok_emb = self.wte(idx) 
             idx = torch.roll(idx, 1, 1)
-            idx[:, 0] = self.vocab_size # special <BLANK> token
+            idx[:, 0] = self.vocab_size 
             embs.append(tok_emb)
 
-        # concat all of the embeddings together and pass through an MLP
-        x = torch.cat(embs, -1) # (b, t, n_embd * block_size)
+        x = torch.cat(embs, -1) 
         logits = self.mlp(x)
 
-        # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
 
         return logits, loss
 
-# -----------------------------------------------------------------------------
 # Bigram language model
 
 class Bigram(nn.Module):
@@ -365,21 +513,16 @@ class Bigram(nn.Module):
         self.logits = nn.Parameter(torch.zeros((n, n)))
 
     def get_block_size(self):
-        return 1 # this model only needs one previous character to predict the next
+        return 1 
 
     def forward(self, idx, targets=None):
-
-         # 'forward pass', lol
         logits = self.logits[idx]
-
-        # if we are given some desired targets also calculate the loss
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
 
         return logits, loss
 
-# -----------------------------------------------------------------------------
 # helper functions for evaluating and sampling from the model
 
 @torch.no_grad()
@@ -391,43 +534,32 @@ def generate(model, idx, max_new_tokens, temperature=1.0, do_sample=False, top_k
     """
     block_size = model.get_block_size()
     for _ in range(max_new_tokens):
-        # if the sequence context is growing too long we must crop it at block_size
         idx_cond = idx if idx.size(1) <= block_size else idx[:, -block_size:]
-        # forward the model to get the logits for the index in the sequence
         logits, _ = model(idx_cond)
-        # pluck the logits at the final step and scale by desired temperature
         logits = logits[:, -1, :] / temperature
-        # optionally crop the logits to only the top k options
         if top_k is not None:
             v, _ = torch.topk(logits, top_k)
             logits[logits < v[:, [-1]]] = -float('Inf')
-        # apply softmax to convert logits to (normalized) probabilities
         probs = F.softmax(logits, dim=-1)
-        # either sample from the distribution or take the most likely element
         if do_sample:
             idx_next = torch.multinomial(probs, num_samples=1)
         else:
             _, idx_next = torch.topk(probs, k=1, dim=-1)
-        # append sampled index to the running sequence and continue
         idx = torch.cat((idx, idx_next), dim=1)
 
     return idx
 
 def print_samples(num=10):
-    """ samples from the model and pretty prints the decoded samples """
     X_init = torch.zeros(num, 1, dtype=torch.long).to(args.device)
     top_k = args.top_k if args.top_k != -1 else None
     steps = train_dataset.get_output_length() - 1 # -1 because we already start with <START> token (index 0)
     X_samp = generate(model, X_init, steps, top_k=top_k, do_sample=True).to('cpu')
     train_samples, test_samples, new_samples = [], [], []
     for i in range(X_samp.size(0)):
-        # get the i'th row of sampled integers, as python list
-        row = X_samp[i, 1:].tolist() # note: we need to crop out the first <START> token
-        # token 0 is the <STOP> token, so we crop the output sequence at that point
+        row = X_samp[i, 1:].tolist()
         crop_index = row.index(0) if 0 in row else len(row)
         row = row[:crop_index]
         word_samp = train_dataset.decode(row)
-        # separately track samples that we have and have not seen before
         if train_dataset.contains(word_samp):
             train_samples.append(word_samp)
         elif test_dataset.contains(word_samp):
@@ -457,8 +589,6 @@ def evaluate(model, dataset, batch_size=50, max_batches=None):
     model.train() # reset model back to training mode
     return mean_loss
 
-# -----------------------------------------------------------------------------
-# helper functions for creating the training and test Datasets that emit words
 
 class CharDataset(Dataset):
 
@@ -476,10 +606,10 @@ class CharDataset(Dataset):
         return word in self.words
 
     def get_vocab_size(self):
-        return len(self.chars) + 1 # all the possible characters and special 0 token
+        return len(self.chars) + 1 
 
     def get_output_length(self):
-        return self.max_word_length + 1 # <START> token followed by words
+        return self.max_word_length + 1 
 
     def encode(self, word):
         ix = torch.tensor([self.stoi[w] for w in word], dtype=torch.long)
@@ -496,18 +626,17 @@ class CharDataset(Dataset):
         y = torch.zeros(self.max_word_length + 1, dtype=torch.long)
         x[1:1+len(ix)] = ix
         y[:len(ix)] = ix
-        y[len(ix)+1:] = -1 # index -1 will mask the loss at the inactive locations
+        y[len(ix)+1:] = -1 
         return x, y
 
 def create_datasets(input_file):
 
-    # preprocessing of the input text file
     with open(input_file, 'r') as f:
         data = f.read()
     words = data.splitlines()
-    words = [w.strip() for w in words] # get rid of any leading or trailing white space
-    words = [w for w in words if w] # get rid of any empty strings
-    chars = sorted(list(set(''.join(words)))) # all the possible characters
+    words = [w.strip() for w in words] 
+    words = [w for w in words if w] 
+    chars = sorted(list(set(''.join(words))))
     max_word_length = max(len(w) for w in words)
     print(f"number of examples in the dataset: {len(words)}")
     print(f"max word length: {max_word_length}")
@@ -515,8 +644,7 @@ def create_datasets(input_file):
     print("vocabulary:")
     print(''.join(chars))
 
-    # partition the input data into a training and the test set
-    test_set_size = min(1000, int(len(words) * 0.1)) # 10% of the training set, or up to 1000 examples
+    test_set_size = min(1000, int(len(words) * 0.1)) 
     rp = torch.randperm(len(words)).tolist()
     train_words = [words[i] for i in rp[:-test_set_size]]
     test_words = [words[i] for i in rp[-test_set_size:]]
@@ -529,11 +657,6 @@ def create_datasets(input_file):
     return train_dataset, test_dataset
 
 class InfiniteDataLoader:
-    """
-    this is really hacky and I'm not proud of it, but there doesn't seem to be
-    a better way in PyTorch to just create an infinite dataloader?
-    """
-
     def __init__(self, dataset, **kwargs):
         train_sampler = torch.utils.data.RandomSampler(dataset, replacement=True, num_samples=int(1e10))
         self.train_loader = DataLoader(dataset, sampler=train_sampler, **kwargs)
@@ -547,15 +670,10 @@ class InfiniteDataLoader:
             batch = next(self.data_iter)
         return batch
 
-# -----------------------------------------------------------------------------
-
-
 
 if __name__ == '__main__':
 
-    # parse command line args
     parser = argparse.ArgumentParser(description="Make More")
-    # system/input/output
     parser.add_argument('--input-file', '-i', type=str, default='nanograd/names.txt', help="input file with things one per line")
     parser.add_argument('--work-dir', '-o', type=str, default='out', help="output working directory")
     parser.add_argument('--resume', action='store_true', help="when this flag is used, we will resume optimization from existing model in the workdir")
@@ -618,10 +736,8 @@ if __name__ == '__main__':
         print_samples(num=50)
         sys.exit()
 
-    # init optimizer
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay, betas=(0.9, 0.99), eps=1e-8)
 
-    # init dataloader
     batch_loader = InfiniteDataLoader(train_dataset, batch_size=args.batch_size, pin_memory=True, num_workers=args.num_workers)
 
     # training loop
@@ -631,20 +747,16 @@ if __name__ == '__main__':
 
         t0 = time.time()
 
-        # get the next batch, ship to device, and unpack it to input and target
         batch = batch_loader.next()
         batch = [t.to(args.device) for t in batch]
         X, Y = batch
 
-        # feed into the model
         logits, loss = model(X, Y)
 
-        # calculate the gradient, update the weights
         model.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
 
-        # wait for all CUDA work on the GPU to finish then calculate iteration time taken
         if args.device.startswith('cuda'):
             torch.cuda.synchronize()
         t1 = time.time()
@@ -657,9 +769,6 @@ if __name__ == '__main__':
         if step > 0 and step % 500 == 0:
             train_loss = evaluate(model, train_dataset, batch_size=100, max_batches=10)
             test_loss  = evaluate(model, test_dataset,  batch_size=100, max_batches=10)
-            # writer.add_scalar("Loss/train", train_loss, step)
-            # writer.add_scalar("Loss/test", test_loss, step)
-            # writer.flush()
             print(f"step {step} train loss: {train_loss} test loss: {test_loss}")
             # save the model to disk if it has improved
             if best_loss is None or test_loss < best_loss:
