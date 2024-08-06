@@ -11,12 +11,16 @@ from nanograd.optimizers import AdamW
 from nanograd.models.GPT import tokenizer
 from nanograd.analysis_lab import sentiment_analysis
 
+from nanograd.models.stable_diffusion.sd import sd_inference
 
 from nanograd.RL import Cartpole, car # import reinforcement learning package
 
 
 # Cartpole.run()
-car.run()
+# car.run()
+
+sd_inference.run()
+
 # sentiment_analysis.run()
 
 # generate_dataset.tokenize()
