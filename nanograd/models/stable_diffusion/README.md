@@ -18,3 +18,7 @@
 ![s](https://github.com/user-attachments/assets/26c059b3-7437-41ab-8307-3a7e4a3793f2)
 
 **Prompt: An astronaut on the moon, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution**
+
+![test](https://github.com/user-attachments/assets/4cba0dfe-38c3-40c1-890d-f83559c49132)
+**Prompt: a black dog sitting between a bush and a pair of green pants standing up with nobody inside t
+them, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution.**
