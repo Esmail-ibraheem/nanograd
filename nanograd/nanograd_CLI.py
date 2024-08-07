@@ -1,6 +1,7 @@
 import argparse
 import os
 import subprocess
+import gradio as gr
 
 def install_ollama():
     script_path = os.path.join(os.path.dirname(__file__), 'ollama_install.sh')
@@ -46,6 +47,25 @@ def run_ollama(model_name):
     command = ['ollama', 'run', model_name]
     subprocess.run(command, check=True)
 
+def run_stable_diffusion():
+    script_path = os.path.join(os.path.dirname(__file__), 'C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_inference.py')
+    subprocess.run(['python', script_path], check=True)
+
+def gradio_interface(model_name):
+    def run_ollama_interface(prompt):
+        command = ['ollama', 'run', model_name, prompt]
+        result = subprocess.run(command, capture_output=True, text=True)
+        return result.stdout
+
+    iface = gr.Interface(
+        fn=run_ollama_interface,
+        inputs="text",
+        outputs="text",
+        title=f"Run {model_name} with Ollama using nanograd",
+        description=f"Enter a prompt to generate text using the {model_name} model with Ollama."
+    )
+    iface.launch()
+
 def main():
     parser = argparse.ArgumentParser(description="Nanograd CLI")
     subparsers = parser.add_subparsers(dest='command', help="Sub-commands")
@@ -73,8 +93,13 @@ def main():
     run_gpt_parser = subparsers.add_parser('run_gpt', help="Run GPT inference")
     run_llama_parser = subparsers.add_parser('run_llama', help="Run LLaMA inference")
     
+    run_stable_diffusion_parser = subparsers.add_parser('run_diffusion', help="Run Stable Diffusion")
+    run_stable_diffusion_parser.add_argument('stable_diffusion', type=str, help="generate images with stable diffusion using nanograd")
+
+
     run_parser = subparsers.add_parser('run', help="Run model inference")
     run_parser.add_argument('model_name', type=str, help="Model name to run (e.g., 'llama2', 'aya')")
+    run_parser.add_argument('--interface', action='store_true', help="Run with Gradio interface")
 
     args = parser.parse_args()
 
@@ -113,8 +138,13 @@ def main():
         run_gpt()
     elif args.command == 'run_llama':
         run_llama()
+    elif args.command == 'run_diffusion':
+        run_stable_diffusion()
     elif args.command == 'run':
-        run_ollama(args.model_name)
+        if args.interface:
+            gradio_interface(args.model_name)
+        else:
+            run_ollama(args.model_name)
     else:
         parser.print_help()
 
