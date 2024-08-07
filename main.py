@@ -1,37 +1,38 @@
-from nanograd import generate_dataset 
-
-from nanograd.models.llama import inference_llama 
-from nanograd.models.GPT import inference_gpt
-
-from nanograd.models import ollama
-from nanograd.models import chat
 import nanograd
-
 from nanograd.optimizers import AdamW
-from nanograd.models.GPT import tokenizer
-from nanograd.analysis_lab import sentiment_analysis
 
-from nanograd.models.stable_diffusion.sd import sd_inference
 
 from nanograd.RL import Cartpole, car # import reinforcement learning package
-
-
 # Cartpole.run()
 # car.run()
 
+###############################################################
+from nanograd.models.stable_diffusion import sd_inference
 sd_inference.run()
 
+##############################################################
+from nanograd.analysis_lab import sentiment_analysis
 # sentiment_analysis.run()
 
+############################################################
+from nanograd import generate_dataset 
+
 # generate_dataset.tokenize()
+
+###########################################################
+
+from nanograd.models.llama import inference_llama 
+from nanograd.models.GPT import inference_gpt
+from nanograd.models.GPT import tokenizer
 
 # inference_gpt.use_model()
 
 # inference_llama.use_model()
 
 # tokenizer.run_tokenizer()
-
-
+###########################################################
+from nanograd.models import ollama
+from nanograd.models import chat
 # ollama.run() # test the model. 
 # chat.chat_with_models()
 # chat.chat_models()
