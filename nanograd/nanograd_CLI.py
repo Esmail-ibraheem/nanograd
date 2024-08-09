@@ -1,6 +1,6 @@
 import argparse
 import os
-import subprocess
+import subprocess 
 import gradio as gr
 
 def install_ollama():
