@@ -2,7 +2,7 @@ import argparse
 import os
 import subprocess 
 import gradio as gr
-
+ 
 def install_ollama():
     script_path = os.path.join(os.path.dirname(__file__), 'ollama_install.sh')
     subprocess.run([script_path], check=True)
