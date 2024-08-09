@@ -61,7 +61,7 @@ def gradio_interface(model_name):
         fn=run_ollama_interface,
         inputs="text",
         outputs="text",
-        title=f"Run {model_name} with Ollama using nanograd",
+        title=f"Run {model_name} Ollama models using nanograd",
         description=f"Enter a prompt to generate text using the {model_name} model with Ollama."
     )
     iface.launch()
