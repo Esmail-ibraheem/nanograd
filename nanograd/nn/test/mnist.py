@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import numpy as np
-from nn import tensor
+import tensor
+from tensor import Tensor
 from tqdm import trange
 import gzip, os
 
-from nn import optim
-from nn.helpers import getenv
+import optim
+from helpers import getenv
 
 def train(model, X_train, Y_train, optim, steps, BS=128, lossfn=lambda out,y: out.sparse_categorical_crossentropy(y),
         transform=lambda x: x, target_transform=lambda x: x, noloss=False):
@@ -13,12 +14,11 @@ def train(model, X_train, Y_train, optim, steps, BS=128, lossfn=lambda out,y: ou
   losses, accuracies = [], []
   for i in (t := trange(steps, disable=getenv('CI', False))):
     samp = np.random.randint(0, X_train.shape[0], size=(BS))
-    x = tensor(transform(X_train[samp]), requires_grad=False)
-    y = tensor(target_transform(Y_train[samp]))
+    x = Tensor(transform(X_train[samp]), requires_grad=False)
+    y = Tensor(target_transform(Y_train[samp]))
 
     # network
     out = model.forward(x) if hasattr(model, 'forward') else model(x)
-
     loss = lossfn(out, y)
     optim.zero_grad()
     loss.backward()
@@ -42,7 +42,7 @@ def evaluate(model, X_test, Y_test, num_classes=None, BS=128, return_predict=Fal
   def numpy_eval(Y_test, num_classes):
     Y_test_preds_out = np.zeros(list(Y_test.shape)+[num_classes])
     for i in trange((len(Y_test)-1)//BS+1, disable=getenv('CI', False)):
-      x = tensor(transform(X_test[i*BS:(i+1)*BS]))
+      x = Tensor(transform(X_test[i*BS:(i+1)*BS]))
       out = model.forward(x) if hasattr(model, 'forward') else model(x)
       Y_test_preds_out[i*BS:(i+1)*BS] = out.numpy()
     Y_test_preds = np.argmax(Y_test_preds_out, axis=-1)
@@ -56,11 +56,11 @@ def evaluate(model, X_test, Y_test, num_classes=None, BS=128, return_predict=Fal
 
 def fetch_mnist():
   parse = lambda file: np.frombuffer(gzip.open(file).read(), dtype=np.uint8).copy()
-  BASE = os.path.dirname(__file__)+"/extra/datasets"
-  X_train = parse(BASE+"/mnist/train-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28*28)).astype(np.float32)
-  Y_train = parse(BASE+"/mnist/train-labels-idx1-ubyte.gz")[8:]
-  X_test = parse(BASE+"/mnist/t10k-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28*28)).astype(np.float32)
-  Y_test = parse(BASE+"/mnist/t10k-labels-idx1-ubyte.gz")[8:]
+  # BASE = os.path.dirname(__file__)+"/extra/datasets"
+  X_train = parse("nn\\train-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28*28)).astype(np.float32)
+  Y_train = parse("nn\\train-labels-idx1-ubyte.gz")[8:]
+  X_test = parse("nn\\t10k-images-idx3-ubyte.gz")[0x10:].reshape((-1, 28*28)).astype(np.float32)
+  Y_test = parse("nn\\t10k-labels-idx1-ubyte.gz")[8:]
   return X_train, Y_train, X_test, Y_test
 
 X_train, Y_train, X_test, Y_test = fetch_mnist()
@@ -72,9 +72,9 @@ class TinyConvNet:
     conv = 3
     #inter_chan, out_chan = 32, 64
     inter_chan, out_chan = 8, 16   # for speed
-    self.c1 = tensor.scaled_uniform(inter_chan,1,conv,conv)
-    self.c2 = tensor.scaled_uniform(out_chan,inter_chan,conv,conv)
-    self.l1 = tensor.scaled_uniform(out_chan*5*5, 10)
+    self.c1 = Tensor.scaled_uniform(inter_chan,1,conv,conv)
+    self.c2 = Tensor.scaled_uniform(out_chan,inter_chan,conv,conv)
+    self.l1 = Tensor.scaled_uniform(out_chan*5*5, 10)
 
   def forward(self, x:tensor):
     x = x.reshape(shape=(-1, 1, 28, 28)) # hacks
