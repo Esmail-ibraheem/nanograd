@@ -2,7 +2,7 @@
 ### Quick example comparing nanograd.nn(autograd engine) to PyTorch
 
 ```python
-from tensor import Tensor
+from nanograd.nn.tensor import Tensor
 
 # Create tensors with gradient tracking enabled
 a = Tensor([[1.0, 2.0], [3.0, 4.0]], requires_grad=True)
