@@ -1,11 +1,12 @@
+#!/usr/bin/env python3
 import numpy as np
 import tensor
 from tensor import Tensor
 from tqdm import trange
 import gzip, os
 
-import nn.optim
-from nn.helpers import getenv
+import nanograd.nn.optim
+from nanograd.nn.helpers import getenv
 
 def train(model, X_train, Y_train, optim, steps, BS=128, lossfn=lambda out,y: out.sparse_categorical_crossentropy(y),
         transform=lambda x: x, target_transform=lambda x: x, noloss=False):
@@ -65,7 +66,7 @@ def fetch_mnist():
 X_train, Y_train, X_test, Y_test = fetch_mnist()
 
 # create a model with a conv layer
-class TinyConvNet:
+class NanoConvNet:
   def __init__(self):
     # https://keras.io/examples/vision/mnist_convnet/
     conv = 3
@@ -84,7 +85,7 @@ class TinyConvNet:
 
 if __name__ == "__main__":
   np.random.seed(1337)
-  model = TinyConvNet()
+  model = NanoConvNet()
   optimizer = optim.Adam([model.c1, model.c2, model.l1], lr=0.001)
   train(model, X_train, Y_train, optimizer, steps=100)
   assert evaluate(model, X_test, Y_test) > 0.93
