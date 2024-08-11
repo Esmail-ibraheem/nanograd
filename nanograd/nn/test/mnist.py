@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
 import numpy as np
 import tensor
 from tensor import Tensor
 from tqdm import trange
 import gzip, os
 
-import optim
-from helpers import getenv
+import nn.optim
+from nn.helpers import getenv
 
 def train(model, X_train, Y_train, optim, steps, BS=128, lossfn=lambda out,y: out.sparse_categorical_crossentropy(y),
         transform=lambda x: x, target_transform=lambda x: x, noloss=False):
