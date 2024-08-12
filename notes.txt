@@ -1,6 +1,6 @@
 see the codgen from tinygrad and triton repo, try to build the vision transformer, and the codellama or seomthing like this 
 see mistral models like mixtral etc.. 
-
+Dynamic vision Transformer:  https://github.com/raoyongming/DynamicViT
 
 Building a neural net engine inspired by micrograd and tinygrad built upon Pytorch like API, Featrure will be 
 as follows:
