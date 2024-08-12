@@ -42,9 +42,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 
 # nanograd/models
 
-The models in this directory are tightly integrated with the broader nanograd framework. Each model is implemented to leverage nanograd's unique features, such as its efficient backpropagation mechanism, support for various neural network architectures, and seamless integration with PyTorch. This allows for a high degree of flexibility and customization, making nanograd not just a library, but a comprehensive toolkit for neural network development.
-
-Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, the models in this directory are designed to help you achieve your goals efficiently and effectively.
+Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, nanograd models are designed to help you achieve your goals efficiently and effectively.
 
 ## Models Included
 
