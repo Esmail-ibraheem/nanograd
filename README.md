@@ -37,28 +37,46 @@ nanograd is a neural net engine (**_command line interface and python library_**
   
 
 
-## nanograd/models
-**Overview**
-Welcome to the models directory of the nanograd library! This directory houses the core model implementations that power the various capabilities of the nanograd engine. Each model here is designed to leverage the simplicity and flexibility of nanograd, making it easier for developers and researchers to build and fine-tune their neural networks.
+It seems the Vision Transformer (ViT) was not mentioned in the initial draft. Let me update the README to include the Vision Transformer model:
 
-**Models Included**
-1. GPT
-The GPT (Generative Pre-trained Transformer) model implementation in nanograd is based on the transformer architecture. This model is designed to generate coherent and contextually relevant text based on a given input. It is a powerful tool for tasks such as text generation, completion, and more.
+---
 
-2. LLaMA
-LLaMA (Language Learning Model Architecture) is a sophisticated model designed to handle a variety of natural language processing (NLP) tasks. This implementation within nanograd provides an efficient and scalable way to work with large-scale language models, focusing on ease of use and performance.
+# nanograd/models
 
-3. Stable Diffusion
-The Stable Diffusion model in nanograd is tailored for generative tasks, particularly in creating images from textual descriptions. This model is optimized for both creativity and performance, enabling users to generate high-quality images in a streamlined process.
+## Overview
 
-4. Vision Transformer (ViT)
-The Vision Transformer (ViT) is an innovative model that applies transformer architecture to image data. Unlike traditional convolutional neural networks (CNNs), ViT treats image patches as sequences, similar to how GPT processes text. This allows for powerful image classification capabilities, particularly in scenarios where large datasets are available for training.
+Welcome to the `models` directory of the **nanograd** library! This directory houses the core model implementations that power the various capabilities of the nanograd engine. Each model here is designed to leverage the simplicity and flexibility of nanograd, making it easier for developers and researchers to build and fine-tune their neural networks.
 
-5. Custom Models
-In addition to the predefined models like GPT, LLaMA, Stable Diffusion, and Vision Transformer, this directory also serves as a repository for custom models built using the nanograd framework. Users are encouraged to contribute their models or adapt existing ones to fit their specific use cases.
+## Models Included
 
-Relation to nanograd
+### 1. **GPT**
+   The GPT (Generative Pre-trained Transformer) model implementation in nanograd is based on the transformer architecture. This model is designed to generate coherent and contextually relevant text based on a given input. It is a powerful tool for tasks such as text generation, completion, and more.
+
+### 2. **LLaMA**
+   LLaMA (Language Learning Model Architecture) is a sophisticated model designed to handle a variety of natural language processing (NLP) tasks. This implementation within nanograd provides an efficient and scalable way to work with large-scale language models, focusing on ease of use and performance.
+
+### 3. **Stable Diffusion**
+   The Stable Diffusion model in nanograd is tailored for generative tasks, particularly in creating images from textual descriptions. This model is optimized for both creativity and performance, enabling users to generate high-quality images in a streamlined process.
+
+### 4. **Vision Transformer (ViT)**
+   The Vision Transformer (ViT) is an innovative model that applies transformer architecture to image data. Unlike traditional convolutional neural networks (CNNs), ViT treats image patches as sequences, similar to how GPT processes text. This allows for powerful image classification capabilities, particularly in scenarios where large datasets are available for training.
+
+### 5. **Custom Models**
+   In addition to the predefined models like GPT, LLaMA, Stable Diffusion, and Vision Transformer, this directory also serves as a repository for custom models built using the nanograd framework. Users are encouraged to contribute their models or adapt existing ones to fit their specific use cases.
+
+## Relation to nanograd
+
 The models in this directory are tightly integrated with the broader nanograd framework. Each model is implemented to leverage nanograd's unique features, such as its efficient backpropagation mechanism, support for various neural network architectures, and seamless integration with PyTorch. This allows for a high degree of flexibility and customization, making nanograd not just a library, but a comprehensive toolkit for neural network development.
+
+Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, the models in this directory are designed to help you achieve your goals efficiently and effectively.
+
+## Getting Started
+
+To start using these models, simply navigate to the model's respective folder and follow the instructions provided in the README files or documentation. Each model is designed to be as user-friendly as possible, with clear instructions on how to implement, fine-tune, and deploy.
+
+## Contribution
+
+We welcome contributions
 
 Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, the models in this directory are designed to help you achieve your goals efficiently and effectively.
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
