@@ -64,7 +64,7 @@ Whether you're working on text generation, image synthesis, image classification
 
 ---
 
-## Autograd implementation:
+## [nano nn engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn):
 The nanograd [autograd engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn) provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
 
 ### Key Features
