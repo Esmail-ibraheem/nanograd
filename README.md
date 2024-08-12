@@ -43,9 +43,9 @@ It seems the Vision Transformer (ViT) was not mentioned in the initial draft. Le
 
 # nanograd/models
 
-## Overview
+The models in this directory are tightly integrated with the broader nanograd framework. Each model is implemented to leverage nanograd's unique features, such as its efficient backpropagation mechanism, support for various neural network architectures, and seamless integration with PyTorch. This allows for a high degree of flexibility and customization, making nanograd not just a library, but a comprehensive toolkit for neural network development.
 
-Welcome to the `models` directory of the **nanograd** library! This directory houses the core model implementations that power the various capabilities of the nanograd engine. Each model here is designed to leverage the simplicity and flexibility of nanograd, making it easier for developers and researchers to build and fine-tune their neural networks.
+Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, the models in this directory are designed to help you achieve your goals efficiently and effectively.
 
 ## Models Included
 
@@ -64,21 +64,6 @@ Welcome to the `models` directory of the **nanograd** library! This directory ho
 ### 5. **Custom Models**
    In addition to the predefined models like GPT, LLaMA, Stable Diffusion, and Vision Transformer, this directory also serves as a repository for custom models built using the nanograd framework. Users are encouraged to contribute their models or adapt existing ones to fit their specific use cases.
 
-## Relation to nanograd
-
-The models in this directory are tightly integrated with the broader nanograd framework. Each model is implemented to leverage nanograd's unique features, such as its efficient backpropagation mechanism, support for various neural network architectures, and seamless integration with PyTorch. This allows for a high degree of flexibility and customization, making nanograd not just a library, but a comprehensive toolkit for neural network development.
-
-Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, the models in this directory are designed to help you achieve your goals efficiently and effectively.
-
-## Getting Started
-
-To start using these models, simply navigate to the model's respective folder and follow the instructions provided in the README files or documentation. Each model is designed to be as user-friendly as possible, with clear instructions on how to implement, fine-tune, and deploy.
-
-## Contribution
-
-We welcome contributions
-
-Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, the models in this directory are designed to help you achieve your goals efficiently and effectively.
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
 
