@@ -64,11 +64,11 @@ Whether you're working on text generation, image synthesis, image classification
 
 ---
 
-## nanograd/nn
+## [nano nn engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn)
 
 The `nn` directory in the **nanograd** library provides key components for building, training, and managing neural networks. This module is designed to offer a foundational setup for neural network operations, drawing inspiration from similar modules in established frameworks like PyTorch but tailored for the nanograd engine.
 
-## Key Components
+### Key Components
 
 ### 1. **Tensor Operations**
    - **`tensor.py`**: This file includes core functionalities related to tensor operations within the nanograd framework. It defines the data structures and operations for tensors, which are the fundamental building blocks for any neural network model. This component is responsible for handling tensor creation, manipulation, and arithmetic operations, which are crucial for performing forward and backward passes in neural networks.
@@ -89,9 +89,8 @@ The `nn` module in nanograd provides similar functionalities to PyTorch’s `tor
 
 - **Training Utilities:** `train_nn.py` offers training utilities similar to PyTorch’s training utilities but is designed to be straightforward and easy to understand, making it suitable for learning and experimenting with neural network training processes.
 
----
 
-The nanograd [autograd engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn) provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
+-  **[autograd engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn)** provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
 
 ### Key Features
 
