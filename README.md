@@ -45,7 +45,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 4. Stable Diffusion
 5. Vision Transformer
 
-### GPT Model - nanograd
+### GPT-Model-nanograd
 GPT model implementation within the nanograd library. This repository is a part of the broader nanograd project, which is dedicated to creating a highly efficient and scalable neural network engine, focusing on state-of-the-art techniques for training and deploying large language models (LLMs) like GPT.
 
 #### Overview
