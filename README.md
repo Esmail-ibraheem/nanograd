@@ -136,7 +136,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 - Meta for pioneering the Llama architecture
 
 > [!NOTE]
-> Here's a draft for a "Note" section to include in your README file about the development of nanograd: **nanograd** was developed with a specific vision and purpose in mind. This section provides insight into the motivations behind its creation and the approach taken during its development.The primary motivation for developing **nanograd** was to create a framework that offers simplicity and transparency in neural network design and training. While many existing frameworks, such as PyTorch and TensorFlow, provide extensive features and optimizations, they can also be complex and challenging to fully understand, especially for those new to deep learning or for educational purposes.
+> **nanograd** was developed with a specific vision and purpose in mind. This section provides insight into the motivations behind its creation and the approach taken during its development.The primary motivation for developing **nanograd** was to create a framework that offers simplicity and transparency in neural network design and training. While many existing frameworks, such as PyTorch and TensorFlow, provide extensive features and optimizations, they can also be complex and challenging to fully understand, especially for those new to deep learning or for educational purposes.
 
 ---
 
