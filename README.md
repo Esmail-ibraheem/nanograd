@@ -101,7 +101,49 @@ The `nn` module in nanograd provides similar functionalities to PyTorch’s `tor
 
 ---
 
+## Usage:
+**clone the repo**
+```
+git clone https://github.com/Esmail-ibraheem/nanograd.git
+```
 
+**installing it on your computer:**
+```
+pip install -e .
+```
+
+**then type this command on your terminal: `nanograd`**
+**_the output something like this_**
+```
+██     ██     ███     ██      ██  ████████     ██████   ████████       ███       ████████
+███    ██   ██   ██   ███     ██ ██      ██   ██   ██   ██     ██    ██   ██     ██      ██
+████   ██  ██     ██  ████    ██ ██      ██  ██         ██     ██   ██      ██   ██       ██
+██ ██  ██ ██       ██ ██  ██  ██ ██      ██  ██  ████   ████████   ██        ██  ██       ██
+██   ████ ███████████ ██    ████ ██      ██  ██    ██   ██    ██   ████████████  ██       ██
+██    ███ ██       ██ ██      ██ ██      ██  ██    ██   ██    ██   ██        ██  ██      ██
+██     ██ ██       ██ ██      ██  ████████    ██████    ██     ██  ██        ██  ████████
+usage: nanograd [-h] {install,generate,download,pretrain,run_gpt,run_llama,run_diffusion,run} ...
+
+Nanograd CLI
+
+positional arguments:
+  {install,generate,download,pretrain,run_gpt,run_llama,run_diffusion,run}
+                        Sub-commands
+    install             Install dependencies
+    generate            Generate datasets
+    download            Download checkpoints or llama
+    pretrain            Pretrain a model
+    run_gpt             Run GPT inference
+    run_llama           Run LLaMA inference
+    run_diffusion       Run Stable Diffusion
+    run                 Run model inference
+
+options:
+  -h, --help            show this help message and exit
+```
+
+
+---
 
 
 ## Contributing
