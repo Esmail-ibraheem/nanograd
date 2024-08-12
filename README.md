@@ -40,7 +40,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 
 ---
 
-# nanograd/models
+# [nano models](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/models):
 
 Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, nanograd models are designed to help you achieve your goals efficiently and effectively.
 
