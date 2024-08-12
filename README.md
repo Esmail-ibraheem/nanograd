@@ -130,8 +130,10 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ## Notes and Acknowledgments
 - Hugging-Face Transformers
 - Lightning AI
-- NVIDIA FasterTransformer
+- Karpathy's miniGPT
+- GeoHotz's tinygrad
 - OpenAI for pioneering the GPT architecture
+- Meta for pioneering the Llama architecture
 
 > [!NOTE]
 > I developed the project 'nanograd' to enhance my skills in developing, pre-training, and fine-tuning models with LitGPT and LitData. This project is based on the Transformers architecture, specifically utilizing the Generative Pre-trained Transformer (GPT) and LLaMA models. Notably, I worked on developing GPT and LLaMA models using both Python and CUDA, facilitating training on either GPU or CPU and building the tokenizers. This project integrates LitGPT and Transformers' GPT-2.
