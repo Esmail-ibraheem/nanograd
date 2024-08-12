@@ -51,7 +51,7 @@ GPT model implementation within the nanograd library. This repository is a part 
 #### Overview
 The GPT (Generative Pre-trained Transformer) model is one of the most advanced and widely used language models today. It leverages the Transformer architecture to generate human-like text, making it an essential tool for various natural language processing tasks such as text completion, translation, and content generation.
 
-This implementation in nanograd is optimized for performance with CUDA and integrates seamlessly with other components of the nanograd library. It is designed to provide flexibility in model training, fine-tuning, and inference, allowing users to harness the power of GPT models in their applications.
+This implementation in nanograd is designed to provide flexibility in model training, fine-tuning, and inference, allowing users to harness the power of GPT models in their applications.
 
 #### Features: 
 1. Tokenization: Includes a Byte-Pair Encoding (BPE) tokenizer, similar to tiktoken, for efficient text processing and vocabulary management.
