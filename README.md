@@ -37,7 +37,6 @@ nanograd is a neural net engine (**_command line interface and python library_**
   
 
 
-It seems the Vision Transformer (ViT) was not mentioned in the initial draft. Let me update the README to include the Vision Transformer model:
 
 ---
 
