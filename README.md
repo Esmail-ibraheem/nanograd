@@ -140,9 +140,5 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 
 ---
 
-Feel free to adjust the details to better reflect your personal experiences and motivations behind **nanograd**!
-
----
-
 ## Contact
 For any inquiries or feedback, please open an issue on GitHub or reach out to the project maintainer at esm.agumaan@gmail.com.
