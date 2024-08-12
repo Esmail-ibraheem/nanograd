@@ -64,7 +64,33 @@ Whether you're working on text generation, image synthesis, image classification
 
 ---
 
-## [nano nn engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn):
+## nanograd/nn
+
+The `nn` directory in the **nanograd** library provides key components for building, training, and managing neural networks. This module is designed to offer a foundational setup for neural network operations, drawing inspiration from similar modules in established frameworks like PyTorch but tailored for the nanograd engine.
+
+## Key Components
+
+### 1. **Tensor Operations**
+   - **`tensor.py`**: This file includes core functionalities related to tensor operations within the nanograd framework. It defines the data structures and operations for tensors, which are the fundamental building blocks for any neural network model. This component is responsible for handling tensor creation, manipulation, and arithmetic operations, which are crucial for performing forward and backward passes in neural networks.
+
+### 2. **Neural Network Engine**
+   - **`engine.py`**: The `engine.py` file manages the neural network's computational engine, including the implementation of the forward and backward passes. It is responsible for orchestrating the training process, handling gradient calculations, and updating model parameters. This engine provides the infrastructure needed to perform efficient training and evaluation of neural network models, focusing on performance and scalability within the nanograd framework.
+
+### 3. **Training Utilities**
+   - **`train_nn.py`**: This file contains utilities and functions to facilitate the training of neural network models. It includes training loops, evaluation metrics, and optimization routines. `train_nn.py` is designed to simplify the process of training models, making it easier to experiment with different architectures and hyperparameters. It serves as a practical guide for setting up and executing training sessions.
+
+## Comparison to PyTorch
+
+The `nn` module in nanograd provides similar functionalities to PyTorch’s `torch.nn` but with a streamlined and educational approach. Here’s how they compare:
+
+- **Tensor Operations:** Like PyTorch, nanograd’s `tensor.py` handles the core tensor operations, but it aims to offer a more transparent and simplified implementation for educational purposes.
+
+- **Neural Network Engine:** The `engine.py` file parallels PyTorch's `torch.autograd` and `torch.optim`, handling the essential computations and optimizations needed for training models. Nanograd’s engine focuses on efficiency and integration within the framework.
+
+- **Training Utilities:** `train_nn.py` offers training utilities similar to PyTorch’s training utilities but is designed to be straightforward and easy to understand, making it suitable for learning and experimenting with neural network training processes.
+
+---
+
 The nanograd [autograd engine](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/nn) provides a robust backpropagation mechanism over a dynamically constructed Directed Acyclic Graph (DAG). This tiny yet powerful engine mimics a PyTorch-like API, ensuring ease of use for those familiar with PyTorch.
 
 ### Key Features
