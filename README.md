@@ -10,7 +10,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 | ✔️ | LlAMa                       | ✔️ | GPT                          | ✔️ | Stable diffusion            |
 |---|------------------------------|---|------------------------------|---|------------------------------|
 | ✔️ | Transformers                 | ✔️ | ollama | ✔️ | Dataset generator(ngram model)               |
-| ✔️ | multiple checkpoints             | ✔️ | BioGPT | ✔️ | From scratch implementations|
+| ✔️ | Vision Transformer             | ✔️ | BioGPT | ✔️ | From scratch implementations|
 | ✔️ | Beginner friendly             | ✔️ | No Abstraction                        | ✔️ | pretraining and fine-tuning           |
    
 
