@@ -40,11 +40,9 @@ nanograd is a neural net engine (**_command line interface and python library_**
 
 ---
 
-# [nano models](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/models):
+## [nano models](https://github.com/Esmail-ibraheem/nanograd/tree/main/nanograd/models):
 
 Whether you're working on text generation, image synthesis, image classification, or any other AI-driven task, nanograd models are designed to help you achieve your goals efficiently and effectively.
-
-## Models Included
 
 ### 1. **GPT**
    The GPT (Generative Pre-trained Transformer) model implementation in nanograd is based on the transformer architecture. This model is designed to generate coherent and contextually relevant text based on a given input. It is a powerful tool for tasks such as text generation, completion, and more.
