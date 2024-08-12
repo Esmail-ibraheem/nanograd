@@ -44,6 +44,19 @@ nanograd is a neural net engine (**_command line interface and python library_**
 3. Bio GPT
 4. Stable Diffusion
 5. Vision Transformer
+
+### GPT Model - nanograd
+GPT model implementation within the nanograd library. This repository is a part of the broader nanograd project, which is dedicated to creating a highly efficient and scalable neural network engine, focusing on state-of-the-art techniques for training and deploying large language models (LLMs) like GPT.
+
+#### Overview
+The GPT (Generative Pre-trained Transformer) model is one of the most advanced and widely used language models today. It leverages the Transformer architecture to generate human-like text, making it an essential tool for various natural language processing tasks such as text completion, translation, and content generation.
+
+This implementation in nanograd is optimized for performance with CUDA and integrates seamlessly with other components of the nanograd library. It is designed to provide flexibility in model training, fine-tuning, and inference, allowing users to harness the power of GPT models in their applications.
+
+#### Features: 
+1. Tokenization: Includes a Byte-Pair Encoding (BPE) tokenizer, similar to tiktoken, for efficient text processing and vocabulary management.
+2. Modularity: Easily integrates with other components of nanograd, such as stable diffusion and reinforcement learning techniques.
+3. CLI Support: Use the nanograd CLI to download pre-trained models, run inference, and customize your GPT model with ease.
 <p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
 
 
