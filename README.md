@@ -39,7 +39,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 
 ## models implementation:
 **nanograd currenlty support these models:**
-1. GPT
+1. [GPT](# GPT Model - nanograd)
 2. LlAma
 3. Bio GPT
 4. Stable Diffusion
