@@ -1,4 +1,5 @@
 download vision transformer checkpoitns, donwload istral-litgpt checkpoints, download mistral-inference checkpoints
+https://github.com/open-compass/MixtralKit
 
 see the codgen from tinygrad and triton repo, try to build the vision transformer, and the codellama or seomthing like this 
 see mistral models like mixtral etc.. 
