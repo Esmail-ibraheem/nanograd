@@ -113,7 +113,7 @@ pip install -e .
 ```
 
 **then type this command on your terminal: `nanograd`**
-**_the output something like this_**
+**_the output should be something like this_**
 ```
 ██     ██     ███     ██      ██  ████████     ██████   ████████       ███       ████████
 ███    ██   ██   ██   ███     ██ ██      ██   ██   ██   ██     ██    ██   ██     ██      ██
