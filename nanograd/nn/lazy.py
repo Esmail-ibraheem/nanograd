@@ -1,6 +1,6 @@
 from __future__ import annotations
-from helpers import DType, dtypes, DEBUG
-from ops import UnaryOps, BinaryOps, ReduceOps, TernaryOps, LoadOps
+from nanograd.nn.helpers import DType, dtypes, DEBUG
+from nanograd.nn.ops import UnaryOps, BinaryOps, ReduceOps, TernaryOps, LoadOps
 import numpy as np
 
 class RawCPUBuffer:

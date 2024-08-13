@@ -1,10 +1,13 @@
 import math
 from typing import Tuple, Optional, cast
-from helpers import argsort, DType
-from ops import UnaryOps, BinaryOps, TernaryOps, ReduceOps
-from tensor import Function
-from lazy import LazyBuffer
-from shape.symbolic import sint
+from nanograd.nn.helpers import argsort, DType
+from nanograd.nn.ops import UnaryOps, BinaryOps, TernaryOps, ReduceOps
+from nanograd.nn.lazy import LazyBuffer
+from nanograd.nn.shape.symbolic import sint
+
+
+from nanograd.nn.tensor import Function
+
 
 class Contiguous(Function):
   def forward(self, x:LazyBuffer) -> LazyBuffer: return x.contiguous()

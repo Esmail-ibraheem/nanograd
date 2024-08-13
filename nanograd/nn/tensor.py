@@ -7,11 +7,46 @@ from functools import partialmethod, reduce
 from itertools import accumulate
 import numpy as np
 
-from helpers import ImageDType, argfix, make_pair, getenv, IMAGE, DEBUG, flatten, DType, dtypes, prod, all_int, round_up
-from lazy import LazyBuffer
-from ops import Device, LoadOps
-from shape.symbolic import sint
-from realize import run_schedule
+from nanograd.nn.helpers import ImageDType, argfix, make_pair, getenv, IMAGE, DEBUG, flatten, DType, dtypes, prod, all_int, round_up
+from nanograd.nn.lazy import LazyBuffer
+from nanograd.nn.ops import Device, LoadOps
+from nanograd.nn.shape.symbolic import sint
+from nanograd.nn.realize import run_schedule
+
+import torch
+from torch import Tensor as TorchTensor
+import itertools 
+
+# # Helper functions and constants 
+def _from_np_dtype(npdtype:type) -> torch.dtype: return torch.dtype(np.dtype(npdtype).name)
+def _to_np_dtype(dtype:torch.dtype) -> Optional[type]: return np.dtype(dtype).type if dtype is not None else None
+
+def _fromnp(x: np.ndarray) -> TorchTensor:
+    return torch.tensor(x, dtype=_from_np_dtype(x.dtype))
+
+def _frompy(x: Union[List, Tuple, bytes], dtype: torch.dtype) -> TorchTensor:
+    if isinstance(x, bytes):
+        return torch.tensor(list(memoryview(x)), dtype=dtype)
+    else:
+        return torch.tensor(x, dtype=dtype)
+
+def _get_winograd_matcols(mat, dims:int, shp:Tuple[int, ...], device:Union[str, Tuple[str, ...]]) -> List[List[TorchTensor]]:
+    return [[torch.cat([torch.full(shp[:dim] + (1,) + shp[dim+1:], float(m[k]), device=device) for m in mat], dim=dim)
+             for k in range(len(mat[0]))] for dim in range(dims)]
+
+def _apply_winograd_matrix(mat, t:TorchTensor, dims:int) -> TorchTensor:
+    t_ = t.reshape(t.shape[:dims] + (1,) * dims + t.shape[dims:]).expand(t.shape[:dims] + (len(mat),) * dims + t.shape[dims:])
+    matcols = _get_winograd_matcols(mat, dims, t_.shape[dims:], t_.device)
+    ret = sum(torch.prod(torch.stack([col[idx] for col, idx in zip(matcols, mat_is)]), dim=0) * t_[mat_is] for mat_is in itertools.product(range(len(mat[0])), repeat=dims))
+    assert isinstance(ret, TorchTensor), "sum didn't return a Tensor"
+    return ret
+
+def _pad_left(*shapes:Tuple[int, ...]) -> Tuple[Tuple[int, ...], ...]:
+    max_dim = max(len(shape) for shape in shapes)
+    return tuple((1,) * (max_dim - len(shape)) + shape for shape in shapes)
+
+def _broadcast_shape(*shapes:Tuple[int, ...]) -> Tuple[int, ...]:
+    return tuple(0 if 0 in nth_dim_sizes else max(nth_dim_sizes) for nth_dim_sizes in zip(*_pad_left(*shapes)))
 
 class Function:
   def __init__(self, device:str, *tensors:Tensor):
@@ -30,7 +65,8 @@ class Function:
     if ctx.requires_grad and not Tensor.no_grad: ret._ctx = ctx    # used by autograd engine
     return ret
 
-import mlops as mlops
+
+from nanograd.nn import mlops
 
 # **** start with two base classes, Tensor and Function ****
 
@@ -258,6 +294,8 @@ class Tensor:
           t.grad = g if t.grad is None else (t.grad + g)
       del t0._ctx
     return self
+
+
 
   # ***** movement mlops *****
 
