@@ -10,7 +10,7 @@ from nanograd.models.stable_diffusion import model_loader, pipeline
 
 # Configure devices
 DEVICE = "cpu"
-ALLOW_CUDA = False
+ALLOW_CUDA = True 
 ALLOW_MPS = False
 
 if torch.cuda.is_available() and ALLOW_CUDA:
@@ -20,9 +20,9 @@ elif torch.backends.mps.is_available() and ALLOW_MPS:
 print(f"Using device: {DEVICE}")
 
 # Load Stable Diffusion model
-tokenizer_vocab_path = Path("C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_data\\tokenizer_vocab.json")
-tokenizer_merges_path = Path("C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_data\\tokenizer_merges.txt")
-model_file = Path("C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_data\\v1-5-pruned-emaonly.ckpt")
+tokenizer_vocab_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\data\\tokenizer_vocab.json")
+tokenizer_merges_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\data\\tokenizer_merges.txt")
+model_file = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\v1-5-pruned-emaonly.ckpt")
 
 tokenizer = CLIPTokenizer(str(tokenizer_vocab_path), merges_file=str(tokenizer_merges_path))
 models = model_loader.preload_models_from_standard_weights(str(model_file), DEVICE)
@@ -93,6 +93,20 @@ def gradio_interface():
             with gr.Row():
                 # Left Column: Text Generation with GPT and Ollama
                 with gr.Column(scale=1):
+                    
+
+                    gr.Markdown("### Generate Text with Ollama")
+                    ollama_model_name = gr.Dropdown(
+                        label="Select Ollama Model", 
+                        choices=["aya", "llama3", "codellama"], 
+                        value="aya"
+                    )
+                    ollama_prompt = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
+                    ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=False)
+                    ollama_btn = gr.Button("Generate", variant="primary")
+
+                    ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompt], outputs=ollama_output)
+                    
                     gr.Markdown("### GPT Checkpoints Management")
                     checkpoint_dropdown = gr.Dropdown(
                         label="Select Checkpoint", 
@@ -110,18 +124,6 @@ def gradio_interface():
 
                     install_ollama_btn.click(fn=install_ollama, outputs=installation_status)
 
-                    gr.Markdown("### Generate Text with Ollama")
-                    ollama_model_name = gr.Dropdown(
-                        label="Select Ollama Model", 
-                        choices=["aya", "llama3", "codellama"], 
-                        value="aya"
-                    )
-                    ollama_prompt = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
-                    ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=False)
-                    ollama_btn = gr.Button("Generate", variant="primary")
-
-                    ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompt], outputs=ollama_output)
-
                 # Right Column: Stable Diffusion
                 with gr.Column(scale=1):
                     gr.Markdown("### Stable Diffusion Image Generation")
@@ -130,7 +132,7 @@ def gradio_interface():
                     num_inference_steps = gr.Slider(label="Sampling Steps", minimum=10, maximum=100, value=20, step=5)
                     sampler = gr.Radio(label="Sampling Method", choices=["ddpm", "Euler a", "Euler", "LMS", "Heun", "DPM2 a", "PLMS"], value="ddpm")
                     generate_img_btn = gr.Button("Generate", variant="primary")
-                    output_image = gr.Image(label="Output", show_label=False, height=512, width=512)
+                    output_image = gr.Image(label="Output", show_label=False, height=700, width=750)
 
                     generate_img_btn.click(fn=generate_image, inputs=[prompt_input, cfg_scale, num_inference_steps, sampler], outputs=output_image)
 
