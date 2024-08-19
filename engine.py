@@ -20,12 +20,34 @@ elif torch.backends.mps.is_available() and ALLOW_MPS:
 print(f"Using device: {DEVICE}")
 
 # Load Stable Diffusion model
-tokenizer_vocab_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\data\\tokenizer_vocab.json")
-tokenizer_merges_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\data\\tokenizer_merges.txt")
+tokenizer_vocab_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\tokenizer_vocab.json")
+tokenizer_merges_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\tokenizer_merges.txt")
 model_file = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\v1-5-pruned-emaonly.ckpt")
 
 tokenizer = CLIPTokenizer(str(tokenizer_vocab_path), merges_file=str(tokenizer_merges_path))
 models = model_loader.preload_models_from_standard_weights(str(model_file), DEVICE)
+
+# Blueprints for image generation
+blueprints = {
+    "Cinematic Cat": {
+        "prompt": "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution",
+        "cfg_scale": 8,
+        "num_inference_steps": 50,
+        "sampler": "Euler a"
+    },
+    "Futuristic City": {
+        "prompt": "A futuristic city with flying cars, vibrant colors, and neon lights, in the style of Blade Runner",
+        "cfg_scale": 10,
+        "num_inference_steps": 60,
+        "sampler": "LMS"
+    },
+    "Nature Landscape": {
+        "prompt": "A beautiful mountain landscape with a river running through it, sunrise, misty, photorealistic",
+        "cfg_scale": 7,
+        "num_inference_steps": 40,
+        "sampler": "DPM2 a"
+    }
+}
 
 # Define functions for each feature
 def generate_image(prompt, cfg_scale, num_inference_steps, sampler):
@@ -53,6 +75,12 @@ def generate_image(prompt, cfg_scale, num_inference_steps, sampler):
 
     output_image = Image.fromarray(output_image)
     return output_image
+
+def apply_blueprint(blueprint_name):
+    if blueprint_name in blueprints:
+        settings = blueprints[blueprint_name]
+        return settings["prompt"], settings["cfg_scale"], settings["num_inference_steps"], settings["sampler"]
+    return "", 7, 20, "ddpm"  # Default values
 
 def download_checkpoint(checkpoint):
     try:
@@ -89,12 +117,11 @@ def install_ollama():
 # Gradio interface
 def gradio_interface():
     with gr.Blocks() as demo:
-        with gr.Tab("nanograd Engine"):
+        with gr.Tab("nanograd Engine", interactive=True):
             with gr.Row():
                 # Left Column: Text Generation with GPT and Ollama
-                with gr.Column(scale=1):
-                    
-
+                with gr.Column(scale=1): 
+                    # ... (Ollama and other sections) ...
                     gr.Markdown("### Generate Text with Ollama")
                     ollama_model_name = gr.Dropdown(
                         label="Select Ollama Model", 
@@ -127,12 +154,18 @@ def gradio_interface():
                 # Right Column: Stable Diffusion
                 with gr.Column(scale=1):
                     gr.Markdown("### Stable Diffusion Image Generation")
+                    
+                    # Blueprint Dropdown
+                    blueprint_dropdown = gr.Dropdown(label="Select Blueprint", choices=list(blueprints.keys()), value=list(blueprints.keys())[0])
                     prompt_input = gr.Textbox(label="Prompt", placeholder="A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution")
                     cfg_scale = gr.Slider(label="CFG Scale", minimum=1, maximum=20, value=7, step=1)
                     num_inference_steps = gr.Slider(label="Sampling Steps", minimum=10, maximum=100, value=20, step=5)
                     sampler = gr.Radio(label="Sampling Method", choices=["ddpm", "Euler a", "Euler", "LMS", "Heun", "DPM2 a", "PLMS"], value="ddpm")
                     generate_img_btn = gr.Button("Generate", variant="primary")
                     output_image = gr.Image(label="Output", show_label=False, height=700, width=750)
+
+                    # Update fields when a blueprint is selected
+                    blueprint_dropdown.change(fn=apply_blueprint, inputs=blueprint_dropdown, outputs=[prompt_input, cfg_scale, num_inference_steps, sampler])
 
                     generate_img_btn.click(fn=generate_image, inputs=[prompt_input, cfg_scale, num_inference_steps, sampler], outputs=output_image)
 
