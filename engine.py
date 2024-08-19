@@ -11,7 +11,7 @@ from nanograd.models.stable_diffusion import model_loader, pipeline
 # Configure devices
 DEVICE = "cpu"
 ALLOW_CUDA = True 
-ALLOW_MPS = False
+ALLOW_MPS = True
 
 if torch.cuda.is_available() and ALLOW_CUDA:
     DEVICE = "cuda"
@@ -27,25 +27,23 @@ model_file = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\v1-5-
 tokenizer = CLIPTokenizer(str(tokenizer_vocab_path), merges_file=str(tokenizer_merges_path))
 models = model_loader.preload_models_from_standard_weights(str(model_file), DEVICE)
 
-# Blueprints for image generation
+# Blueprints for image generation and text generation
 blueprints = {
-    "Cinematic Cat": {
-        "prompt": "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution",
-        "cfg_scale": 8,
-        "num_inference_steps": 50,
-        "sampler": "Euler a"
+    "Visual Story": {
+        "sd_prompt": "A futuristic city skyline at dusk, flying cars, neon lights, cyberpunk style",
+        "sd_cfg_scale": 9,
+        "sd_num_inference_steps": 60,
+        "sd_sampler": "ddpm",
+        "ollama_prompt": "Describe a futuristic city that blends natural elements with advanced technology.",
+        "ollama_model": "llama3"
     },
-    "Futuristic City": {
-        "prompt": "A futuristic city with flying cars, vibrant colors, and neon lights, in the style of Blade Runner",
-        "cfg_scale": 10,
-        "num_inference_steps": 60,
-        "sampler": "LMS"
-    },
-    "Nature Landscape": {
-        "prompt": "A beautiful mountain landscape with a river running through it, sunrise, misty, photorealistic",
-        "cfg_scale": 7,
-        "num_inference_steps": 40,
-        "sampler": "DPM2 a"
+    "Nature & Poetry": {
+        "sd_prompt": "A peaceful mountain landscape at sunrise, photorealistic, serene",
+        "sd_cfg_scale": 7,
+        "sd_num_inference_steps": 40,
+        "sd_sampler": "ddpm",
+        "ollama_prompt": "Write a short poem about a tranquil sunrise over the mountains.",
+        "ollama_model": "aya"
     }
 }
 
@@ -78,9 +76,12 @@ def generate_image(prompt, cfg_scale, num_inference_steps, sampler):
 
 def apply_blueprint(blueprint_name):
     if blueprint_name in blueprints:
-        settings = blueprints[blueprint_name]
-        return settings["prompt"], settings["cfg_scale"], settings["num_inference_steps"], settings["sampler"]
-    return "", 7, 20, "ddpm"  # Default values
+        bp = blueprints[blueprint_name]
+        return (
+            bp["sd_prompt"], bp["sd_cfg_scale"], bp["sd_num_inference_steps"], bp["sd_sampler"], 
+            bp["ollama_model"], bp["ollama_prompt"]
+        )
+    return "", 7, 20, "ddpm", "aya", ""  # Default values
 
 def download_checkpoint(checkpoint):
     try:
@@ -119,39 +120,26 @@ def gradio_interface():
     with gr.Blocks() as demo:
         with gr.Tab("nanograd Engine", interactive=True):
             with gr.Row():
-                # Left Column: Text Generation with GPT and Ollama
                 with gr.Column(scale=1): 
-                    # ... (Ollama and other sections) ...
+                    # Text Generation with Ollama
                     gr.Markdown("### Generate Text with Ollama")
-                    ollama_model_name = gr.Dropdown(
-                        label="Select Ollama Model", 
-                        choices=["aya", "llama3", "codellama"], 
-                        value="aya"
-                    )
+                    ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=["aya", "llama3", "codellama"], value="aya")
                     ollama_prompt = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
-                    ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=False)
+                    ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=True)
                     ollama_btn = gr.Button("Generate", variant="primary")
-
                     ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompt], outputs=ollama_output)
-                    
-                    gr.Markdown("### GPT Checkpoints Management")
-                    checkpoint_dropdown = gr.Dropdown(
-                        label="Select Checkpoint", 
-                        choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"], 
-                        value="EleutherAI/gpt-neo-125M"
-                    )
-                    download_btn = gr.Button("Download Checkpoint", variant="primary")
-                    checkpoint_status = gr.Textbox(label="Download Status", placeholder="Status will appear here", interactive=False)
 
+                    gr.Markdown("### GPT Checkpoints Management")
+                    checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"], value="EleutherAI/gpt-neo-125M")
+                    download_btn = gr.Button("Download Checkpoint", variant="primary")
+                    checkpoint_status = gr.Textbox(label="Download Status", placeholder="Status will appear here", interactive=True)
                     download_btn.click(fn=download_checkpoint, inputs=checkpoint_dropdown, outputs=checkpoint_status)
 
                     gr.Markdown("### Install Ollama")
                     install_ollama_btn = gr.Button("Install Ollama", variant="primary")
-                    installation_status = gr.Textbox(label="Installation Status", placeholder="Status will appear here", interactive=False)
-
+                    installation_status = gr.Textbox(label="Installation Status", placeholder="Status will appear here", interactive=True)
                     install_ollama_btn.click(fn=install_ollama, outputs=installation_status)
 
-                # Right Column: Stable Diffusion
                 with gr.Column(scale=1):
                     gr.Markdown("### Stable Diffusion Image Generation")
                     
@@ -168,8 +156,26 @@ def gradio_interface():
                     blueprint_dropdown.change(fn=apply_blueprint, inputs=blueprint_dropdown, outputs=[prompt_input, cfg_scale, num_inference_steps, sampler])
 
                     generate_img_btn.click(fn=generate_image, inputs=[prompt_input, cfg_scale, num_inference_steps, sampler], outputs=output_image)
+        with gr.Tab("Blueprints"):
+            with gr.Row():
+                blueprint_dropdown = gr.Dropdown(label="Select Blueprint", choices=list(blueprints.keys()), value=list(blueprints.keys())[0])
+                load_blueprint_btn = gr.Button("Load Blueprint", variant="primary")
+                
+                # Blueprint Outputs
+                sd_prompt_output = gr.Textbox(label="Stable Diffusion Prompt", interactive=True)
+                sd_cfg_output = gr.Slider(label="CFG Scale", minimum=1, maximum=20, value=7, step=1, interactive=True)
+                sd_steps_output = gr.Slider(label="Sampling Steps", minimum=10, maximum=100, value=20, step=5, interactive=True)
+                sd_sampler_output = gr.Radio(label="Sampling Method", choices=["ddpm", "Euler a", "Euler", "LMS", "Heun", "DPM2 a", "PLMS"], value="ddpm", interactive=True)
 
-    demo.launch()
+                # ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=["aya", "llama3", "codellama"], value="aya")
+                ollama_model_output = gr.Textbox(label="Ollama Model", interactive=True)
+                ollama_prompt_output = gr.Textbox(label="Ollama Prompt", interactive=True)
+
+                load_blueprint_btn.click(fn=apply_blueprint, inputs=blueprint_dropdown, outputs=[sd_prompt_output, sd_cfg_output, sd_steps_output, sd_sampler_output, ollama_model_output, ollama_prompt_output])
+
+        
+    return demo
 
 if __name__ == "__main__":
-    gradio_interface()
+    demo = gradio_interface()
+    demo.launch()
