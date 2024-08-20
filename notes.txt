@@ -1,6 +1,10 @@
 download vision transformer checkpoitns, donwload istral-litgpt checkpoints, download mistral-inference checkpoints
 https://github.com/open-compass/MixtralKit
 
+check this out for the fucking prompt engineering 
+https://github.com/tritant/sd-webui-creaprompt
+https://github.com/SheltonLiu-N/AutoDAN
+
 see the codgen from tinygrad and triton repo, try to build the vision transformer, and the codellama or seomthing like this 
 see mistral models like mixtral etc.. 
 Dynamic vision Transformer:  https://github.com/raoyongming/DynamicViT
