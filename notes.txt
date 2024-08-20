@@ -5,8 +5,9 @@ check this out for the fucking prompt engineering
 https://github.com/tritant/sd-webui-creaprompt
 https://github.com/SheltonLiu-N/AutoDAN
 https://github.com/DanTm99/gpt2-article-generator
-https://github.com/OthmanMohammad/ML-AutoTrainer-Engine
 
+https://github.com/OthmanMohammad/ML-AutoTrainer-Engine
+https://epfllm.github.io/Megatron-LLM/guide/getting_started.html
 
 see the codgen from tinygrad and triton repo, try to build the vision transformer, and the codellama or seomthing like this 
 see mistral models like mixtral etc.. 
