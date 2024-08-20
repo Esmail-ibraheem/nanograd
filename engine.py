@@ -5,6 +5,7 @@ from transformers import CLIPTokenizer
 import torch
 import subprocess
 import os
+import random
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
 
@@ -30,84 +31,166 @@ models = model_loader.preload_models_from_standard_weights(str(model_file), DEVI
 # Blueprints for image generation and text generation
 blueprints = {
     "Visual Story": {
-        "sd_prompt": "A futuristic city skyline at dusk, flying cars, neon lights, cyberpunk style",
-        "sd_cfg_scale": 9,
-        "sd_num_inference_steps": 60,
-        "sd_sampler": "ddpm",
-        "ollama_prompt": "Describe a futuristic city that blends natural elements with advanced technology.",
-        "ollama_model": "llama3"
+        "sd_prompts": [
+            "A futuristic city skyline at dusk, flying cars, neon lights, cyberpunk style",
+            "A bustling marketplace in a futuristic city, holograms, diverse crowd",
+            "A serene park in a futuristic city with advanced technology blending with nature"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe a futuristic city that blends natural elements with advanced technology.",
+            "Write about an advanced cityscape with unique technological elements.",
+            "Imagine a futuristic metropolis where nature and technology harmoniously coexist."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
+    # Other blueprints with similar structure...
     "Nature & Poetry": {
-        "sd_prompt": "A peaceful mountain landscape at sunrise, photorealistic, serene",
-        "sd_cfg_scale": 7,
-        "sd_num_inference_steps": 40,
-        "sd_sampler": "ddpm",
-        "ollama_prompt": "Write a short poem about a tranquil sunrise over the mountains.",
-        "ollama_model": "aya"
+        "sd_prompts": [
+            "A peaceful mountain landscape at sunrise, photorealistic, serene",
+            "A tranquil lake surrounded by autumn trees, soft light, misty atmosphere",
+            "A hidden waterfall in a dense jungle, lush greenery, crystal clear water"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Write a short poem about a tranquil sunrise over the mountains.",
+            "Describe the beauty of a hidden waterfall in a jungle.",
+            "Compose a poetic reflection on the serenity of a lake at dawn."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
+    # Additional blueprints with multiple prompts...
     "Dreamscape": {
-        "sd_prompt": "A surreal dreamscape with floating islands and bioluminescent creatures",
-        "sd_cfg_scale": 8,
-        "sd_num_inference_steps": 50,
-        "sd_sampler": "k_euler_ancestral",
-        "ollama_prompt": "Describe a dreamlike world filled with wonder and mystery.",
-        "ollama_model": "llama3"
+        "sd_prompts": [
+            "A surreal dreamscape with floating islands and bioluminescent creatures",
+            "An endless horizon of strange landscapes, blending day and night",
+            "A fantastical world with floating rocks and neon-lit skies"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe a dreamlike world filled with wonder and mystery.",
+            "Write about a place where time doesn't exist, only dreams.",
+            "Create a story where reality and fantasy blur together."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Abstract Art": {
-        "sd_prompt": "Abstract painting with vibrant colors and dynamic shapes",
-        "sd_cfg_scale": 10,
-        "sd_num_inference_steps": 30,
-        "sd_sampler": "ddim",
-        "ollama_prompt": "Write a short description of an abstract painting.",
-        "ollama_model": "aya"
+        "sd_prompts": [
+            "Abstract painting with vibrant colors and dynamic shapes",
+            "A digital artwork with chaotic patterns and bold contrasts",
+            "Geometric abstraction with a focus on form and color"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Write a short description of an abstract painting.",
+            "Describe a piece of modern art that defies traditional norms.",
+            "Imagine a world where art is created by emotions, not hands."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Fashion Design": {
-        "sd_prompt": "A high-fashion model wearing a futuristic outfit, neon colors, catwalk pose",
-        "sd_cfg_scale": 8,
-        "sd_num_inference_steps": 45,
-        "sd_sampler": "euler",
-        "ollama_prompt": "Describe a unique and innovative fashion design.",
-        "ollama_model": "llama3"
+        "sd_prompts": [
+            "A high-fashion model wearing a futuristic outfit, neon colors, catwalk pose",
+            "A chic ensemble blending classic elegance with modern flair",
+            "Avant-garde fashion with bold textures and unconventional shapes"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe a unique and innovative fashion design.",
+            "Write about a new fashion trend inspired by nature.",
+            "Imagine a clothing line that combines style with sustainability."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Food & Recipe": {
-        "sd_prompt": "A gourmet dish, plated beautifully, close-up",
-        "sd_cfg_scale": 8,
-        "sd_num_inference_steps": 45,
-        "sd_sampler": "euler",
-        "ollama_prompt": "Describe a delicious and complex dish.",
-        "ollama_model": "llama3"
+        "sd_prompts": [
+            "Abstract painting with vibrant colors and dynamic shapes",
+            "A digital artwork with chaotic patterns and bold contrasts",
+            "Geometric abstraction with a focus on form and color"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Write a short description of an abstract painting.",
+            "Describe a piece of modern art that defies traditional norms.",
+            "Imagine a world where art is created by emotions, not hands."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Interior Design": {
-        "sd_prompt": "Modern living room interior, minimalist style, natural light",
-        "sd_cfg_scale": 7,
-        "sd_num_inference_steps": 50,
-        "sd_sampler": "k_euler_ancestral",
-        "ollama_prompt": "Describe a stylish and functional living room design.",
-        "ollama_model": "aya"
+        "sd_prompts": [
+            "A modern living room with sleek furniture, minimalist design, and natural light",
+            "A cozy study room with rich textures, warm colors, and elegant decor",
+            "An open-plan kitchen with contemporary appliances and stylish finishes"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe an interior design that combines modern and classic elements.",
+            "Write about a space that enhances productivity and relaxation through design.",
+            "Imagine a luxurious interior design for a high-end apartment."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Historical Fiction": {
-        "sd_prompt": "A medieval castle at sunset, dramatic sky, historical accuracy",
-        "sd_cfg_scale": 9,
-        "sd_num_inference_steps": 60,
-        "sd_sampler": "ddpm",
-        "ollama_prompt": "Write a short story set in a medieval castle.",
-        "ollama_model": "llama3"
+        "sd_prompts": [
+            "A bustling Victorian-era street with horse-drawn carriages and period architecture",
+            "A grand historical ballroom with opulent decor and elegantly dressed guests",
+            "An ancient battlefield with detailed historical accuracy and dramatic scenery"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe a significant historical event as if it were a scene in a novel.",
+            "Write about a character navigating the challenges of a historical setting.",
+            "Imagine a historical figure interacting with modern technology."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Science Fiction": {
-        "sd_prompt": "Alien spaceship landing on a distant planet, futuristic, cinematic",
-        "sd_cfg_scale": 10,
-        "sd_num_inference_steps": 30,
-        "sd_sampler": "ddim",
-        "ollama_prompt": "Describe a futuristic alien civilization.",
-        "ollama_model": "aya"
+        "sd_prompts": [
+            "A futuristic cityscape with flying cars, neon lights, and towering skyscrapers",
+            "An alien planet with unique landscapes, strange flora, and advanced technology",
+            "A space station with cutting-edge design and high-tech equipment"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe a futuristic world where technology has reshaped society.",
+            "Write about an encounter with an alien civilization.",
+            "Imagine a story set in a distant future with advanced technology and space exploration."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     },
     "Character Design": {
-        "sd_prompt": "Anime character, detailed, expressive, unique outfit",
-        "sd_cfg_scale": 8,
-        "sd_num_inference_steps": 45,
-        "sd_sampler": "euler",
-        "ollama_prompt": "Describe a unique and memorable character.",
-        "ollama_model": "llama3"
+        "sd_prompts": [
+            "A detailed fantasy character with elaborate costumes and accessories",
+            "A sci-fi hero with futuristic armor and high-tech gadgets",
+            "A historical figure portrayed with accurate attire and realistic features"
+        ],
+        "sd_cfg_scales": [9, 8, 7],
+        "sd_num_inference_steps": [60, 50, 45],
+        "sd_samplers": ["ddpm", "k_euler_ancestral", "euler"],
+        "ollama_prompts": [
+            "Describe a unique character from a fantasy novel, focusing on their appearance and personality.",
+            "Write about a futuristic character with advanced technology and a compelling backstory.",
+            "Imagine a historical figure as a character in a modern setting."
+        ],
+        "ollama_models": ["llama3", "aya", "codellama"]
     }
 }
 
@@ -141,9 +224,15 @@ def generate_image(prompt, cfg_scale, num_inference_steps, sampler):
 def apply_blueprint(blueprint_name):
     if blueprint_name in blueprints:
         bp = blueprints[blueprint_name]
+        sd_prompts = random.choice(bp["sd_prompts"])
+        sd_cfg_scale = random.choice(bp["sd_cfg_scales"])
+        sd_num_inference_steps = random.choice(bp["sd_num_inference_steps"])
+        sd_sampler = random.choice(bp["sd_samplers"])
+        ollama_prompts = random.choice(bp["ollama_prompts"])
+        ollama_model = random.choice(bp["ollama_models"])
         return (
-            bp["sd_prompt"], bp["sd_cfg_scale"], bp["sd_num_inference_steps"], bp["sd_sampler"], 
-            bp["ollama_model"], bp["ollama_prompt"]
+            sd_prompts, sd_cfg_scale, sd_num_inference_steps, sd_sampler, 
+            ollama_model, ollama_prompts
         )
     return "", 7, 20, "ddpm", "aya", ""
 
@@ -187,10 +276,10 @@ def gradio_interface():
                 # Text Generation with Ollama
                 gr.Markdown("### Generate Text with Ollama")
                 ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=["aya", "llama3", "codellama"], value="aya")
-                ollama_prompt = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
+                ollama_prompts = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
                 ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=True)
                 ollama_btn = gr.Button("Generate", variant="primary")
-                ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompt], outputs=ollama_output)
+                ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompts], outputs=ollama_output)
 
                 gr.Markdown("### GPT Checkpoints Management")
                 checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"], value="EleutherAI/gpt-neo-125M")
@@ -206,28 +295,12 @@ def gradio_interface():
             with gr.Column(scale=1):
                 gr.Markdown("### Stable Diffusion Image Generation")
                 
-                # Blueprint Dropdown
-                # blueprint_dropdown = gr.Dropdown(label="Select Blueprint", choices=list(blueprints.keys()), value=list(blueprints.keys())[0])
                 prompt_input = gr.Textbox(label="Prompt", placeholder="A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution")
                 cfg_scale = gr.Slider(label="CFG Scale", minimum=1, maximum=20, value=7, step=1)
                 num_inference_steps = gr.Slider(label="Sampling Steps", minimum=10, maximum=100, value=20, step=5)
                 sampler = gr.Radio(label="Sampling Method", choices=["ddpm", "Euler a", "Euler", "LMS", "Heun", "DPM2 a", "PLMS"], value="ddpm")
                 generate_img_btn = gr.Button("Generate", variant="primary")
                 output_image = gr.Image(label="Output", show_label=False, height=700, width=750)
-
-                # Update fields when a blueprint is selected
-                def update_stable_diffusion_inputs(bp_name):
-                    if bp_name in blueprints:
-                        bp = blueprints[bp_name]
-                        return (
-                            gr.update(value=bp["sd_prompt"]),
-                            gr.update(value=bp["sd_cfg_scale"]),
-                            gr.update(value=bp["sd_num_inference_steps"]),
-                            gr.update(value=bp["sd_sampler"])
-                        )
-                    return gr.update(value=""), gr.update(value=7), gr.update(value=20), gr.update(value="ddpm")
-                
-                # blueprint_dropdown.change(fn=update_stable_diffusion_inputs, inputs=blueprint_dropdown, outputs=[prompt_input, cfg_scale, num_inference_steps, sampler])
 
                 generate_img_btn.click(fn=generate_image, inputs=[prompt_input, cfg_scale, num_inference_steps, sampler], outputs=output_image)
 
@@ -247,21 +320,30 @@ def gradio_interface():
                 def load_blueprint(blueprint_name):
                     if blueprint_name in blueprints:
                         bp = blueprints[blueprint_name]
-                        return (bp["sd_prompt"], bp["sd_cfg_scale"], bp["sd_num_inference_steps"], bp["sd_sampler"], bp["ollama_model"], bp["ollama_prompt"])
+                        sd_prompts = random.choice(bp["sd_prompts"])
+                        sd_cfg_scale = random.choice(bp["sd_cfg_scales"])
+                        sd_num_inference_steps = random.choice(bp["sd_num_inference_steps"])
+                        sd_sampler = random.choice(bp["sd_samplers"])
+                        ollama_prompts = random.choice(bp["ollama_prompts"])
+                        ollama_model = random.choice(bp["ollama_models"])
+                        return (
+                            sd_prompts, sd_cfg_scale, sd_num_inference_steps, sd_sampler, 
+                            ollama_model, ollama_prompts
+                        )
                     return "", 7, 20, "ddpm", "aya", ""
 
-                def apply_loaded_blueprint(prompt, cfg_scale, num_inference_steps, sampler, model, ollama_prompt):
+                def apply_loaded_blueprint(prompt, cfg_scale, num_inference_steps, sampler, model, ollama_prompts):
                     return (
                         gr.update(value=prompt), 
                         gr.update(value=cfg_scale), 
                         gr.update(value=num_inference_steps), 
                         gr.update(value=sampler), 
                         gr.update(value=model), 
-                        gr.update(value=ollama_prompt)
+                        gr.update(value=ollama_prompts)
                     )
 
                 load_blueprint_btn.click(fn=load_blueprint, inputs=blueprint_dropdown, outputs=[sd_prompt_output, sd_cfg_output, sd_steps_output, sd_sampler_output, ollama_model_output, ollama_prompt_output])
-                load_blueprint_btn.click(fn=apply_loaded_blueprint, inputs=[sd_prompt_output, sd_cfg_output, sd_steps_output, sd_sampler_output, ollama_model_output, ollama_prompt_output], outputs=[prompt_input, cfg_scale, num_inference_steps, sampler, ollama_model_name, ollama_prompt])
+                load_blueprint_btn.click(fn=apply_loaded_blueprint, inputs=[sd_prompt_output, sd_cfg_output, sd_steps_output, sd_sampler_output, ollama_model_output, ollama_prompt_output], outputs=[prompt_input, cfg_scale, num_inference_steps, sampler, ollama_model_name, ollama_prompts])
 
     demo.launch()
 
