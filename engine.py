@@ -346,10 +346,21 @@ def gradio_interface():
                     load_blueprint_btn.click(fn=load_blueprint, inputs=blueprint_dropdown, outputs=[sd_prompt_output, sd_cfg_output, sd_steps_output, sd_sampler_output, ollama_model_output, ollama_prompt_output])
                     load_blueprint_btn.click(fn=apply_loaded_blueprint, inputs=[sd_prompt_output, sd_cfg_output, sd_steps_output, sd_sampler_output, ollama_model_output, ollama_prompt_output], outputs=[prompt_input, cfg_scale, num_inference_steps, sampler, ollama_model_name, ollama_prompts])
 
-        with gr.Tab("tokenization"):
-            from nanograd.models.GPT.tokenizer import tokenize
-            iface = gr.Interface(fn=tokenize, inputs="text", outputs="json",description="Enter text to see the BPE tokenization process.")
-            
+        with gr.Tab("Chatbot-Prompts"):
+            with gr.Row():
+                with gr.Column(scale=1):
+                    from nanograd.models.GPT.tokenizer import tokenize
+                    gr.Markdown("<h1><center>BPE Tokenizer</h1></center>")
+                    iface = gr.Interface(fn=tokenize, inputs="text", outputs="json")
+                
+                with gr.Column(scale=1):
+                    from examples import ollama_prompted
+                    gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
+                    i = gr.Interface(
+                        fn=ollama_prompted.run,
+                        inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
+                        outputs=gr.Textbox(label="Aya's response"),
+                    )
     
     demo.launch()
 
