@@ -1,11 +1,3 @@
-# Copyright Lightning AI. Licensed under the Apache License 2.0, see LICENSE file.
-
-"""Full definition of a decoder-only transformer-based language model, all of it in this single file.
-
-Based on the nanoGPT implementation: https://github.com/karpathy/nanoGPT and
-https://github.com/EleutherAI/gpt-neox/tree/main/megatron/model.
-"""
-
 import math
 from typing import Any, Optional, Tuple, Union
 import warnings
@@ -15,6 +7,12 @@ import torch.nn as nn
 from typing_extensions import Self
 
 from litgpt.config import Config
+
+import os
+import json
+import regex as re
+import requests
+import gradio as gr
 
 from transformers.utils import(
     is_flash_attn_2_available,
@@ -34,6 +32,170 @@ logger = logging.get_logger(__name__)
 ######################################################################
 # Generative Pre-Trained Transformer model for Next Token Prediction #
 ######################################################################
+
+def bytes_to_unicode():
+    bs = list(range(ord("!"), ord("~")+1))+list(range(ord("¡"), ord("¬")+1))+list(range(ord("®"), ord("ÿ")+1))
+    cs = bs[:]
+    n = 0
+    for b in range(2**8):
+        if b not in bs:
+            bs.append(b)
+            cs.append(2**8+n)
+            n += 1
+    cs = [chr(n) for n in cs]
+    d = dict(zip(bs, cs))
+    return d
+
+def get_pairs(word):
+    pairs = set()
+    prev_char = word[0]
+    for char in word[1:]:
+        pairs.add((prev_char, char))
+        prev_char = char
+    return pairs
+
+class Encoder:
+    def __init__(self, encoder, bpe_merges):
+        self.byte_encoder = bytes_to_unicode()
+        self.byte_decoder = {v: k for k, v in self.byte_encoder.items()}
+        self.encoder = encoder
+        self.decoder = {v: k for k, v in self.encoder.items()}
+        self.bpe_ranks = dict(zip(bpe_merges, range(len(bpe_merges))))
+        self.pat = re.compile(r"""'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""")
+        self.cache = {}
+
+    def bpe(self, token):
+        if token in self.cache:
+            return self.cache[token]
+        word = tuple(token)
+        pairs = get_pairs(word)
+        if not pairs:
+            return token
+        while True:
+            bigram = min(pairs, key=lambda pair: self.bpe_ranks.get(pair, float('inf')))
+            if bigram not in self.bpe_ranks:
+                break
+            first, second = bigram
+            new_word = []
+            i = 0
+            while i < len(word):
+                try:
+                    j = word.index(first, i)
+                    new_word.extend(word[i:j])
+                    i = j
+                except:
+                    new_word.extend(word[i:])
+                    break
+                if word[i] == first and i < len(word) - 1 and word[i + 1] == second:
+                    new_word.append(first + second)
+                    i += 2
+                else:
+                    new_word.append(word[i])
+                    i += 1
+            new_word = tuple(new_word)
+            word = new_word
+            if len(word) == 1:
+                break
+            else:
+                pairs = get_pairs(word)
+        word = ' '.join(word)
+        self.cache[token] = word
+        return word
+
+    def encode(self, text):
+        bpe_idx = []
+        tokens = re.findall(self.pat, text)
+        for token in tokens:
+            token_bytes = token.encode('utf-8')
+            token_translated = ''.join(self.byte_encoder[b] for b in token_bytes)
+            token_merged = self.bpe(token_translated).split(' ')
+            token_ix = [self.encoder[bpe_token] for bpe_token in token_merged]
+            bpe_idx.extend(token_ix)
+        return bpe_idx
+
+    def encode_and_show_work(self, text):
+        bpe_idx = []
+        parts = []
+        tokens = re.findall(self.pat, text)
+        for token in tokens:
+            token_bytes = token.encode('utf-8')
+            token_translated = ''.join(self.byte_encoder[b] for b in token_bytes)
+            token_merged = self.bpe(token_translated).split(' ')
+            token_ix = [self.encoder[bpe_token] for bpe_token in token_merged]
+            bpe_idx.extend(token_ix)
+            parts.append({
+                'token': token,
+                'token_bytes': token_bytes,
+                'token_translated': token_translated,
+                'token_merged': token_merged,
+                'token_ix': token_ix,
+            })
+        out = {
+            'bpe_idx': bpe_idx,
+            'tokens': tokens,
+            'parts': parts,
+        }
+        return out
+
+    def decode(self, bpe_idx):
+        tokens_merged = [self.decoder[token] for token in bpe_idx]
+        tokens_flat = ''.join(tokens_merged)
+        tokens_bytes = bytearray([self.byte_decoder[c] for c in tokens_flat])
+        text = tokens_bytes.decode('utf-8', errors='replace')
+        return text
+
+def get_file(local_file, remote_file):
+    if not os.path.isfile(local_file):
+        response = requests.get(remote_file)
+        open(local_file, "wb").write(response.content)
+
+def get_encoder():
+    home_dir = os.path.expanduser('~')
+    cache_dir = os.path.join(home_dir, '.cache', 'mingpt')
+    os.makedirs(cache_dir, exist_ok=True)
+    encoder_local_file = os.path.join(cache_dir, 'encoder.json')
+    encoder_remote_file = 'https://openaipublic.blob.core.windows.net/gpt-2/models/124M/encoder.json'
+    get_file(encoder_local_file, encoder_remote_file)
+    with open(encoder_local_file, 'r') as f:
+        encoder = json.load(f)
+    vocab_local_file = os.path.join(cache_dir, 'vocab.bpe')
+    vocab_remote_file = 'https://openaipublic.blob.core.windows.net/gpt-2/models/124M/vocab.bpe'
+    get_file(vocab_local_file, vocab_remote_file)
+    with open(vocab_local_file, 'r', encoding="utf-8") as f:
+        bpe_data = f.read()
+    bpe_merges = [tuple(merge_str.split()) for merge_str in bpe_data.split('\n')[1:-1]]
+    enc = Encoder(encoder, bpe_merges)
+    return enc
+
+class BPETokenizer:
+    def __init__(self):
+        self.encoder = get_encoder()
+
+    def __call__(self, text, return_tensors='pt'):
+        assert return_tensors == 'pt'
+        assert isinstance(text, str)
+        idx = [self.encoder.encode(text)]
+        out = torch.tensor(idx, dtype=torch.long)
+        return out
+
+    def decode(self, idx):
+        assert idx.ndim == 1
+        text = self.encoder.decode(idx.tolist())
+        return text
+
+def tokenize(text):
+    e = get_encoder()
+    r = e.encode_and_show_work(text)
+    return {
+        "Original text": text,
+        "Pre-tokenized text": r['tokens'],
+        "BPE tokens": r['bpe_idx']
+    }
+
+
+def run_tokenizer():
+    iface = gr.Interface(fn=tokenize, inputs="text", outputs="json", title="BPE Tokenizer", description="Enter text to see the BPE tokenization process.")
+    iface.launch()
 
 
 class GPT(nn.Module): # GPT architecture. 
@@ -59,10 +221,6 @@ class GPT(nn.Module): # GPT architecture.
 
     @max_seq_length.setter
     def max_seq_length(self, value: int) -> None:
-        """
-        When doing inference, the sequences used might be shorter than the model's context length.
-        This allows setting a smaller number to avoid allocating unused memory
-        """
         if value > self.config.block_size:
             raise ValueError(f"Cannot attend to {value}, block size is only {self.config.block_size}")
         self._max_seq_length = value
@@ -74,15 +232,11 @@ class GPT(nn.Module): # GPT architecture.
         # override
         elif value != self.cos.size(0):
             self.cos, self.sin = self.rope_cache(device=self.cos.device)
-        # the mask and kv cache size will get updated on `set_kv_cache`. we cannot update it here because we don't know
-        # if the kv cache is expected
 
     def reset_parameters(self) -> None:
-        # Trigger resetting the rope-cache
         self.cos, self.sin = self.rope_cache(device=self.cos.device)
 
     def _init_weights(self, module: nn.Module) -> None:
-        """Meant to be used with `gpt.apply(gpt._init_weights)`."""
         if isinstance(module, nn.Linear):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
             if module.bias is not None:
@@ -95,7 +249,7 @@ class GPT(nn.Module): # GPT architecture.
         if self.max_seq_length < T:
             raise ValueError(f"Cannot forward sequence of length {T}, max seq length is only {self.max_seq_length}.")
 
-        if input_pos is not None:  # use the kv cache
+        if input_pos is not None:  
             cos = self.cos.index_select(0, input_pos)
             sin = self.sin.index_select(0, input_pos)
             if self.mask_cache is None:
@@ -106,14 +260,14 @@ class GPT(nn.Module): # GPT architecture.
             sin = self.sin[:T]
             mask = None
 
-        x = self.transformer.wte(idx)  # token embeddings of shape (b, t, n_embd)
+        x = self.transformer.wte(idx)  
         if self.config.scale_embeddings:
             x = x * (self.config.n_embd**0.5)
 
         for block in self.transformer.h:
             x = block(x, cos, sin, mask, input_pos)
         x = self.transformer.ln_f(x)
-        return self.lm_head(x)  # (b, t, vocab_size)
+        return self.lm_head(x)  
 
     @classmethod
     def from_name(cls, name: str, **kwargs: Any) -> Self:
@@ -139,15 +293,12 @@ class GPT(nn.Module): # GPT architecture.
             rope_cache_length = self.cos.size(-1)
         max_seq_length = self.max_seq_length
 
-        # initialize the kv cache for all blocks
         for block in self.transformer.h:
             block.attn.kv_cache = block.attn.build_kv_cache(
                 batch_size, max_seq_length, rope_cache_length, device, dtype
             )
 
         if self.mask_cache is None or self.mask_cache.size(3) != max_seq_length:
-            # passing `attn_mask` to SDPA disables the flash implementation. since we only need the mask
-            # for the kv-cache support (only during inference), we only create it in that situation
             self.mask_cache = build_mask_cache(max_seq_length, device)
 
     def clear_kv_cache(self) -> None:
@@ -180,22 +331,7 @@ class Block(nn.Module):
         mask: Optional[torch.Tensor] = None,
         input_pos: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
-        """
-        Non-parallel residual       Parallel residual
-           ┌─ x                     ┌─ x ────────────┐             Note: if `shared_attention_norm` is True,
-           │  ↓                     │  ↓             ↓                   the output from `norm_1` is reused
-           │  norm_1                │  norm_1  ───►  norm_2
-           │  ↓                     │  ↓             ↓
-           │  attn                  │  attn          mlp
-           │  ↓                     │  ↓             │
-        ┌─ └► +                     └► + ◄───────────┘
-        │     norm_2
-        │     ↓
-        │     mlp
-        │     ↓
-        └───► +
-        """
-
+        
         x_normed = self.norm_1(x)
         attention_output = self.attn(x_normed, cos, sin, mask, input_pos)
 
@@ -213,12 +349,8 @@ class CausalSelfAttention(nn.Module):
     def __init__(self, config: Config) -> None: 
         super().__init__() 
         shape = (config.n_head + 2 * config.n_query_groups) * config.head_size
-        # key, query, value projections for all heads, but in a batch
         self.attn = nn.Linear(config.n_embd, shape, bias=config.bias)
-        # output projection
-        # if `head_size` is explicitly specified in the config, `n_emd` might not be equal to `head_size * n_head`
         self.proj = nn.Linear(config.head_size * config.n_head, config.n_embd, bias=config.bias)
-        # disabled by default
         self.kv_cache: Optional[KVCache] = None
 
         self.config = config
@@ -231,26 +363,20 @@ class CausalSelfAttention(nn.Module):
         mask: Optional[torch.Tensor] = None,
         input_pos: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
-        B, T, C = x.size()  # batch size, sequence length, embedding dimensionality (n_embd)
+        B, T, C = x.size()  
 
         qkv = self.attn(x)
 
-        # assemble into a number of query groups to support Multi-Head attention, Multi-Query attention and Grouped-Queyr attention together (see `config.n_query_groups`)
         q_per_kv = self.config.n_head // self.config.n_query_groups
-        total_qkv = q_per_kv + 2  # each group has 1+ queries, 1 key, and 1 value
+        total_qkv = q_per_kv + 2  
         qkv = qkv.view(B, T, self.config.n_query_groups, total_qkv, self.config.head_size)
-        qkv = qkv.permute(0, 2, 3, 1, 4)  # (B, n_query_groups, total_qkv, T, hs)
+        qkv = qkv.permute(0, 2, 3, 1, 4)  
 
-        # split batched computation into three
         q, k, v = qkv.split((q_per_kv, 1, 1), dim=2)
 
-        # maybe repeat k and v if for the non multi-head attention cases
-        # training: flash attention requires it
-        # inference: multi-query would require a full kv cache so avoid it to limit its memory usage
         if self.config.n_query_groups != self.config.n_head and (input_pos is None or self.config.n_query_groups != 1):
             k = k.expand(B, self.config.n_query_groups, q_per_kv, T, self.config.head_size)
             v = v.expand(B, self.config.n_query_groups, q_per_kv, T, self.config.head_size)
-        # quyer and key and value: reshape it. 
         q = q.reshape(B, -1, T, self.config.head_size)  # (B, nh_q, T, hs)
         k = k.reshape(B, -1, T, self.config.head_size)  # (B, nh_k, T, hs)
         v = v.reshape(B, -1, T, self.config.head_size)  # (B, nh_v, T, hs)
@@ -352,18 +478,14 @@ class LLaMAMoE(nn.Module):
         self.config = config
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Derived from: https://github.com/mistralai/mistral-src/blob/b46d6/moe_one_file_ref.py#L203-L219
-        See also figure 1 in https://arxiv.org/abs/2211.15841
-        """
-        B, T, C = x.size()  # batch size, sequence length, embedding dimensionality (n_embd)
-        x = x.view(-1, C)  # (B*T, C)
-        router = self.gate(x)  # (B*T, n_expert)
-        probs, indices = torch.topk(router, self.config.n_expert_per_token)  # (B*T, n_expert_per_token)
+        B, T, C = x.size()  
+        x = x.view(-1, C)  
+        router = self.gate(x)
+        probs, indices = torch.topk(router, self.config.n_expert_per_token)  
         probs = probs.softmax(dim=1, dtype=torch.float).to(dtype=x.dtype)
         masks = indices.unsqueeze(-1) == torch.arange(self.config.n_expert, device=x.device)
-        masks = masks.permute(2, 0, 1)  # (n_expert, B*T, n_expert_per_token)
-        y = torch.zeros_like(x)  # (B*T, C)
+        masks = masks.permute(2, 0, 1)  
+        y = torch.zeros_like(x) 
         for mask, expert in zip(masks, self.experts):
             token_idx, expert_idx = torch.where(mask)
             y[token_idx] += probs[token_idx, expert_idx, None] * expert(x[token_idx])
@@ -373,12 +495,7 @@ class LLaMAMoE(nn.Module):
 def build_rope_cache(
     seq_len: int, n_elem: int, device: Optional[torch.device] = None, base: int = 10000, condense_ratio: int = 1
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    """Enhanced Transformer with Rotary Position Embedding.
-
-    Derived from: https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/labml_nn/
-    transformers/rope/__init__.py. MIT License:
-    https://github.com/labmlai/annotated_deep_learning_paper_implementations/blob/master/license.
-    """
+    
     # $\Theta = {\theta_i = 10000^{\frac{2(i-1)}{d}}, i \in [1, 2, ..., \frac{d}{2}]}$
     theta = 1.0 / (base ** (torch.arange(0, n_elem, 2, device=device).float() / n_elem))
 
@@ -393,9 +510,9 @@ def build_rope_cache(
 
 def apply_rope(x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
     head_size = x.size(-1)
-    x1 = x[..., : head_size // 2]  # (B, nh, T, hs/2)
-    x2 = x[..., head_size // 2 :]  # (B, nh, T, hs/2)
-    rotated = torch.cat((-x2, x1), dim=-1)  # (B, nh, T, hs)
+    x1 = x[..., : head_size // 2]  
+    x2 = x[..., head_size // 2 :]  
+    rotated = torch.cat((-x2, x1), dim=-1)  
     roped = (x * cos) + (rotated * sin)
     return roped.to(dtype=x.dtype)
 
@@ -413,10 +530,8 @@ class KVCache(nn.Module):
         self.register_buffer("v", torch.zeros(v_shape, device=device, dtype=dtype), persistent=False)
 
     def forward(self, input_pos: torch.Tensor, k: torch.Tensor, v: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
-        # move the buffer to the activation dtype for when AMP is used
         self.k = self.k.to(k.dtype)
         self.v = self.v.to(v.dtype)
-        # update the cache
         k = self.k.index_copy_(2, input_pos, k)
         v = self.v.index_copy_(2, input_pos, v)
         return k, v
@@ -432,12 +547,6 @@ def build_mask_cache(max_seq_length: int, device: Optional[torch.device] = None)
 
 
 class RMSNorm(torch.nn.Module):
-    """Root Mean Square Layer Normalization.
-
-    Derived from https://github.com/bzhangGo/rmsnorm/blob/master/rmsnorm_torch.py. BSD 3-Clause License:
-    https://github.com/bzhangGo/rmsnorm/blob/master/LICENSE.
-    """
-
     def __init__(self, size: int, dim: int = -1, eps: float = 1e-6, add_unit_offset: bool = False) -> None:
         super().__init__()
         self.weight = torch.nn.Parameter(torch.ones(size))
@@ -448,13 +557,11 @@ class RMSNorm(torch.nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         dtype = x.dtype
         x = x.float()
-        # NOTE: the original RMSNorm paper implementation is not equivalent
+        
         norm_x = torch.mean(x * x, dim=self.dim, keepdim=True)
         x_normed = x * torch.rsqrt(norm_x + self.eps)
         x_normed = x_normed.to(dtype=dtype)
         if self.add_unit_offset:
-            # Gemma model requires a unit offset
-            # https://github.com/google/gemma_pytorch/blob/main/gemma/model.py#L176
             return x_normed * (1 + self.weight)
         return x_normed * self.weight
 
@@ -481,37 +588,19 @@ from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_m
 
 _CHECKPOINT_FOR_DOC = "microsoft/biogpt"
 _CONFIG_FOR_DOC = "BioGptConfig"
-# Copied from transformers.models.opt.modeling_opt.OPTLearnedPositionalEmbedding with OPT->BioGpt
 class BioGptLearnedPositionalEmbedding(nn.Embedding):
-    """
-    This module learns positional embeddings up to a fixed maximum size.
-    """
-
     def __init__(self, num_embeddings: int, embedding_dim: int):
-        # BioGpt is set up so that if padding_idx is specified then offset the embedding ids by 2
-        # and adjust num_embeddings appropriately. Other models don't have this hack
         self.offset = 2
         super().__init__(num_embeddings + self.offset, embedding_dim)
 
     def forward(self, attention_mask: torch.LongTensor, past_key_values_length: int = 0):
-        """`input_ids_shape` is expected to be [bsz x seqlen]."""
         attention_mask = attention_mask.long()
-
-        # create positions depending on attention_mask
         positions = (torch.cumsum(attention_mask, dim=1).type_as(attention_mask) * attention_mask).long() - 1
-
-        # cut positions if `past_key_values_length` is > 0
         positions = positions[:, past_key_values_length:]
 
         return super().forward(positions + self.offset)
 
-
-# Copied from transformers.models.bart.modeling_bart.BartScaledWordEmbedding with Bart->BioGpt
 class BioGptScaledWordEmbedding(nn.Embedding):
-    """
-    This module overrides nn.Embeddings' forward by multiplying with embeddings scale.
-    """
-
     def __init__(self, num_embeddings: int, embedding_dim: int, padding_idx: int, embed_scale: Optional[float] = 1.0):
         super().__init__(num_embeddings, embedding_dim, padding_idx)
         self.embed_scale = embed_scale
@@ -519,11 +608,7 @@ class BioGptScaledWordEmbedding(nn.Embedding):
     def forward(self, input_ids: torch.Tensor):
         return super().forward(input_ids) * self.embed_scale
 
-
-# Copied from transformers.models.bart.modeling_bart.BartAttention with Bart->BioGpt
 class BioGptAttention(nn.Module):
-    """Multi-headed attention from 'Attention Is All You Need' paper"""
-
     def __init__(
         self,
         embed_dim: int,
@@ -567,51 +652,32 @@ class BioGptAttention(nn.Module):
         layer_head_mask: Optional[torch.Tensor] = None,
         output_attentions: bool = False,
     ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
-        """Input shape: Batch x Time x Channel"""
-
-        # if key_value_states are provided this layer is used as a cross-attention layer
-        # for the decoder
+        
         is_cross_attention = key_value_states is not None
 
         bsz, tgt_len, _ = hidden_states.size()
 
-        # get query proj
         query_states = self.q_proj(hidden_states) * self.scaling
-        # get key, value proj
-        # `past_key_value[0].shape[2] == key_value_states.shape[1]`
-        # is checking that the `sequence_length` of the `past_key_value` is the same as
-        # the provided `key_value_states` to support prefix tuning
         if (
             is_cross_attention
             and past_key_value is not None
             and past_key_value[0].shape[2] == key_value_states.shape[1]
         ):
-            # reuse k,v, cross_attentions
             key_states = past_key_value[0]
             value_states = past_key_value[1]
         elif is_cross_attention:
-            # cross_attentions
             key_states = self._shape(self.k_proj(key_value_states), -1, bsz)
             value_states = self._shape(self.v_proj(key_value_states), -1, bsz)
         elif past_key_value is not None:
-            # reuse k, v, self_attention
             key_states = self._shape(self.k_proj(hidden_states), -1, bsz)
             value_states = self._shape(self.v_proj(hidden_states), -1, bsz)
             key_states = torch.cat([past_key_value[0], key_states], dim=2)
             value_states = torch.cat([past_key_value[1], value_states], dim=2)
         else:
-            # self_attention
             key_states = self._shape(self.k_proj(hidden_states), -1, bsz)
             value_states = self._shape(self.v_proj(hidden_states), -1, bsz)
 
         if self.is_decoder:
-            # if cross_attention save Tuple(torch.Tensor, torch.Tensor) of all cross attention key/value_states.
-            # Further calls to cross_attention layer can then reuse all cross-attention
-            # key/value_states (first "if" case)
-            # if uni-directional self-attention (decoder) save Tuple(torch.Tensor, torch.Tensor) of
-            # all previous decoder key/value_states. Further calls to uni-directional self-attention
-            # can concat previous decoder key/value_states to current projected key/value_states (third "elif" case)
-            # if encoder bi-directional self-attention `past_key_value` is always `None`
             past_key_value = (key_states, value_states)
 
         proj_shape = (bsz * self.num_heads, -1, self.head_dim)
@@ -648,10 +714,6 @@ class BioGptAttention(nn.Module):
             attn_weights = attn_weights.view(bsz * self.num_heads, tgt_len, src_len)
 
         if output_attentions:
-            # this operation is a bit awkward, but it's required to
-            # make sure that attn_weights keeps its gradient.
-            # In order to do so, attn_weights have to be reshaped
-            # twice and have to be reused in the following
             attn_weights_reshaped = attn_weights.view(bsz, self.num_heads, tgt_len, src_len)
             attn_weights = attn_weights_reshaped.view(bsz * self.num_heads, tgt_len, src_len)
         else:
@@ -669,9 +731,6 @@ class BioGptAttention(nn.Module):
 
         attn_output = attn_output.view(bsz, self.num_heads, tgt_len, self.head_dim)
         attn_output = attn_output.transpose(1, 2)
-
-        # Use the `embed_dim` from the config (stored in the class) rather than `hidden_state` because `attn_output` can be
-        # partitioned across GPUs when using tensor-parallelism.
         attn_output = attn_output.reshape(bsz, tgt_len, self.embed_dim)
 
         attn_output = self.out_proj(attn_output)
@@ -709,29 +768,12 @@ class BioGptDecoderLayer(nn.Module):
         output_attentions: Optional[bool] = False,
         use_cache: Optional[bool] = True,
     ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
-        """
-        Args:
-            hidden_states (`torch.FloatTensor`): input to the layer of shape `(batch, seq_len, embed_dim)`
-            attention_mask (`torch.FloatTensor`): attention mask of size
-                `(batch, 1, tgt_len, src_len)` where padding elements are indicated by very large negative values.
-            layer_head_mask (`torch.FloatTensor`): mask for attention heads in a given layer of size
-                `(encoder_attention_heads,)`.
-            past_key_value (`Tuple(torch.FloatTensor)`): cached past key and value projection states
-            output_attentions (`bool`, *optional*):
-                Whether or not to return the attentions tensors of all attention layers. See `attentions` under
-                returned tensors for more detail.
-            use_cache (`bool`, *optional*):
-                If set to `True`, `past_key_values` key value states are returned and can be used to speed up decoding
-                (see `past_key_values`).
-        """
+    
         residual = hidden_states
 
         hidden_states = self.self_attn_layer_norm(hidden_states)
 
-        # Self Attention
-        # decoder uni-directional self-attention cached key/values tuple is at positions 1,2
         self_attn_past_key_value = past_key_value[:2] if past_key_value is not None else None
-        # add present self-attn cache to positions 1,2 of present_key_value tuple
         hidden_states, self_attn_weights, present_key_value = self.self_attn(
             hidden_states=hidden_states,
             past_key_value=self_attn_past_key_value,
@@ -742,7 +784,6 @@ class BioGptDecoderLayer(nn.Module):
         hidden_states = nn.functional.dropout(hidden_states, p=self.dropout, training=self.training)
         hidden_states = residual + hidden_states
 
-        # Fully Connected
         residual = hidden_states
         hidden_states = self.final_layer_norm(hidden_states)
         hidden_states = self.fc1(hidden_states)
@@ -818,20 +859,12 @@ BIOGPT_INPUTS_DOCSTRING = r"""
 
 
 class BioGptPreTrainedModel(PreTrainedModel):
-    """
-    An abstract class to handle weights initialization and a simple interface for downloading and loading pretrained
-    models.
-    """
-
     config_class = BioGptConfig
     base_model_prefix = "biogpt"
     supports_gradient_checkpointing = True
 
     def _init_weights(self, module):
-        """Initialize the weights"""
         if isinstance(module, nn.Linear):
-            # Slightly different from the TF version which uses truncated_normal for initialization
-            # cf https://github.com/pytorch/pytorch/pull/5617
             module.weight.data.normal_(mean=0.0, std=self.config.initializer_range)
             if module.bias is not None:
                 module.bias.data.zero_()
@@ -862,7 +895,6 @@ class BioGptModel(BioGptPreTrainedModel):
         self.layer_norm = nn.LayerNorm(self.embed_dim)
 
         self.gradient_checkpointing = False
-        # Initialize weights and apply final processing
         self.post_init()
 
     def get_input_embeddings(self):
@@ -896,7 +928,6 @@ class BioGptModel(BioGptPreTrainedModel):
         use_cache = use_cache if use_cache is not None else self.config.use_cache
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
-        # retrieve input_ids and inputs_embeds
         if input_ids is not None and inputs_embeds is not None:
             raise ValueError("You cannot specify both input_ids and inputs_embeds at the same time")
         elif input_ids is not None:
@@ -908,7 +939,6 @@ class BioGptModel(BioGptPreTrainedModel):
         else:
             raise ValueError("You have to specify either input_ids or inputs_embeds")
 
-        # past_key_values_length
         past_key_values_length = past_key_values[0][0].shape[2] if past_key_values is not None else 0
 
         if inputs_embeds is None:
@@ -926,7 +956,6 @@ class BioGptModel(BioGptPreTrainedModel):
                 f"{past_key_values_length + input_shape[1]} (sum of the lengths of current and past inputs)"
             )
 
-        # embed positions
         positions = self.embed_positions(attention_mask, past_key_values_length)
 
         attention_mask = _prepare_4d_causal_attention_mask(
@@ -950,7 +979,6 @@ class BioGptModel(BioGptPreTrainedModel):
         next_decoder_cache = () if use_cache else None
 
         for idx, decoder_layer in enumerate(self.layers):
-            # add LayerDrop (see https://arxiv.org/abs/1909.11556 for description)
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
             if self.training:
@@ -988,7 +1016,6 @@ class BioGptModel(BioGptPreTrainedModel):
             if output_attentions:
                 all_self_attns += (layer_outputs[1],)
 
-        # add hidden states from the last decoder layer
         if output_hidden_states:
             all_hidden_states += (hidden_states,)
 
