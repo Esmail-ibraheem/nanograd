@@ -1,4 +1,6 @@
-def run():
+import gradio as gr
+
+def run(user_input):
     import ollama
     # Initial prompt to set up the context
     initial_prompt = {
@@ -13,30 +15,30 @@ def run():
     # Initialize the chat with the initial prompt
     messages = [initial_prompt]
 
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() in ['exit', 'quit', 'bye']:
-            print("Ending the chat. Goodbye!")
-            break
+    # Add user input to the messages
+    messages.append({
+        'role': 'user',
+        'content': user_input,
+    })
 
-        # Add user input to the messages
-        messages.append({
-            'role': 'user',
-            'content': user_input,
-        })
+    # Get the model response
+    response = ollama.chat(model='aya', messages=messages)
+    ai_response = response['message']['content']
 
-        # Get the model response
-        response = ollama.chat(model='aya', messages=messages)
-        ai_response = response['message']['content']
+    # Add the model response to the messages
+    messages.append({
+        'role': 'assistant',
+        'content': ai_response,
+    })
 
-        # Print the model response
-        print(f"Aya: {ai_response}")
+    return ai_response
 
-        # Add the model response to the messages
-        messages.append({
-            'role': 'assistant',
-            'content': ai_response,
-        })
 
-if __name__ == "__main__":
-    run()
+# iface = gr.Interface(
+#     fn=run,
+#     inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
+#     outputs=gr.Textbox(label="Aya's response"),
+#     title="Travel and Airlines Chatbot"
+# )
+
+# iface.launch()
