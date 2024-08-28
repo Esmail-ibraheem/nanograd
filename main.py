@@ -1,6 +1,4 @@
 import nanograd
-from nanograd.optimizers import AdamW
-
 
 from nanograd.RL import Cartpole, car # import reinforcement learning package
 # Cartpole.run()
@@ -62,4 +60,4 @@ from nanograd.models import chat
 #     print(f'{e.grad:.4f}')  
 
 
-# import nanograd.nn.train
+# import nanograd.nn.train_nn

@@ -56,6 +56,20 @@ cuda and pretraining Reinforcement learning$                                    
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 
 
 
+######## nanograd run stable_diffusion with gradio, nanograd run tokenizer (see the tiktoken site)
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                                                                          @
+                                                                                          @
+building some reinforcment learning applications, building n-gram (generate dataset.)     @
+just download stable_diffusion, and refactor it,                                          @
+check if i can add the drawing classification model in javascript and connected it with   @
+python.                                                                                   @
+                                                                                          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+nanograd run RL-physics --
 
 how it is going to work:
 from nanograd.nn import modules 
@@ -83,7 +97,7 @@ from nanograd.RL import Q*
 from nanograd.RL import g 
 
 --------------------------------------------------------------
-
+nano-llama3.1 from karpathy, mamba from geo hotz, audio recongnition from geo gotz (tinyvoice), stable diffusion.
 ---------------------------------------------------
 
 first building the team: the AI stuff like the nn, RL, models = this is on me (**Esmail Gumaan**).
@@ -128,8 +142,3 @@ from nanograd.trainers import trainer
 from nanograd.analysis import sentiment_analysis  (done)
 from nanograd.RL import ssdf
 
-
-##########################################333
-
-
-Analysis lab: dataset generator from the Karpathy's course, diffusion models from this course https://www.youtube.com/watch?v=S_il77Ttrmg&t=948s&pp=ygUdZGlmZnVzaW9uIG1vZGVscyBmcm9tIHNjcmF0Y2g%3D

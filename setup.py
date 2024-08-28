@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     install_requires=[
-        'torch', 
+        'torch',
         'argparse',
         'tensorboard',
         'wget',
@@ -15,6 +15,11 @@ setup(
         'sentencepiece',
         'tqdm',
         'regex',
+        'gradio',
+        'trl',
+        'datasets',
+        'gym',
+        'tinygrad',
     ],
     entry_points={
         'console_scripts': [

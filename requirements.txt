@@ -3,7 +3,6 @@ torchvision>=0.10.0
 torchaudio>=0.9.0
 numpy
 pandas
-scikit-learn
 matplotlib
 transformers
 litgpt 
