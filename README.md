@@ -59,7 +59,7 @@ Whether you're working on text generation, image synthesis, image classification
 ### 5. **Custom Models (Ollama models)**
    In addition to the predefined models like GPT, LLaMA, Stable Diffusion, and Vision Transformer, this directory also serves as a repository for custom models built using the nanograd framework. Users are encouraged to contribute their models or adapt existing ones to fit their specific use cases.
 
-<p align="center"> <img src="https://github.com/Esmail-ibraheem/omniGPT/blob/main/assets/GPT.jpeg" alt="GPT architecture overview" ></p> 
+
 
 
 ---
