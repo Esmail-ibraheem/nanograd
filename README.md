@@ -173,8 +173,8 @@ in this feature you can do all you can do in the CLI feature but with an interfa
 - run BPE tokenizer
 ![image](https://github.com/user-attachments/assets/f3868abb-9dfe-442c-a954-f4a7f1e35170)
 
-### 3- as an API:**still in process**
-run this command `python nanograd_API.py`
+### 3- as an API:**still in developing process**
+run this command `python nanograd_API.py`;.;.
 
 > [!IMPORTANT]
 > you can't run any of this unless you do downloaded the checkpoints before, for the litgpt you can download their models(Checkpoints) after you installed the library run this `nanograd download checkpoints`, for the ollama models also the same, for the stable diffusion download them from huggingface.  
