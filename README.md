@@ -158,12 +158,13 @@ options:
 
 
 ### 2- as an engine:
-in this feature you can do all of you can do in the CLI feature but with interface, you do not need to type any thing just some click 
+in this feature you can do all of you can do in the CLI feature but with interface, you do not need to type any thing just some clicks.
 - run stable diffusion
 - run ollama models
 - blueprints to generate different stories each time for the LLMs and stable diffusion
 - download checkpoints using litgpt
 - install ollama
+  
 run this command `python nano_engine.py`
 ![image](https://github.com/user-attachments/assets/cdfb4b1e-f735-416a-a3c4-0074c391cc5d)
 - run chatbot in Arabic using ollama
