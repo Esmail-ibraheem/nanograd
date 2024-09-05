@@ -102,6 +102,7 @@ The `nn` module in nanograd provides similar functionalities to PyTorch’s `tor
 ---
 
 ## Usage:
+1- as a library:
 **clone the repo**
 ```
 git clone https://github.com/Esmail-ibraheem/nanograd.git
@@ -142,6 +143,13 @@ options:
   -h, --help            show this help message and exit
 ```
 
+2- as an engine:
+run this command `python nano_engine.py`
+![image](https://github.com/user-attachments/assets/cdfb4b1e-f735-416a-a3c4-0074c391cc5d)
+![image](https://github.com/user-attachments/assets/f3868abb-9dfe-442c-a954-f4a7f1e35170)
+
+3- as an API:**still in process**
+run this command `python nanograd_API.py`
 
 ---
 
