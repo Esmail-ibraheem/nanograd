@@ -143,6 +143,18 @@ options:
   -h, --help            show this help message and exit
 ```
 
+> [!NOTE]
+> you can use the nanograd library in your CLI, after installing it in your computer using `pip install -e`. then you can run any model you want,
+> here is some commands to run in the terminal
+| command | Sub-command | type this |
+| install | install dependencies | nanograd install ollama |
+| download | download checkpoints or llama | nanograd download checkpoint micorosoft/phi-2 or nanograd download llama | 
+| run_gpt | run gpt inference | nanograd run_gpt | 
+| run_llama | run llama inference | nanograd run_llama |
+| run | run model inference (ollama models) | nanograd run llama3.1 |
+| run_diffusion | run stable diffusion | nanograd run_diffusion stable_diffusion |
+
+
 2- as an engine:
 run this command `python nano_engine.py`
 ![image](https://github.com/user-attachments/assets/cdfb4b1e-f735-416a-a3c4-0074c391cc5d)
