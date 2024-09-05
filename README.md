@@ -174,7 +174,7 @@ in this feature you can do all of you can do in the CLI feature but with interfa
 run this command `python nanograd_API.py`
 
 > [!IMPORTANT]
-> you can't run any of this anless you do downloaded the checkpoints before, for the litgpt you can download their models(Checkpoints) after you installed the library run this `nanograd download checkpoints`, for the ollama models also the same, for the stable diffusion download them from huggingface.  
+> you can't run any of this unless you do downloaded the checkpoints before, for the litgpt you can download their models(Checkpoints) after you installed the library run this `nanograd download checkpoints`, for the ollama models also the same, for the stable diffusion download them from huggingface.  
 
 ---
 
