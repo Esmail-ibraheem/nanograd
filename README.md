@@ -152,16 +152,16 @@ options:
 
 | command | Sub-command | type this |
 |---------|-------------|-----------|
-| install | install dependencies | nanograd install ollama |
-| download | download checkpoints or llama | nanograd download checkpoint micorosoft/phi-2 or nanograd download llama | 
-| run_gpt | run gpt inference | nanograd run_gpt | 
-| run_llama | run llama inference | nanograd run_llama |
-| run | run model inference (ollama models) | nanograd run llama3.1 |
-| run_diffusion | run stable diffusion | nanograd run_diffusion stable_diffusion |
+| install | install dependencies | `nanograd install ollama` |
+| download | download checkpoints or llama | `nanograd download checkpoint micorosoft/phi-2` or `nanograd download llama` | 
+| run_gpt | run gpt inference | `nanograd run_gpt` | 
+| run_llama | run llama inference | `nanograd run_llama` |
+| run | run model inference (ollama models) | `nanograd run llama3.1` |
+| run_diffusion | run stable diffusion | `nanograd run_diffusion stable_diffusion` |
 
 
 ### 2- as an engine:
-in this feature you can do all of you can do in the CLI feature but with interface, you do not need to type any thing just some clicks.
+in this feature you can do all you can do in the CLI feature but with an interface, you do not need to type anything just some clicks.
 - run stable diffusion
 - run ollama models
 - blueprints to generate different stories each time for the LLMs and stable diffusion
