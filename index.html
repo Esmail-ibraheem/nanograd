@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nanograd API Frontend</title>
+    <script>
+        async function callAPI() {
+            const response = await fetch("http://127.0.0.1:8000/");
+            const data = await response.json();
+            document.getElementById("output").innerText = JSON.stringify(data);
+        }
+    </script>
+</head>
+<body>
+    <h1>Nanograd API Frontend</h1>
+    <button onclick="callAPI()">Call Nanograd API</button>
+    <pre id="output"></pre>
+</body>
+</html>
