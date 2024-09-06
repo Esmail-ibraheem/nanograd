@@ -268,9 +268,46 @@ def install_ollama():
     except Exception as e:
         return f"Installation failed: {str(e)}"
 
+def welcome(name):
+    return f"Welcome to nanograd Engine, {name}!"
+
+js = """
+function createGradioAnimation() {
+    var container = document.createElement('div');
+    container.id = 'gradio-animation';
+    container.style.fontSize = '2em';
+    container.style.fontWeight = 'bold';
+    container.style.textAlign = 'center';
+    container.style.marginBottom = '20px';
+
+    var text = 'Welcome to nanograd Engine!';
+    for (var i = 0; i < text.length; i++) {
+        (function(i){
+            setTimeout(function(){
+                var letter = document.createElement('span');
+                letter.style.opacity = '0';
+                letter.style.transition = 'opacity 0.5s';
+                letter.innerText = text[i];
+
+                container.appendChild(letter);
+
+                setTimeout(function() {
+                    letter.style.opacity = '1';
+                }, 50);
+            }, i * 250);
+        })(i);
+    }
+
+    var gradioContainer = document.querySelector('.gradio-container');
+    gradioContainer.insertBefore(container, gradioContainer.firstChild);
+
+    return 'Animation created';
+}
+"""
+
 # Gradio interface
 def gradio_interface():
-    with gr.Blocks('ParityError/Interstellar') as demo:
+    with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
         with gr.Tab("nano-Engine"):
             with gr.Row():
                 with gr.Column(scale=1): 
@@ -281,6 +318,32 @@ def gradio_interface():
                     ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=True)
                     ollama_btn = gr.Button("Generate", variant="primary")
                     ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompts], outputs=ollama_output)
+
+                    image_folder = "C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\output"
+
+                    # List the image filenames in your local directory
+                    cheetahs = [
+                        os.path.join(image_folder, "c.png"),
+                        os.path.join(image_folder, "d.png"),
+                        # os.path.join(image_folder, "image.jpg"),
+                        os.path.join(image_folder, "output.png"),
+                        os.path.join(image_folder, "output_image.png"),
+                        os.path.join(image_folder, "R.png"),
+                        os.path.join(image_folder, "s.png"),
+                        os.path.join(image_folder, "test.png"),
+                        os.path.join(image_folder, "generated_image.png"),
+                        os.path.join(image_folder, "llama_3.jpg"),
+                        os.path.join(image_folder, "omniverse.jpg"),
+                        os.path.join(image_folder, "realistic_cat_in_animation_style.png"),
+                        os.path.join(image_folder, "realistic_panda_in_animation_style.png"),
+                        os.path.join(image_folder, "realistic_small_panda_in_animation_style.png"),
+                        # os.path.join(image_folder, "realistic_small_panda_in_animation_style.png"),
+                        os.path.join(image_folder, "4373d3fd-5442-4499-9a77-9da589c94a68.jpg"),
+                        #nanograd\models\stable_diffusion\output\4373d3fd-5442-4499-9a77-9da589c94a68.jpg
+                    ]
+
+                   
+                    gr.Gallery(value=cheetahs, columns=4)
 
                     gr.Markdown("### GPT Checkpoints Management")
                     checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"], value="EleutherAI/gpt-neo-125M")
@@ -304,7 +367,8 @@ def gradio_interface():
                     output_image = gr.Image(label="Output", show_label=False, height=700, width=750)
 
                     generate_img_btn.click(fn=generate_image, inputs=[prompt_input, cfg_scale, num_inference_steps, sampler], outputs=output_image)
-
+                    # # Define the folder path where your images are stored
+                   
             with gr.Tab("Blueprints"):
                 with gr.Row():
                     blueprint_dropdown = gr.Dropdown(label="Select Blueprint", choices=list(blueprints.keys()), value=list(blueprints.keys())[0])
@@ -315,7 +379,7 @@ def gradio_interface():
                     sd_cfg_output = gr.Slider(label="SD CFG Scale", minimum=1, maximum=20, step=1, interactive=True)
                     sd_steps_output = gr.Slider(label="SD Sampling Steps", minimum=10, maximum=100, step=5, interactive=True)
                     sd_sampler_output = gr.Radio(label="SD Sampler", choices=["ddpm", "Euler a", "Euler", "LMS", "Heun", "DPM2 a", "PLMS"], value="ddpm", interactive=True)
-                    ollama_model_output = gr.Dropdown(label="Ollama Model", choices=["aya", "llama3", "codellama"], value="aya", interactive=True)
+                    ollama_model_output = gr.Dropdown(label="Ollama Model", choices=["aya", "llama3.1", "codellama"], value="aya", interactive=True)
                     ollama_prompt_output = gr.Textbox(label="Ollama Prompt", interactive=True)
 
                     def load_blueprint(blueprint_name):
