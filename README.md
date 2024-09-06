@@ -168,7 +168,8 @@ in this feature you can do all you can do in the CLI feature but with an interfa
 - download checkpoints using litgpt
 - install ollama
   run this command `python nano_engine.py`
-![image](https://github.com/user-attachments/assets/cdfb4b1e-f735-416a-a3c4-0074c391cc5d)
+![photo_2024-09-06_21-04-12](https://github.com/user-attachments/assets/c7d2f608-b882-4f87-82d1-c59e00ecd312)
+
 - run chatbot in Arabic using ollama
 - run BPE tokenizer
 ![image](https://github.com/user-attachments/assets/f3868abb-9dfe-442c-a954-f4a7f1e35170)
