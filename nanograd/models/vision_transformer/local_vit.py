@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from einops import rearrange, repeat
 from einops.layers.torch import Rearrange
 
-# classes
+
 
 class Residual(nn.Module):
     def __init__(self, fn):
@@ -26,7 +26,7 @@ class ExcludeCLS(nn.Module):
         x = self.fn(x, **kwargs)
         return torch.cat((cls_token, x), dim = 1)
 
-# feed forward related classes
+
 
 class DepthWiseConv2d(nn.Module):
     def __init__(self, dim_in, dim_out, kernel_size, padding, stride = 1, bias = True):
@@ -58,7 +58,7 @@ class FeedForward(nn.Module):
         x = rearrange(x, 'b c h w -> b (h w) c')
         return x
 
-# attention
+
 
 class Attention(nn.Module):
     def __init__(self, dim, heads = 8, dim_head = 64, dropout = 0.):
@@ -109,7 +109,7 @@ class Transformer(nn.Module):
             x = ff(x)
         return x
 
-# main class
+
 
 class LocalViT(nn.Module):
     def __init__(self, *, image_size, patch_size, num_classes, dim, depth, heads, mlp_dim, channels = 3, dim_head = 64, dropout = 0., emb_dropout = 0.):
