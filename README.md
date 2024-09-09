@@ -116,7 +116,8 @@ git clone https://github.com/Esmail-ibraheem/nanograd.git
 pip install -e .
 ```
 
-- **_using it your main file:_**
+- **_using it in your main file:_**
+  - **_nano models_**
   
   ```python
   import nanograd
@@ -184,8 +185,10 @@ pip install -e .
   # import nanograd.nn.train_nn
   ```
 
+   - **_Pytorch Comparsion:_**
 
-- **_using it in the CLI:_**
+
+- **_using it in your terminal:_**
 
 **then type this command on your terminal: `nanograd`**
 **_the output should be something like this_**
