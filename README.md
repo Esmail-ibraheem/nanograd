@@ -190,7 +190,7 @@ pip install -e .
 
      <p align="center">
        <img src="https://github.com/Esmail-ibraheem/nanograd-engine/blob/main/assets/1.png" alt="nanograd" width="45%" />
-       <img src="https://github.com/Esmail-ibraheem/nanograd-engine/blob/main/assets/2.png" alt="Pytorch" width="45%" height="45%" />
+       <img src="https://github.com/Esmail-ibraheem/nanograd-engine/blob/main/assets/2.png" alt="Pytorch" width="45%" height="50%" />
      </p>
 
         
