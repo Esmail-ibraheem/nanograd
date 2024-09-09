@@ -187,37 +187,7 @@ pip install -e .
 
    - **_Pytorch Comparsion:_**
      
-        | **Nanograd Code** | **PyTorch Code** |
-   |:-----------------:|:----------------:|
-   | ```python        | ```python        |
-   | from nanograd.nn.tensor import Tensor | import torch |
-   |                  |                   |
-   | # Create tensors with gradient tracking enabled | # Create tensors with gradient tracking enabled |
-   | a = Tensor([[1.0, 2.0], [3.0, 4.0]], requires_grad=True) | a = torch.tensor([[1.0, 2.0], [3.0, 4.0]], requires_grad=True) |
-   | b = Tensor([[5.0, 6.0], [7.0, 8.0]], requires_grad=True) | b = torch.tensor([[5.0, 6.0], [7.0, 8.0]], requires_grad=True) |
-   |                  |                   |
-   | # Perform some tensor operations | # Perform some tensor operations |
-   | c = a + b  # Element-wise addition | c = a + b  # Element-wise addition |
-   | d = a * b  # Element-wise multiplication | d = a * b  # Element-wise multiplication |
-   | e = c.sum()  # Sum all elements of the result of addition | e = c.sum()  # Sum all elements of the result of addition |
-   |                  |                   |
-   | # Compute gradients | # Compute gradients |
-   | e.backward() | e.backward() |
-   |                  |                   |
-   | # Print the results and gradients | # Print the results and gradients |
-   | print("Tensor a:") | print("Tensor a:") |
-   | print(a.numpy()) | print(a) |
-   | print("Tensor b:") | print("Tensor b:") |
-   | print(b.numpy()) | print(b) |
-   | print("Result of a + b:") | print("Result of a + b:") |
-   | print(c.numpy()) | print(c) |
-   | print("Result of a * b:") | print("Result of a * b:") |
-   | print(d.numpy()) | print(d) |
-   | print("Gradient of a:") | print("Gradient of a:") |
-   | print(a.grad.numpy()) | print(a.grad) |
-   | print("Gradient of b:") | print("Gradient of b:") |
-   | print(b.grad.numpy()) | print(b.grad) |
-   | ```              | ```              |
+        
 
 
 - **_using it in your terminal:_**
