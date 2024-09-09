@@ -219,7 +219,7 @@ pip install -e .
      print(b.grad.numpy())
 
      ```
-    - **Pytorch**
+     - **Pytorch**
      
      ```python
      import torch
