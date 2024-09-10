@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Model Interface</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Baby Llama Transformer Model</h1>
+    
+    <div class="row">
+      <!-- Form Section -->
+      <form id="model-form" class="form-section">
+        <div class="form-group">
+          <label for="checkpoint">Select Checkpoint</label>
+          <select id="checkpoint" class="input-field">
+            <option value="stories15M.bin">stories15M.bin</option>
+            <option value="stories20M.bin">stories20M.bin</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="temperature">Temperature</label>
+          <input type="number" id="temperature" class="input-field" placeholder="e.g., 0.7" step="0.1" min="0" max="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="steps">Steps</label>
+          <input type="number" id="steps" class="input-field" placeholder="e.g., 256" required>
+        </div>
+
+        <div class="form-group">
+          <label for="prompt">Prompt</label>
+          <textarea id="prompt" class="input-field" rows="4" placeholder="Enter your prompt here..." required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Run Model</button>
+      </form>
+
+      <!-- Output Section -->
+      <div class="output-section">
+        <h2>Model Output</h2>
+        <div id="output" class="output-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
