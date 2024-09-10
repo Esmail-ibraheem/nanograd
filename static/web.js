@@ -4,7 +4,7 @@ document.getElementById('generate-button').addEventListener('click', function() 
     fetch('/generate-image/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json', 
         },
         body: JSON.stringify({ blueprint_name: blueprintName }),
     })
