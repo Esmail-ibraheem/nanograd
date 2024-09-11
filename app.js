@@ -1,62 +1,134 @@
-const apiBaseUrl = 'http://localhost:8000';  // Adjust this based on your backend deployment
+const API_URL = 'http://localhost:8000';
 
-// Install Ollama
-function installOllama() {
-    fetch(`${apiBaseUrl}/install/ollama`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("install-status").innerText = data.message;
-        })
-        .catch(error => {
-            document.getElementById("install-status").innerText = "Error: " + error;
+// Update slider values
+document.getElementById('cfgScale').addEventListener('input', function() {
+    document.getElementById('cfgScaleValue').textContent = this.value;
+});
+
+document.getElementById('numSteps').addEventListener('input', function() {
+    document.getElementById('numStepsValue').textContent = this.value;
+});
+
+async function generateImage() {
+    const prompt = document.getElementById('imagePrompt').value;
+    const cfgScale = document.getElementById('cfgScale').value;
+    const numSteps = document.getElementById('numSteps').value;
+    const sampler = document.getElementById('sampler').value;
+
+    const imageOutput = document.getElementById('imageOutput');
+    imageOutput.innerHTML = '<p>Generating image...</p>';
+
+    try {
+        const response = await fetch(`${API_URL}/generate_image`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                prompt: prompt,
+                cfg_scale: parseFloat(cfgScale),
+                num_inference_steps: parseInt(numSteps),
+                sampler: sampler
+            }),
         });
+
+        const data = await response.json();
+        imageOutput.innerHTML = `<img src="data:image/png;base64,${data.image}" alt="Generated Image">`;
+    } catch (error) {
+        imageOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
 }
 
-// Run GPT Model
-function runGPT() {
-    fetch(`${apiBaseUrl}/run_gpt`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("gpt-status").innerText = data.message;
-        })
-        .catch(error => {
-            document.getElementById("gpt-status").innerText = "Error: " + error;
+async function generateText() {
+    const model = document.getElementById('ollamaModel').value;
+    const prompt = document.getElementById('textPrompt').value;
+
+    const textOutput = document.getElementById('textOutput');
+    textOutput.innerHTML = '<p>Generating text...</p>';
+
+    try {
+        const response = await fetch(`${API_URL}/chat_with_ollama`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                model_name: model,
+                prompt: prompt
+            }),
         });
+
+        const data = await response.json();
+        textOutput.innerHTML = `<p>${data.response}</p>`;
+    } catch (error) {
+        textOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
 }
 
-// Run LLaMA Model
-function runLLaMA() {
-    fetch(`${apiBaseUrl}/run_llama`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("llama-status").innerText = data.message;
-        })
-        .catch(error => {
-            document.getElementById("llama-status").innerText = "Error: " + error;
+async function applyBlueprint() {
+    const blueprint = document.getElementById('blueprintSelect').value;
+
+    const blueprintOutput = document.getElementById('blueprintOutput');
+    blueprintOutput.innerHTML = '<p>Applying blueprint...</p>';
+
+    try {
+        const response = await fetch(`${API_URL}/apply_blueprint`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                blueprint_name: blueprint
+            }),
         });
+
+        const data = await response.json();
+        blueprintOutput.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    } catch (error) {
+        blueprintOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
 }
 
-// Run Ollama Model
-function runOllama() {
-    const modelName = document.getElementById("ollama-model").value;
-    fetch(`${apiBaseUrl}/run/${modelName}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("ollama-status").innerText = data.message;
-        })
-        .catch(error => {
-            document.getElementById("ollama-status").innerText = "Error: " + error;
+async function tokenizeText() {
+    const text = document.getElementById('tokenizeInput').value;
+
+    const tokenizeOutput = document.getElementById('tokenizeOutput');
+    tokenizeOutput.innerHTML = '<p>Tokenizing...</p>';
+
+    try {
+        const response = await fetch(`${API_URL}/tokenize`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(text),
         });
+
+        const data = await response.json();
+        tokenizeOutput.innerHTML = `<pre>${JSON.stringify(data.tokens, null, 2)}</pre>`;
+    } catch (error) {
+        tokenizeOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
 }
 
-// Run Stable Diffusion
-function runStableDiffusion() {
-    fetch(`${apiBaseUrl}/run_diffusion`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("sd-status").innerText = data.message;
-        })
-        .catch(error => {
-            document.getElementById("sd-status").innerText = "Error: " + error;
+async function askArabicChatbot() {
+    const question = document.getElementById('arabicQuestion').value;
+
+    const arabicChatbotOutput = document.getElementById('arabicChatbotOutput');
+    arabicChatbotOutput.innerHTML = '<p>Processing...</p>';
+
+    try {
+        const response = await fetch(`${API_URL}/chatbot_arabic`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(question),
         });
+
+        const data = await response.json();
+        arabicChatbotOutput.innerHTML = `<p>${data.response}</p>`;
+    } catch (error) {
+        arabicChatbotOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
 }
