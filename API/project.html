@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a New Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Flexbox wrapper to center card and description side-by-side */
+        .center-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            gap: 2rem; /* Space between the card and the description */
+            flex-wrap: wrap; /* Ensure responsive design */
+        }
+
+        /* Description styling */
+        .description {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Simple animation for icons */
+        .description .icon {
+            font-size: 3rem;
+            color: #4CAF50; /* Match the button color for consistency */
+            animation: float 2s ease-in-out infinite;
+        }
+
+        /* Float animation for icons */
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1><i class="fas fa-brain"></i> nanograd Engine</h1>
+            </div>
+        </nav>
+    </header>
+
+    <main class="center-wrapper">
+        <!-- Project Creation Card -->
+        <section id="project-creation" class="card">
+            <h2>Create a New Project</h2>
+            <div class="input-group">
+                <label for="projectName">Project Name:</label>
+                <input type="text" id="projectName" placeholder="Enter your project name">
+            </div>
+            <div class="input-group">
+                <label for="projectDescription">Project Description:</label>
+                <textarea id="projectDescription" placeholder="Describe your project" rows="4"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="hardwareRunner">Hardware Runner:</label>
+                <select id="hardwareRunner">
+                    <option value="cpu">CPU</option>
+                    <option value="gpu">GPU</option>
+                    <option value="mps">MPS (Apple Silicon)</option>
+                </select>
+            </div>
+            <button onclick="createProject()">Create Project</button>
+            <div id="errorMessage" class="output" style="color: red; display: none;"></div>
+        </section>
+
+        <!-- Nanograd Engine Description with Animation -->
+        <section class="description">
+            <h2>Welcome to Nanograd Engine</h2>
+            <p>Nanograd Engine is the ultimate neural network engine, combining state-of-the-art large language models (LLMs), diffusion models, reinforcement learning, and advanced hardware optimizations. Whether you're training on CPU, GPU, or Apple's MPS, Nanograd empowers you to innovate.</p>
+            <p>Jump-start your machine learning journey with ease!</p>
+            <i class="fas fa-robot icon"></i>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 nanograd Engine. Empowering neural net innovations.</p>
+    </footer>
+
+    <script>
+        // Simulated database for project names
+        const projectDatabase = {
+            "Project Alpha": { description: "A sample project", runner: "cpu" },
+            "Nanograd Engine": { description: "Neural net engine", runner: "gpu" }
+        };
+
+        function createProject() {
+            const projectName = document.getElementById("projectName").value.trim();
+            const projectDescription = document.getElementById("projectDescription").value.trim();
+            const hardwareRunner = document.getElementById("hardwareRunner").value;
+
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (!projectName || !projectDescription) {
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "Please fill out all fields.";
+                return;
+            }
+
+            // Check if project name already exists
+            if (projectDatabase[projectName]) {
+                errorMessage.style.display = "block";
+                errorMessage.textContent = "Project name already exists. Please choose a different name.";
+                return;
+            }
+
+            // Add project to the simulated database
+            projectDatabase[projectName] = { description: projectDescription, runner: hardwareRunner };
+
+            // Redirect to the main page
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
