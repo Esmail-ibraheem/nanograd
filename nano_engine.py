@@ -4,7 +4,7 @@ from pathlib import Path
 from transformers import CLIPTokenizer
 import torch
 import subprocess
-import os
+import os 
 import random
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
