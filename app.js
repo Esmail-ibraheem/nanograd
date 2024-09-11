@@ -90,45 +90,56 @@ async function applyBlueprint() {
 }
 
 async function tokenizeText() {
-    const text = document.getElementById('tokenizeInput').value;
+  const text = document.getElementById('tokenizeInput').value;
 
-    const tokenizeOutput = document.getElementById('tokenizeOutput');
-    tokenizeOutput.innerHTML = '<p>Tokenizing...</p>';
+  const tokenizeOutput = document.getElementById('tokenizeOutput');
+  tokenizeOutput.innerHTML = '<p>Tokenizing...</p>';
 
-    try {
-        const response = await fetch(`${API_URL}/tokenize`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(text),
-        });
+  try {
+      const response = await fetch(`${API_URL}/tokenize`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: text }),  // Change this line
+      });
 
-        const data = await response.json();
-        tokenizeOutput.innerHTML = `<pre>${JSON.stringify(data.tokens, null, 2)}</pre>`;
-    } catch (error) {
-        tokenizeOutput.innerHTML = `<p>Error: ${error.message}</p>`;
-    }
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      tokenizeOutput.innerHTML = `<pre>${JSON.stringify(data.tokens, null, 2)}</pre>`;
+  } catch (error) {
+      tokenizeOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+      console.error('Error:', error);
+  }
 }
 
+
 async function askArabicChatbot() {
-    const question = document.getElementById('arabicQuestion').value;
+  const question = document.getElementById('arabicQuestion').value;
 
-    const arabicChatbotOutput = document.getElementById('arabicChatbotOutput');
-    arabicChatbotOutput.innerHTML = '<p>Processing...</p>';
+  const arabicChatbotOutput = document.getElementById('arabicChatbotOutput');
+  arabicChatbotOutput.innerHTML = '<p>Processing...</p>';
 
-    try {
-        const response = await fetch(`${API_URL}/chatbot_arabic`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(question),
-        });
+  try {
+      const response = await fetch(`${API_URL}/chatbot_arabic`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ question: question }),  // Change this line
+      });
 
-        const data = await response.json();
-        arabicChatbotOutput.innerHTML = `<p>${data.response}</p>`;
-    } catch (error) {
-        arabicChatbotOutput.innerHTML = `<p>Error: ${error.message}</p>`;
-    }
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      arabicChatbotOutput.innerHTML = `<p>${data.response}</p>`;
+  } catch (error) {
+      arabicChatbotOutput.innerHTML = `<p>Error: ${error.message}</p>`;
+      console.error('Error:', error);
+  }
 }
