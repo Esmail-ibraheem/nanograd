@@ -31,7 +31,7 @@ app.add_middleware(
 )
 
 # Configure devices
-DEVICE = "cpu"
+DEVICE = "cuda"
 ALLOW_CUDA = False 
 ALLOW_MPS = True
 
@@ -142,13 +142,22 @@ async def apply_blueprint(request: BlueprintRequest):
         }
     raise HTTPException(status_code=404, detail="Blueprint not found")
 
+class TokenizeRequest(BaseModel):
+    text: str
+
 @app.post("/tokenize")
-async def tokenize_text(text: str):
-    return {"tokens": tokenize(text)}
+async def tokenize_text(request: TokenizeRequest):
+    from nanograd.models.GPT.tokenizer import tokenize
+    tokens = tokenize(request.text)
+    return {"tokens": tokens}
+
+class ChatbotRequest(BaseModel):
+    question: str
 
 @app.post("/chatbot_arabic")
-async def chatbot_arabic(question: str):
-    response = ollama_prompted.run(question)
+async def chatbot_arabic(request: ChatbotRequest):
+    from examples import ollama_prompted
+    response = ollama_prompted.run(request.question)
     return {"response": response}
 
 if __name__ == "__main__":
