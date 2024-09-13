@@ -1,6 +1,6 @@
 import unittest
 from fastapi.testclient import TestClient
-from i import app  # Replace 'your_app' with the actual name of your FastAPI application file
+from API import app 
 
 class TestYourApp(unittest.TestCase):
     def setUp(self):
