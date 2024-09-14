@@ -1,12 +1,28 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a New Project</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-..." crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Animated Gradient Background */
+        body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% {background-position: 100% 50%; }
+            100% {background-position: 0% 50%; }
+        }
+
         /* Flexbox wrapper to center card and description side-by-side */
         .center-wrapper {
             display: flex;
@@ -15,6 +31,127 @@
             min-height: 100vh;
             gap: 2rem; /* Space between the card and the description */
             flex-wrap: wrap; /* Ensure responsive design */
+            color: #fff;
+        }
+
+        /* Header styling */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem;
+        }
+
+        nav .logo h1 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            color: #fff;
+        }
+
+        /* Animated Logo */
+        .logo h1 i {
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                color: #e73c7e;
+            }
+            50% {
+                transform: scale(1.2);
+                color: #23a6d5;
+            }
+            100% {
+                transform: scale(1);
+                color: #e73c7e;
+            }
+        }
+
+        /* Card Styling */
+        .card {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Interactive Input Fields */
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            border-color: #23a6d5;
+            box-shadow: 0 0 10px rgba(35, 166, 213, 0.5);
+            outline: none;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* Animated Button */
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.2rem;
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            transform: skewX(-45deg);
+        }
+
+        button:active::after {
+            left: 100%;
+            transition: left 0.5s;
         }
 
         /* Description styling */
@@ -23,24 +160,63 @@
             text-align: center;
         }
 
-        /* Simple animation for icons */
-        .description .icon {
-            font-size: 3rem;
-            color: #4CAF50; /* Match the button color for consistency */
-            animation: float 2s ease-in-out infinite;
+        .description h2 {
+            margin-bottom: 1rem;
         }
 
-        /* Float animation for icons */
-        @keyframes float {
-            0% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-            100% {
-                transform: translateY(0);
-            }
+        .description p {
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        /* Interactive Robot Icon */
+        .description .icon {
+            font-size: 4rem;
+            color: #4CAF50;
+            cursor: pointer;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .description .icon:hover {
+            transform: scale(1.2);
+            color: #e73c7e;
+        }
+
+        .description .icon.spin {
+            animation: spin 1s forwards;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Output messages */
+        .output {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Success Message Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 2s;
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
         }
     </style>
 </head>
@@ -75,6 +251,7 @@
             </div>
             <button onclick="createProject()">Create Project</button>
             <div id="errorMessage" class="output" style="color: red; display: none;"></div>
+            <div id="successMessage" class="output" style="color: #4CAF50; display: none;"></div>
         </section>
 
         <!-- Nanograd Engine Description with Animation -->
@@ -97,12 +274,22 @@
             "Nanograd Engine": { description: "Neural net engine", runner: "gpu" }
         };
 
+        // Interactive Robot Icon
+        document.querySelector('.description .icon').addEventListener('click', function() {
+            this.classList.add('spin');
+            setTimeout(() => this.classList.remove('spin'), 1000);
+        });
+
         function createProject() {
             const projectName = document.getElementById("projectName").value.trim();
             const projectDescription = document.getElementById("projectDescription").value.trim();
             const hardwareRunner = document.getElementById("hardwareRunner").value;
 
             const errorMessage = document.getElementById("errorMessage");
+            const successMessage = document.getElementById("successMessage");
+
+            errorMessage.style.display = "none";
+            successMessage.style.display = "none";
 
             if (!projectName || !projectDescription) {
                 errorMessage.style.display = "block";
@@ -120,8 +307,15 @@
             // Add project to the simulated database
             projectDatabase[projectName] = { description: projectDescription, runner: hardwareRunner };
 
-            // Redirect to the main page
-            window.location.href = "index.html";
+            // Show success message
+            successMessage.textContent = "Project created successfully!";
+            successMessage.style.display = "block";
+            successMessage.classList.add('fade-in');
+
+            // Redirect after a delay
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 2000);
         }
     </script>
 </body>
