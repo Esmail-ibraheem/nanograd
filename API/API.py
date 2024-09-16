@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from PIL import Image
 from pathlib import Path
-from transformers import CLIPTokenizer
+from transformers import CLIPTokenizer 
 import torch
 import subprocess
 import os
