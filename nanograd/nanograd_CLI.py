@@ -1,8 +1,8 @@
 import argparse
 import os
-import subprocess
+import subprocess 
 import gradio as gr
-
+ 
 def install_ollama():
     script_path = os.path.join(os.path.dirname(__file__), 'ollama_install.sh')
     subprocess.run([script_path], check=True)
@@ -10,6 +10,10 @@ def install_ollama():
 def download_llama():
     script_path = os.path.join(os.path.dirname(__file__), 'download.sh')
     subprocess.run([script_path], check=True)
+    
+def run_engine():
+    script_path = os.path.join(os.path.dirname(__file__), 'engine_1.py')
+    subprocess.run(['python', script_path], check=True)
 
 def generate_dataset():
     script_path = os.path.join(os.path.dirname(__file__), 'generate_dataset.py')
@@ -17,13 +21,8 @@ def generate_dataset():
 
 def download_checkpoint(repo_id):
     command = [
-        'litgpt', 'download', repo_id
-    ]
-    subprocess.run(command, check=True)
-
-def list_supported_models():
-    command = [
-        'litgpt', 'download', 'list'
+        'litgpt', 'download',
+        '--repo_id', repo_id
     ]
     subprocess.run(command, check=True)
 
@@ -56,10 +55,6 @@ def run_stable_diffusion():
     script_path = os.path.join(os.path.dirname(__file__), 'C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_inference.py')
     subprocess.run(['python', script_path], check=True)
 
-def run_stable_diffusion_with_interface():
-    script_path = os.path.join(os.path.dirname(__file__), 'C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_gradio.py')
-    subprocess.run(['python', script_path], check=True)
-
 def gradio_interface(model_name):
     def run_ollama_interface(prompt):
         command = ['ollama', 'run', model_name, prompt]
@@ -86,7 +81,7 @@ def main():
     generate_parser.add_argument('dataset', type=str, help="Specify 'dataset' to generate dataset")
 
     download_parser = subparsers.add_parser('download', help="Download checkpoints or llama")
-    download_parser.add_argument('type', type=str, choices=['checkpoints', 'llama', 'list'], help="Specify 'checkpoints', 'llama', or 'list'")
+    download_parser.add_argument('type', type=str, choices=['checkpoints', 'llama'], help="Specify 'checkpoints' or 'llama' to download")
     download_parser.add_argument('repo_id', type=str, nargs='?', help="Hugging Face URL of the checkpoint (required for 'checkpoints')")
 
     pretrain_parser = subparsers.add_parser('pretrain', help="Pretrain a model")
@@ -101,10 +96,11 @@ def main():
 
     run_gpt_parser = subparsers.add_parser('run_gpt', help="Run GPT inference")
     run_llama_parser = subparsers.add_parser('run_llama', help="Run LLaMA inference")
+    run_engineparser = subparsers.add_parser('run_engine', help="Run engine interface")
     
     run_stable_diffusion_parser = subparsers.add_parser('run_diffusion', help="Run Stable Diffusion")
     run_stable_diffusion_parser.add_argument('stable_diffusion', type=str, help="generate images with stable diffusion using nanograd")
-    run_stable_diffusion_parser.add_argument('--interface', action='store_true', help="Run with Gradio interface")
+
 
     run_parser = subparsers.add_parser('run', help="Run model inference")
     run_parser.add_argument('model_name', type=str, help="Model name to run (e.g., 'llama2', 'aya')")
@@ -130,10 +126,8 @@ def main():
                 download_checkpoint(args.repo_id)
             else:
                 print("URL is required for downloading checkpoints.")
-        elif args.type == 'list':
-            list_supported_models()
         else:
-            print(f"Unknown or missing argument for download: {args.type}, {args.repo_id}")
+            print(f"Unknown or missing argument for download: {args.type}, {args.url}")
     elif args.command == 'pretrain':
         pretrain_model(
             args.model_name,
@@ -150,15 +144,14 @@ def main():
     elif args.command == 'run_llama':
         run_llama()
     elif args.command == 'run_diffusion':
-        if args.interface:
-            run_stable_diffusion_with_interface()
-        else:
-            run_stable_diffusion()
+        run_stable_diffusion()
     elif args.command == 'run':
         if args.interface:
             gradio_interface(args.model_name)
         else:
             run_ollama(args.model_name)
+    elif args.command == 'run_engine':
+        run_engine()
     else:
         parser.print_help()
 
