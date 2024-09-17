@@ -4,22 +4,28 @@ import os
 from nanograd.generate_dataset import ModelConfig, Transformer, create_datasets, generate
 
 # Load the model and datasets
-input_file = 'nanograd/names.txt'
 work_dir = 'out'
 device = 'cpu'
 
-train_dataset, test_dataset = create_datasets(input_file)
-vocab_size = train_dataset.get_vocab_size()
-block_size = train_dataset.get_output_length()
+# Function to create the model and datasets based on user input
+def setup_model(input_file):
+    train_dataset, _ = create_datasets(input_file)
+    vocab_size = train_dataset.get_vocab_size()
+    block_size = train_dataset.get_output_length()
+    
+    config = ModelConfig(vocab_size=vocab_size, block_size=block_size,
+                         n_layer=4, n_head=4, n_embd=64, n_embd2=64)
+    model = Transformer(config)
+    model.load_state_dict(torch.load(os.path.join(work_dir, 'model.pt'), map_location=device))
+    model.to(device)
+    model.eval()
+    
+    return model, train_dataset
 
-config = ModelConfig(vocab_size=vocab_size, block_size=block_size,
-                     n_layer=4, n_head=4, n_embd=64, n_embd2=64)
-model = Transformer(config)
-model.load_state_dict(torch.load(os.path.join(work_dir, 'model.pt'), map_location=device))
-model.to(device)
-model.eval()
-
-def generate_names(num_names, temperature, top_k):
+# Function to generate names
+def generate_names(input_file, num_names, temperature, top_k):
+    model, train_dataset = setup_model(input_file)
+    
     X_init = torch.zeros(num_names, 1, dtype=torch.long).to(device)
     top_k = top_k if top_k > 0 else None
     steps = train_dataset.get_output_length() - 1
@@ -35,12 +41,13 @@ def generate_names(num_names, temperature, top_k):
     
     return "\n".join(generated_names)
 
-def gradio_interface(num_names, temperature, top_k):
-    return generate_names(num_names, temperature, top_k)
+def gradio_interface(input_file, num_names, temperature, top_k):
+    return generate_names(input_file, num_names, temperature, top_k)
 
 iface = gr.Interface(
     fn=gradio_interface,
     inputs=[
+        gr.Textbox(label="Path to Input File", placeholder="Enter the path to the text file"),
         gr.Slider(1, 50, 10, step=1, label="Number of Names"),
         gr.Slider(0.1, 2.0, 1.0, step=0.1, label="Temperature"),
         gr.Slider(0, 100, 0, step=1, label="Top-K (0 for no limit)"),
