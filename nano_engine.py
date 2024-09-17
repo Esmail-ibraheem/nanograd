@@ -425,6 +425,21 @@ def gradio_interface():
                         inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
                         outputs=gr.Textbox(label="Aya's response"),
                     )
+                    
+        with gr.Tab("Trainer"):
+        #     # import os
+
+        #     # from llamafactory.webui.interface import create_ui
+            from nanograd.trainer.src.llamafactory.webui.interface import create_ui
+
+            # def main():
+            #     gradio_share = os.environ.get("GRADIO_SHARE", "0").lower() in ["true", "1"]
+            #     server_name = os.environ.get("GRADIO_SERVER_NAME", "0.0.0.0")
+            create_ui().queue()
+
+
+            # if __name__ == "__main__":
+            #     main()
     
     demo.launch()
 
