@@ -37,6 +37,7 @@ nanograd is a neural net engine (**_command line interface and python library_**
 - **`Reinforcement Learning with gym environments:`**
   Currently providing some cool applications such as Carpole, and Mountain car, BipedalWalker with gym environments from OpenAI, and this feature is built upon tinygrad.
   
+![Windows PowerShell 2024-09-18 09-41-04](https://github.com/user-attachments/assets/11f24f8a-7ed9-4fdc-89b5-eb17e953ec74)
 
 
 
