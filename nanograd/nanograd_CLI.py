@@ -12,7 +12,7 @@ def download_llama():
     subprocess.run([script_path], check=True)
     
 def run_engine():
-    script_path = os.path.join(os.path.dirname(__file__), 'engine_1.py')
+    script_path = os.path.join(os.path.dirname(__file__), 'engine.py')
     subprocess.run(['python', script_path], check=True)
 
 def generate_dataset():
