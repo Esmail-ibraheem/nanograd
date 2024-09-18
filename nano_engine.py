@@ -425,6 +425,10 @@ def gradio_interface():
                         inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
                         outputs=gr.Textbox(label="Aya's response"),
                     )
+            with gr.Tab("Dataset-Generator"):
+                with gr.Row():
+                    with gr.Column(scale=1):
+                        import nanograd.generate_dataset_ui
                     
         with gr.Tab("Trainer"):
         #     # import os
