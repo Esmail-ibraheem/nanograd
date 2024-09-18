@@ -418,32 +418,21 @@ def gradio_interface():
                     iface = gr.Interface(fn=tokenize, inputs="text", outputs="json")
                 
                 with gr.Column(scale=1):
-                    from examples import ollama_prompted
+                    from nanograd.models import ollama
                     gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
                     i = gr.Interface(
-                        fn=ollama_prompted.run,
+                        fn=ollama.run,
                         inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
                         outputs=gr.Textbox(label="Aya's response"),
                     )
             with gr.Tab("Dataset-Generator"):
                 with gr.Row():
                     with gr.Column(scale=1):
-                        import nanograd.generate_dataset_ui
+                        import nanograd.generated_dataset_ui
                     
         with gr.Tab("Trainer"):
-        #     # import os
-
-        #     # from llamafactory.webui.interface import create_ui
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
-
-            # def main():
-            #     gradio_share = os.environ.get("GRADIO_SHARE", "0").lower() in ["true", "1"]
-            #     server_name = os.environ.get("GRADIO_SERVER_NAME", "0.0.0.0")
             create_ui().queue()
-
-
-            # if __name__ == "__main__":
-            #     main()
     
     demo.launch()
 
