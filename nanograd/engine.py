@@ -308,7 +308,7 @@ function createGradioAnimation() {
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
-        with gr.Tab("nano-Engine"):
+        with gr.Tab("Stories"):
             with gr.Row():
                 with gr.Column(scale=1): 
                     # Text Generation with Ollama
@@ -425,12 +425,12 @@ def gradio_interface():
                         inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
                         outputs=gr.Textbox(label="Aya's response"),
                     )
-            with gr.Tab("Dataset-Generator"):
-                with gr.Row():
-                    with gr.Column(scale=1):
-                        import nanograd.generated_dataset_ui
+            # with gr.Tab("Dataset-Generator"):
+            #     with gr.Row():
+            #         with gr.Column(scale=1):
+            #             import nanograd.generated_dataset_ui
                     
-        with gr.Tab("Trainer"):
+        with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
     
