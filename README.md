@@ -104,7 +104,7 @@ The `nn` module in nanograd provides similar functionalities to PyTorch’s `tor
 
 ---
 
-## Usage:
+## Get Started:
 ### 1- as a library, And CLI:
 **clone the repo**
 ```
@@ -301,7 +301,7 @@ options:
 | run_diffusion | run stable diffusion | `nanograd run_diffusion stable_diffusion` |
 
 
-### 2- as an engine:
+## 2- [as an engine](https://github.com/Esmail-ibraheem/nanograd-engine/blob/main/nano_engine.py):
 in this feature you can do all you can do in the CLI feature but with an interface, you do not need to type anything just some clicks.
 - run stable diffusion
 - run ollama models
