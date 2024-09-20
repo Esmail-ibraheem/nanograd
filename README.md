@@ -113,7 +113,7 @@ git clone https://github.com/Esmail-ibraheem/nanograd.git
 
 **installing it on your computer:**
 ```
-pip install -e .
+./install.bat
 ```
 
 - **_using it in your main file:_**
