@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Log Sidebar -->
+    <div id="logSidebar" class="log-sidebar">
+        <button id="toggleLogsButton" class="toggle-button"><i class="fas fa-bars"></i> Logs</button>
+        <div id="logOutput" class="log-output">
+            <!-- Logs will appear here -->
+        </div>
+    </div>
+
     <header>
         <nav>
             <div class="logo">
@@ -24,6 +32,15 @@
 
     <main>
         <div class="column">
+            <section id="api-token-section" class="card">
+                <h2><i class="fas fa-key"></i> Enter API Token</h2>
+                <div class="input-group">
+                    <input type="text" id="apiTokenInput" placeholder="Enter your API token" />
+                </div>
+                <button onclick="setApiToken()">Set Token</button>
+                <p id="apiTokenStatus" style="color: red;"></p>
+            </section>
+            
             <section id="image-generation" class="card">
                 <h2><i class="fas fa-image"></i> Stable Diffusion Image Generation</h2>
                 <div class="input-group">
@@ -103,6 +120,7 @@
                 <div id="arabicChatbotOutput" class="output"></div>
             </section>
         </div>
+        
     </main>
 
     <footer>
