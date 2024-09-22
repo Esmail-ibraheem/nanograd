@@ -27,8 +27,23 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+
+from fastapi import Depends, Header, HTTPException, status
+
+# Set a dummy token for simplicity (in production, use more secure methods)
+API_TOKEN = "secret_token"
+
+# Dependency function to check for token in headers
+def verify_token(authorization: str = Header(None)):
+    if authorization != f"Bearer {API_TOKEN}":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or missing token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
 # Configure devices
-DEVICE = "cpu"
+DEVICE = "cuda"
 ALLOW_CUDA = False 
 ALLOW_MPS = True
 
@@ -39,9 +54,9 @@ elif torch.backends.mps.is_available() and ALLOW_MPS:
 print(f"Using device: {DEVICE}")
 
 # Load Stable Diffusion model
-tokenizer_vocab_path = Path("C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_data\\tokenizer_vocab.json")
-tokenizer_merges_path = Path("C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_data\\tokenizer_merges.txt")
-model_file = Path("C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\sd_data\\v1-5-pruned-emaonly.ckpt")
+tokenizer_vocab_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\tokenizer_vocab.json")
+tokenizer_merges_path = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\tokenizer_merges.txt")
+model_file = Path("C:\\nanograd\\nanograd\\models\\stable_diffusion\\data\\v1-5-pruned-emaonly.ckpt")
 
 tokenizer = CLIPTokenizer(str(tokenizer_vocab_path), merges_file=str(tokenizer_merges_path))
 models = model_loader.preload_models_from_standard_weights(str(model_file), DEVICE)
@@ -81,7 +96,7 @@ class BlueprintRequest(BaseModel):
     blueprint_name: str
 
 @app.post("/generate_image")
-async def generate_image(request: ImageGenerationRequest):
+async def generate_image(request: ImageGenerationRequest, token: str = Depends(verify_token)):
     uncond_prompt = ""
     do_cfg = True
     input_image = None
@@ -114,13 +129,13 @@ async def generate_image(request: ImageGenerationRequest):
     return {"image": img_str}
 
 @app.post("/chat_with_ollama")
-async def chat_with_ollama(request: TextGenerationRequest):
+async def chat_with_ollama(request: TextGenerationRequest, token: str = Depends(verify_token)):
     command = ['ollama', 'run', request.model_name, request.prompt]
     result = subprocess.run(command, capture_output=True, text=True)
     return {"response": result.stdout}
 
 @app.post("/apply_blueprint")
-async def apply_blueprint(request: BlueprintRequest):
+async def apply_blueprint(request: BlueprintRequest, token: str = Depends(verify_token)):
     if request.blueprint_name in blueprints:
         bp = blueprints[request.blueprint_name]
         sd_prompts = random.choice(bp["sd_prompts"])
