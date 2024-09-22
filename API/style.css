@@ -180,3 +180,24 @@ footer {
     background-color: var(--primary-color);
     color: white;
 }
+
+/* Sidebar Styles */
+.log-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #f9f9f9;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    transform: translateX(-100%); /* Initially hidden off-screen */
+    transition: transform 0.3s ease; /* Smooth transition */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+.log-sidebar.active {
+    transform: translateX(0); /* Slide into view */
+}
