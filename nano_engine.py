@@ -305,10 +305,62 @@ function createGradioAnimation() {
 }
 """
 
+def toggle_info(visible):
+    if visible:
+        return gr.update(visible=True), gr.update(value="Hide Info"), False
+    else:
+        return gr.update(visible=False), gr.update(value="Learn More"), True
+
+
+
+import ollama
+
+# Function to run the chatbot with user input and a customizable prompt
+def run(user_input, custom_prompt):
+    # Initialize the chat with the custom or default prompt
+    messages = [{'role': 'user', 'content': custom_prompt}]
+
+    # Add user input to the messages
+    messages.append({'role': 'user', 'content': user_input})
+
+    # Get the model response
+    response = ollama.chat(model='aya', messages=messages)
+    ai_response = response['message']['content']
+
+    # Add the model response to the messages
+    messages.append({'role': 'assistant', 'content': ai_response})
+
+    return ai_response
+
+# Default prompt to show in the code editor
+default_prompt = '''الان الموضوع كالتالي اريدك ان تجيب على اسئلتي و التالي سوف تكون عن اي موضوع متعلق بالطيران او السفر او شركة الطيران مثل اريد انا اقطع جواز سفر الى اين اذهب بالضبط من الشركة او اريد انا اقطع فيزه للسفر مثلا الى اسبانيا و هكذا دواليك , 
+شروط الاجابه هي : 1- اولا حاول التحدث و كأنك موظف في شركة الطيران , 2- ثانيا حاول ان تجيب على الاسئله باللهجة المصرية , 3- ثالثا حاول ان تعطي حلول اخرى اذا لم تعجبني مثلا طريقة قطع الجواز مثل انه تقول لي اذهب الى كذا و كذا 
+بالمختصر حاول ان تكون مساعدي الشخصي. شارة البدايه عندما اقول لك ابداء و انت ابداء بقول اهلا عزيزي المستخدم كيف يمكنني ان اساعدك هنا في شركة الطيران , طبعا تخيل ان شركة الطيران هذه يمنيه'''
+
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
-        with gr.Tab("Stories"):
+
+        with gr.Row():
+            learn_more_button = gr.Button("Learn More")
+
+        # Expandable info panel
+        with gr.Row(visible=False) as info_panel:
+            gr.Markdown("""
+            ## About nanograd Engine
+            nanograd is a versatile AI tool for generating text using Ollama and images using Stable Diffusion.
+            - **Model Switching**: Easily switch between models for text generation.
+            - **Image Customization**: Adjust sampling methods, CFG scales, and steps for refined image outputs.
+            - **User Guide**: Enter prompts, select models, and explore the possibilities.
+            """)
+
+    # Define state to manage visibility
+        visible = gr.State(value=False)  # Start with the info panel hidden
+
+        # Toggle the info panel
+        learn_more_button.click(toggle_info, [visible], [info_panel, learn_more_button, visible])
+
+        with gr.Tab("nano-Engine"):
             with gr.Row():
                 with gr.Column(scale=1): 
                     # Text Generation with Ollama
@@ -417,20 +469,31 @@ def gradio_interface():
                     gr.Markdown("<h1><center>BPE Tokenizer</h1></center>")
                     iface = gr.Interface(fn=tokenize, inputs="text", outputs="json")
                 
+
                 with gr.Column(scale=1):
-                    from nanograd.models import ollama
                     gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
-                    i = gr.Interface(
-                        fn=ollama.run,
-                        inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
-                        outputs=gr.Textbox(label="Aya's response"),
-                    )
-            # with gr.Tab("Dataset-Generator"):
-            #     with gr.Row():
-            #         with gr.Column(scale=1):
-            #             import nanograd.generated_dataset_ui
                     
-        with gr.Tab("Trainer-LlamaFactory"):
+                    # Textbox for user to ask questions
+                    user_input = gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines")
+                    
+                    # Code editor for the user to customize the prompt
+                    custom_prompt = gr.Code(value=default_prompt, language="python", label="Customize Prompt")
+
+                    # Output textbox for the AI response
+                    ai_output = gr.Textbox(label="Aya's response")
+                    
+                    # Button to submit the input and the modified prompt
+                    submit_button = gr.Button("Submit")
+                    
+                    # When the button is clicked, run the chatbot with the user's input and the custom prompt
+                    submit_button.click(run, inputs=[user_input, custom_prompt], outputs=ai_output)
+                    
+            with gr.Tab("Dataset-Generator"):
+                with gr.Row():
+                    with gr.Column(scale=1):
+                        import nanograd.generated_dataset_ui
+                    
+        with gr.Tab("Trainer"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
     
