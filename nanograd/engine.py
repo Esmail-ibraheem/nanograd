@@ -305,15 +305,68 @@ function createGradioAnimation() {
 }
 """
 
+def show_intro():
+    return """
+    ## Welcome to nanograd Engine!
+    nanograd is your comprehensive tool for AI-powered engine your Unreal engine but for AI.
+    - **20+ LLMs**: Leverage the Ollama model for flexible, multi-language text outputs.
+    - **Stable Diffusion**: Generate stunning images using Stable Diffusion with advanced customization options.
+    - **Vision Transformer**: your multimodal chatbot section, Arabic chatbot, upload images
+    - **Voice To Text**: your multimodal chatbot section, Arabic chatbot, upload images
+    - **Auto-Trainer using LLaMAFactory**: supporting more than 10+ models, dataset to train, and finetune.
+
+    Click "Get Started" to begin using the interface!
+    """
+
+# Function to hide the intro popup
+def dismiss_intro():
+    return gr.update(visible=False), gr.update(visible=False)
+
+
+import ollama
+
+# Function to run the chatbot with user input and a customizable prompt
+def run(user_input, custom_prompt):
+    # Initialize the chat with the custom or default prompt
+    messages = [{'role': 'user', 'content': custom_prompt}]
+
+    # Add user input to the messages
+    messages.append({'role': 'user', 'content': user_input})
+
+    # Get the model response
+    response = ollama.chat(model='aya', messages=messages)
+    ai_response = response['message']['content']
+
+    # Add the model response to the messages
+    messages.append({'role': 'assistant', 'content': ai_response})
+
+    return ai_response
+
+# Default prompt to show in the code editor
+default_prompt = '''الان الموضوع كالتالي اريدك ان تجيب على اسئلتي و التالي سوف تكون عن اي موضوع متعلق بالطيران او السفر او شركة الطيران مثل اريد انا اقطع جواز سفر الى اين اذهب بالضبط من الشركة او اريد انا اقطع فيزه للسفر مثلا الى اسبانيا و هكذا دواليك , 
+شروط الاجابه هي : 1- اولا حاول التحدث و كأنك موظف في شركة الطيران , 2- ثانيا حاول ان تجيب على الاسئله باللهجة المصرية , 3- ثالثا حاول ان تعطي حلول اخرى اذا لم تعجبني مثلا طريقة قطع الجواز مثل انه تقول لي اذهب الى كذا و كذا 
+بالمختصر حاول ان تكون مساعدي الشخصي. شارة البدايه عندما اقول لك ابداء و انت ابداء بقول اهلا عزيزي المستخدم كيف يمكنني ان اساعدك هنا في شركة الطيران , طبعا تخيل ان شركة الطيران هذه يمنيه'''
+
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
+
+        with gr.Row(visible=True) as intro_popup:
+            intro_md = gr.Markdown(show_intro(), visible=True)
+            dismiss_button = gr.Button("Get Started")
+            dismiss_button.click(dismiss_intro, [], [intro_md, intro_popup])
+
         with gr.Tab("Stories"):
             with gr.Row():
                 with gr.Column(scale=1): 
                     # Text Generation with Ollama
                     gr.Markdown("### Generate Text with Ollama")
-                    ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=["aya", "llama3", "codellama"], value="aya")
+                    ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=
+                    ["aya", "llama3", "codellama", "gemma2", "qwen2.5"
+                    "phi3.5", "mistral-small", "mistral-nemo","mistral",
+                    "mixtral", "codegemma", "llava", "llama3", "gemma", "qwen",
+                    "llama2", "nomic-embed-text", "deepseek-coder", "starcoder2",
+                    "llava-llama3", "tinyllama", "codestral", "wizard-vicuna-uncensored"], value="aya")
                     ollama_prompts = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
                     ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=True)
                     ollama_btn = gr.Button("Generate", variant="primary")
@@ -346,7 +399,10 @@ def gradio_interface():
                     gr.Gallery(value=cheetahs, columns=4)
 
                     gr.Markdown("### GPT Checkpoints Management")
-                    checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"], value="EleutherAI/gpt-neo-125M")
+                    checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"
+                                                                                          "codellama/CodeLlama-13b-Python-hf", "databricks/dolly-v2-3b", "garage-bAInd/Camel-Platypus2-13B",
+                                                                                          "google/gemma-2-9b", "lmsys/longchat-13b-16k", "meta-llama/Meta-Llama-3-8B-Instruct", "mistralai/Mistral-7B-v0.1",
+                                                                                          "tiiuae/falcon-180B", "togethercomputer/RedPajama-INCITE-Base-7B-v0.1"], value="EleutherAI/gpt-neo-125M")
                     download_btn = gr.Button("Download Checkpoint", variant="primary")
                     checkpoint_status = gr.Textbox(label="Download Status", placeholder="Status will appear here", interactive=True)
                     download_btn.click(fn=download_checkpoint, inputs=checkpoint_dropdown, outputs=checkpoint_status)
@@ -418,18 +474,23 @@ def gradio_interface():
                     iface = gr.Interface(fn=tokenize, inputs="text", outputs="json")
                 
                 with gr.Column(scale=1):
-                    from nanograd.models import ollama
                     gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
-                    i = gr.Interface(
-                        fn=ollama.run,
-                        inputs=gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines"),
-                        outputs=gr.Textbox(label="Aya's response"),
-                    )
-            # with gr.Tab("Dataset-Generator"):
-            #     with gr.Row():
-            #         with gr.Column(scale=1):
-            #             import nanograd.generated_dataset_ui
                     
+                    # Textbox for user to ask questions
+                    user_input = gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines")
+                    
+                    # Code editor for the user to customize the prompt
+                    custom_prompt = gr.Code(value=default_prompt, language="python", label="Customize Prompt")
+
+                    # Output textbox for the AI response
+                    ai_output = gr.Textbox(label="Aya's response")
+                    
+                    # Button to submit the input and the modified prompt
+                    submit_button = gr.Button("Submit")
+                    
+                    # When the button is clicked, run the chatbot with the user's input and the custom prompt
+                    submit_button.click(run, inputs=[user_input, custom_prompt], outputs=ai_output)
+
         with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
