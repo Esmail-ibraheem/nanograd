@@ -313,7 +313,8 @@ in this feature you can do all you can do in the CLI feature but with an interfa
 
 - run chatbot in Arabic using ollama
 - run BPE tokenizer
-![image](https://github.com/user-attachments/assets/f3868abb-9dfe-442c-a954-f4a7f1e35170)
+![image](https://github.com/user-attachments/assets/e2a2bbdf-11f3-4aec-8e66-b4fc733de13a)
+
 
 - AutoTrainer (**`LLama-Factory`**)
   ![image](https://github.com/user-attachments/assets/7576c27c-1b6d-4319-9f15-ce796b35a9b3)
