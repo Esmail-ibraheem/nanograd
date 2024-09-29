@@ -374,11 +374,9 @@ def gradio_interface():
 
                     image_folder = "C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\output"
 
-                    # List the image filenames in your local directory
                     cheetahs = [
                         os.path.join(image_folder, "c.png"),
                         os.path.join(image_folder, "d.png"),
-                        # os.path.join(image_folder, "image.jpg"),
                         os.path.join(image_folder, "output.png"),
                         os.path.join(image_folder, "output_image.png"),
                         os.path.join(image_folder, "R.png"),
@@ -390,9 +388,7 @@ def gradio_interface():
                         os.path.join(image_folder, "realistic_cat_in_animation_style.png"),
                         os.path.join(image_folder, "realistic_panda_in_animation_style.png"),
                         os.path.join(image_folder, "realistic_small_panda_in_animation_style.png"),
-                        # os.path.join(image_folder, "realistic_small_panda_in_animation_style.png"),
                         os.path.join(image_folder, "4373d3fd-5442-4499-9a77-9da589c94a68.jpg"),
-                        #nanograd\models\stable_diffusion\output\4373d3fd-5442-4499-9a77-9da589c94a68.jpg
                     ]
 
                    
@@ -476,26 +472,21 @@ def gradio_interface():
                 with gr.Column(scale=1):
                     gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
                     
-                    # Textbox for user to ask questions
                     user_input = gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines")
                     
-                    # Code editor for the user to customize the prompt
                     custom_prompt = gr.Code(value=default_prompt, language="python", label="Customize Prompt")
 
-                    # Output textbox for the AI response
                     ai_output = gr.Textbox(label="Aya's response")
                     
-                    # Button to submit the input and the modified prompt
                     submit_button = gr.Button("Submit")
                     
-                    # When the button is clicked, run the chatbot with the user's input and the custom prompt
                     submit_button.click(run, inputs=[user_input, custom_prompt], outputs=ai_output)
 
         with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
     
-    demo.launch()
+    demo.launch(server_name="0.0.0.0", server_port=7860)
 
 # Run the Gradio interface
 gradio_interface()
