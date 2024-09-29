@@ -59,9 +59,15 @@ class Engine:
             else:
                 yield self._update_component({"eval.resume_btn": {"value": True}})
 
-    def change_lang(self, lang:str):
+    # def change_lang(self, lang:str):
+    #     return {
+    #         elem: elem.__class__(**LOCALES[elem_name]['en'])  # Always use 'en' for English
+    #         for elem_name, elem in self.manager.get_elem_iter()
+    #         if elem_name in LOCALES
+    #     }
+    def change_lang(self, lang: str):
         return {
-            elem: elem.__class__(**LOCALES[elem_name]['en'])  # Always use 'en' for English
+            elem: elem.__class__(**LOCALES[elem_name][lang])
             for elem_name, elem in self.manager.get_elem_iter()
             if elem_name in LOCALES
         }
