@@ -3,9 +3,9 @@ LOCALES = {
         "en": {
             "label": "Lang",
         },
-        # "ru": {
-        #     "label": "язык",
-        # },
+        "ar": {
+            "label": "اللغة",
+        },
         # "zh": {
         #     "label": "语言",
         # },
@@ -17,9 +17,9 @@ LOCALES = {
         "en": {
             "label": "Model name",
         },
-        # "ru": {
-        #     "label": "Название модели",
-        # },
+        "ar": {
+            "label": "اسم المودل",
+        },
         # "zh": {
         #     "label": "模型名称",
         # },
@@ -32,10 +32,10 @@ LOCALES = {
             "label": "Model path",
             "info": "Path to pretrained model or model identifier from Hugging Face.",
         },
-        # "ru": {
-        #     "label": "Путь к модели",
-        #     "info": "Путь к предварительно обученной модели или идентификатор модели от Hugging Face.",
-        # },
+        "ar": {
+            "label": "مسار المودل",
+            "info": "مسار المودل المدرب",
+        },
         # "zh": {
         #     "label": "模型路径",
         #     "info": "本地模型的文件路径或 Hugging Face 的模型标识符。",
@@ -49,9 +49,9 @@ LOCALES = {
         "en": {
             "label": "Finetuning method",
         },
-        # "ru": {
-        #     "label": "Метод дообучения",
-        # },
+        "ar": {
+            "label": "طريقة التدريب",
+        },
         # "zh": {
         #     "label": "微调方法",
         # },
@@ -63,9 +63,9 @@ LOCALES = {
         "en": {
             "label": "Checkpoint path",
         },
-        # "ru": {
-        #     "label": "Путь контрольной точки",
-        # },
+        "ar": {
+            "label": "مسار ال Checkpoint",
+        },
         # "zh": {
         #     "label": "检查点路径",
         # },
@@ -77,9 +77,9 @@ LOCALES = {
         "en": {
             "label": "Advanced configurations",
         },
-        # "ru": {
-        #     "label": "Расширенные конфигурации",
-        # },
+        "ar": {
+            "label": "اعدادت متقدمة",
+        },
         # "zh": {
         #     "label": "高级设置",
         # },
@@ -92,10 +92,10 @@ LOCALES = {
             "label": "Quantization bit",
             "info": "Enable quantization (QLoRA).",
         },
-        # "ru": {
-        #     "label": "Уровень квантования",
-        #     "info": "Включить квантование (QLoRA).",
-        # },
+        "ar": {
+            "label": "Quantization bit",
+            "info": "Enable quantization (QLoRA).",
+        },
         # "zh": {
         #     "label": "量化等级",
         #     "info": "启用量化（QLoRA）。",
@@ -110,10 +110,10 @@ LOCALES = {
             "label": "Quantization method",
             "info": "Quantization algorithm to use.",
         },
-        # "ru": {
-        #     "label": "Метод квантования",
-        #     "info": "Алгоритм квантования, который следует использовать.",
-        # },
+        "ar": {
+            "label": "Quantization method",
+            "info": "Quantization algorithm to use.",
+        },
         # "zh": {
         #     "label": "量化方法",
         #     "info": "使用的量化算法。",
@@ -128,10 +128,10 @@ LOCALES = {
             "label": "Prompt template",
             "info": "The template used in constructing prompts.",
         },
-        # "ru": {
-        #     "label": "Шаблон запроса",
-        #     "info": "Шаблон, используемый при формировании запросов.",
-        # },
+        "ar": {
+            "label": "نموذج التلقين",
+            "info": "النماذج المستخدمة في انشاء التلقينات",
+        },
         # "zh": {
         #     "label": "提示模板",
         #     "info": "构建提示词时使用的模板。",
@@ -145,9 +145,9 @@ LOCALES = {
         "en": {
             "label": "RoPE scaling",
         },
-        # "ru": {
-        #     "label": "Масштабирование RoPE",
-        # },
+        "ar": {
+            "label": "RoPE scaling",
+        },
         # "zh": {
         #     "label": "RoPE 插值方法",
         # },
@@ -159,9 +159,9 @@ LOCALES = {
         "en": {
             "label": "Booster",
         },
-        # "ru": {
-        #     "label": "Ускоритель",
-        # },
+        "ar": {
+            "label": "التعزيز",
+        },
         # "zh": {
         #     "label": "加速方式",
         # },
@@ -174,10 +174,10 @@ LOCALES = {
             "label": "Stage",
             "info": "The stage to perform in training.",
         },
-        # "ru": {
-        #     "label": "Этап",
-        #     "info": "Этап выполнения обучения.",
-        # },
+        "ar": {
+            "label": "مرحلة",
+            "info": "مرحلة الأداء في التدريب",
+        },
         # "zh": {
         #     "label": "训练阶段",
         #     "info": "目前采用的训练方式。",
@@ -192,10 +192,10 @@ LOCALES = {
             "label": "Data dir",
             "info": "Path to the data directory.",
         },
-        # "ru": {
-        #     "label": "Директория данных",
-        #     "info": "Путь к директории данных.",
-        # },
+        "ar": {
+            "label": "مسار البيانات",
+            "info": "مسار البيانات",
+        },
         # "zh": {
         #     "label": "数据路径",
         #     "info": "数据文件夹的路径。",
@@ -209,9 +209,9 @@ LOCALES = {
         "en": {
             "label": "Dataset",
         },
-        # "ru": {
-        #     "label": "Набор данных",
-        # },
+        "ar": {
+            "label": "البيانات",
+        },
         # "zh": {
         #     "label": "数据集",
         # },
@@ -223,9 +223,9 @@ LOCALES = {
         "en": {
             "value": "Preview dataset",
         },
-        # "ru": {
-        #     "value": "Просмотреть набор данных",
-        # },
+        "ar": {
+            "value": "معاينة البيانات",
+        },
         # "zh": {
         #     "value": "预览数据集",
         # },
@@ -237,9 +237,9 @@ LOCALES = {
         "en": {
             "label": "Count",
         },
-        # "ru": {
-        #     "label": "Количество",
-        # },
+        "ar": {
+            "label": "العدد",
+        },
         # "zh": {
         #     "label": "数量",
         # },
@@ -251,9 +251,9 @@ LOCALES = {
         "en": {
             "label": "Page",
         },
-        # "ru": {
-        #     "label": "Страница",
-        # },
+        "ar": {
+            "label": "الصفحة",
+        },
         # "zh": {
         #     "label": "页数",
         # },
@@ -265,9 +265,9 @@ LOCALES = {
         "en": {
             "value": "Prev",
         },
-        # "ru": {
-        #     "value": "Предыдущая",
-        # },
+        "ar": {
+            "value": "السابق",
+        },
         # "zh": {
         #     "value": "上一页",
         # },
@@ -279,9 +279,9 @@ LOCALES = {
         "en": {
             "value": "Next",
         },
-        # "ru": {
-        #     "value": "Следующая",
-        # },
+        "ar": {
+            "value": "التالي",
+        },
         # "zh": {
         #     "value": "下一页",
         # },
@@ -293,9 +293,9 @@ LOCALES = {
         "en": {
             "value": "Close",
         },
-        # "ru": {
-        #     "value": "Закрыть",
-        # },
+        "ar": {
+            "value": "اغلاق",
+        },
         # "zh": {
         #     "value": "关闭",
         # },
@@ -307,9 +307,9 @@ LOCALES = {
         "en": {
             "label": "Samples",
         },
-        # "ru": {
-        #     "label": "Примеры",
-        # },
+        "ar": {
+            "label": "النماذج الاولية",
+        },
         # "zh": {
         #     "label": "样例",
         # },
@@ -322,10 +322,10 @@ LOCALES = {
             "label": "Learning rate",
             "info": "Initial learning rate for AdamW.",
         },
-        # "ru": {
-        #     "label": "Скорость обучения",
-        #     "info": "Начальная скорость обучения для AdamW.",
-        # },
+        "ar": {
+            "label": "معدل التعلم",
+            "info": "معدل التعلم باستخدام AdamW",
+        },
         # "zh": {
         #     "label": "学习率",
         #     "info": "AdamW 优化器的初始学习率。",
@@ -340,10 +340,10 @@ LOCALES = {
             "label": "Epochs",
             "info": "Total number of training epochs to perform.",
         },
-        # "ru": {
-        #     "label": "Эпохи",
-        #     "info": "Общее количество эпох обучения.",
-        # },
+        "ar": {
+            "label": "عدد الدورات",
+            "info": "عدد الدورات في التدريب",
+        },
         # "zh": {
         #     "label": "训练轮数",
         #     "info": "需要执行的训练总轮数。",
@@ -358,10 +358,10 @@ LOCALES = {
             "label": "Maximum gradient norm",
             "info": "Norm for gradient clipping.",
         },
-        # "ru": {
-        #     "label": "Максимальная норма градиента",
-        #     "info": "Норма для обрезки градиента.",
-        # },
+        "ar": {
+            "label": "الحد الاقصى لمعيار التدرج",
+            "info": "معيار قص التدرج",
+        },
         # "zh": {
         #     "label": "最大梯度范数",
         #     "info": "用于梯度裁剪的范数。",
@@ -376,10 +376,10 @@ LOCALES = {
             "label": "Max samples",
             "info": "Maximum samples per dataset.",
         },
-        # "ru": {
-        #     "label": "Максимальное количество образцов",
-        #     "info": "Максимальное количество образцов на набор данных.",
-        # },
+        "ar": {
+            "label": "الحد الا قصى للعينات",
+            "info": "الحد الاقصى للعينات بعمدل البيانات",
+        },
         # "zh": {
         #     "label": "最大样本数",
         #     "info": "每个数据集的最大样本数。",
@@ -394,10 +394,10 @@ LOCALES = {
             "label": "Compute type",
             "info": "Whether to use mixed precision training.",
         },
-        # "ru": {
-        #     "label": "Тип вычислений",
-        #     "info": "Использовать ли обучение смешанной точности.",
-        # },
+        "ar": {
+            "label": "نوع الحساب",
+            "info": "ما إذا كنت تريد استخدام التدريب الدقيق المختلط",
+        },
         # "zh": {
         #     "label": "计算类型",
         #     "info": "是否使用混合精度训练。",
@@ -412,10 +412,10 @@ LOCALES = {
             "label": "Cutoff length",
             "info": "Max tokens in input sequence.",
         },
-        # "ru": {
-        #     "label": "Длина обрезки",
-        #     "info": "Максимальное количество токенов во входной последовательности.",
-        # },
+        "ar": {
+            "label": "طول القطع",
+            "info": "الحد الأقصى للرموز المميزة في تسلسل الإدخال",
+        },
         # "zh": {
         #     "label": "截断长度",
         #     "info": "输入序列分词后的最大长度。",
@@ -430,10 +430,10 @@ LOCALES = {
             "label": "Batch size",
             "info": "Number of samples processed on each GPU.",
         },
-        # "ru": {
-        #     "label": "Размер пакета",
-        #     "info": "Количество образцов для обработки на каждом GPU.",
-        # },
+        "ar": {
+            "label": "Batch size",
+            "info": "عدد العينات التي تمت معالجتها على كل وحدة معالجة رسومات",
+        },
         # "zh": {
         #     "label": "批处理大小",
         #     "info": "每个 GPU 处理的样本数量。",
@@ -448,10 +448,10 @@ LOCALES = {
             "label": "Gradient accumulation",
             "info": "Number of steps for gradient accumulation.",
         },
-        # "ru": {
-        #     "label": "Накопление градиента",
-        #     "info": "Количество шагов накопления градиента.",
-        # },
+        "ar": {
+            "label": "تراكم التدرج",
+            "info": "عدد خطوات تراكم التدرج",
+        },
         # "zh": {
         #     "label": "梯度累积",
         #     "info": "梯度累积的步数。",
@@ -466,10 +466,10 @@ LOCALES = {
             "label": "Val size",
             "info": "Proportion of data in the dev set.",
         },
-        # "ru": {
-        #     "label": "Размер валидации",
-        #     "info": "Пропорция данных в наборе для разработки.",
-        # },
+        "ar": {
+            "label": "Val size",
+            "info": "نسبة البيانات في مجموعة التطوير",
+        },
         # "zh": {
         #     "label": "验证集比例",
         #     "info": "验证集占全部样本的百分比。",
@@ -484,10 +484,10 @@ LOCALES = {
             "label": "LR scheduler",
             "info": "Name of the learning rate scheduler.",
         },
-        # "ru": {
-        #     "label": "Планировщик скорости обучения",
-        #     "info": "Название планировщика скорости обучения.",
-        # },
+        "ar": {
+            "label": "LR scheduler",
+            "info": "اسم جدولة معدل التعلم",
+        },
         # "zh": {
         #     "label": "学习率调节器",
         #     "info": "学习率调度器的名称。",
@@ -501,9 +501,9 @@ LOCALES = {
         "en": {
             "label": "Extra configurations",
         },
-        # "ru": {
-        #     "label": "Дополнительные конфигурации",
-        # },
+        "ar": {
+            "label": "اعدادات اضافية",
+        },
         # "zh": {
         #     "label": "其它参数设置",
         # },
@@ -516,10 +516,10 @@ LOCALES = {
             "label": "Logging steps",
             "info": "Number of steps between two logs.",
         },
-        # "ru": {
-        #     "label": "Шаги логирования",
-        #     "info": "Количество шагов между двумя записями в журнале.",
-        # },
+        "ar": {
+            "label": "خطوات التسجيل",
+            "info": "عدد مرات الدخول",
+        },
         # "zh": {
         #     "label": "日志间隔",
         #     "info": "每两次日志输出间的更新步数。",
@@ -534,10 +534,10 @@ LOCALES = {
             "label": "Save steps",
             "info": "Number of steps between two checkpoints.",
         },
-        # "ru": {
-        #     "label": "Шаги сохранения",
-        #     "info": "Количество шагов между двумя контрольными точками.",
-        # },
+        "ar": {
+            "label": "حفظ الخطوات",
+            "info": "عدد الخطوات مابين ال checkpoints",
+        },
         # "zh": {
         #     "label": "保存间隔",
         #     "info": "每两次断点保存间的更新步数。",
@@ -552,10 +552,10 @@ LOCALES = {
             "label": "Warmup steps",
             "info": "Number of steps used for warmup.",
         },
-        # "ru": {
-        #     "label": "Шаги прогрева",
-        #     "info": "Количество шагов, используемых для прогрева.",
-        # },
+        "ar": {
+            "label": "خطوات الإحماء",
+            "info": "عدد الخطوات المستخدمة للإحماء",
+        },
         # "zh": {
         #     "label": "预热步数",
         #     "info": "学习率预热采用的步数。",
@@ -570,10 +570,10 @@ LOCALES = {
             "label": "NEFTune Alpha",
             "info": "Magnitude of noise adding to embedding vectors.",
         },
-        # "ru": {
-        #     "label": "NEFTune Alpha",
-        #     "info": "Величина шума, добавляемого к векторам вложений.",
-        # },
+        "ar": {
+            "label": "NEFTune Alpha",
+            "info": "حجم الضوضاء إضافة إلى تضمين المتجهات",
+        },
         # "zh": {
         #     "label": "NEFTune 噪声参数",
         #     "info": "嵌入向量所添加的噪声大小。",
@@ -588,10 +588,10 @@ LOCALES = {
             "label": "Optimizer",
             "info": "The optimizer to use: adamw_torch, adamw_8bit or adafactor.",
         },
-        # "ru": {
-        #     "label": "Оптимизатор",
-        #     "info": "Оптимизатор для использования: adamw_torch, adamw_8bit или adafactor.",
-        # },
+        "ar": {
+            "label": "محسن",
+            "info": "المحسن المراد استخدامه: adamw_torch أو adamw_8bit أو adfactor",
+        },
         # "zh": {
         #     "label": "优化器",
         #     "info": "使用的优化器：adamw_torch、adamw_8bit 或 adafactor。",
@@ -606,10 +606,10 @@ LOCALES = {
             "label": "Pack sequences",
             "info": "Pack sequences into samples of fixed length.",
         },
-        # "ru": {
-        #     "label": "Упаковка последовательностей",
-        #     "info": "Упаковка последовательностей в образцы фиксированной длины.",
-        # },
+        "ar": {
+            "label": "تسلسل الحزمة",
+            "info": "حزم التسلسلات في عينات ذات طول ثابت",
+        },
         # "zh": {
         #     "label": "序列打包",
         #     "info": "将序列打包为等长样本。",
@@ -624,10 +624,10 @@ LOCALES = {
             "label": "Use neat packing",
             "info": "Avoid cross-attention between packed sequences.",
         },
-        # "ru": {
-        #     "label": "Используйте аккуратную упаковку",
-        #     "info": "избегайте перекрестного внимания между упакованными последовательностями.",
-        # },
+        "ar": {
+            "label": "استخدم التعبئة الأنيقة",
+            "info": "تجنب الانتباه المتبادل بين التسلسلات المعبأة",
+        },
         # "zh": {
         #     "label": "使用无污染打包",
         #     "info": "避免打包后的序列产生交叉注意力。",
@@ -642,10 +642,10 @@ LOCALES = {
             "label": "Train on prompt",
             "info": "Disable the label mask on the prompt (only for SFT).",
         },
-        # "ru": {
-        #     "label": "Тренировка на подсказке",
-        #     "info": "Отключить маску меток на подсказке (только для SFT).",
-        # },
+        "ar": {
+            "label": "تدريب على التلقين",
+            "info": "تعطيل قناع التسمية في المطالبة (فقط ل SFT)",
+        },
         # "zh": {
         #     "label": "学习提示词",
         #     "info": "不在提示词的部分添加掩码（仅适用于 SFT）。",
@@ -660,10 +660,10 @@ LOCALES = {
             "label": "Mask history",
             "info": "Train on the last turn only (only for SFT).",
         },
-        # "ru": {
-        #     "label": "История масок",
-        #     "info": "Тренироваться только на последнем шаге (только для SFT).",
-        # },
+        "ar": {
+            "label": "تاريخ القناع",
+            "info": "تدرب في المنعطف الأخير فقط (فقط ل SFT).",
+        },
         # "zh": {
         #     "label": "不学习历史对话",
         #     "info": "仅学习最后一轮对话（仅适用于 SFT）。",
@@ -678,10 +678,10 @@ LOCALES = {
             "label": "Resize token embeddings",
             "info": "Resize the tokenizer vocab and the embedding layers.",
         },
-        # "ru": {
-        #     "label": "Изменение размера токенных эмбеддингов",
-        #     "info": "Изменить размер словаря токенизатора и слоев эмбеддинга.",
-        # },
+        "ar": {
+            "label": "تغيير حجم تضمينات الرمز المميز",
+            "info": "قم بتغيير حجم مفردات الرمز المميز وطبقات التضمين",
+        },
         # "zh": {
         #     "label": "更改词表大小",
         #     "info": "更改分词器词表和嵌入层的大小。",
@@ -696,10 +696,10 @@ LOCALES = {
             "label": "Enable LLaMA Pro",
             "info": "Make the parameters in the expanded blocks trainable.",
         },
-        # "ru": {
-        #     "label": "Включить LLaMA Pro",
-        #     "info": "Сделать параметры в расширенных блоках обучаемыми.",
-        # },
+        "ar": {
+            "label": "تمكين لاما برو",
+            "info": "اجعل المعلمات في الكتل الموسعة قابلة للتدريب",
+        },
         # "zh": {
         #     "label": "使用 LLaMA Pro",
         #     "info": "仅训练块扩展后的参数。",
@@ -714,10 +714,10 @@ LOCALES = {
             "label": "Enable S^2 Attention",
             "info": "Use shift short attention proposed by LongLoRA.",
         },
-        # "ru": {
-        #     "label": "Включить S^2 внимание",
-        #     "info": "Использовать сдвиг внимания на короткие дистанции предложенный LongLoRA.",
-        # },
+        "ar": {
+            "label": "تمكين انتباه S^2",
+            "info": "استخدم تحول الانتباه القصير الذي اقترحه LongLoRA.",
+        },
         # "zh": {
         #     "label": "使用 S^2 Attention",
         #     "info": "使用 LongLoRA 提出的 shift short attention。",
@@ -732,10 +732,10 @@ LOCALES = {
             "label": "Enable external logger",
             "info": "Use TensorBoard or wandb to log experiment.",
         },
-        # "ru": {
-        #     "label": "Включить внешний регистратор",
-        #     "info": "Использовать TensorBoard или wandb для ведения журнала экспериментов.",
-        # },
+        "ar": {
+            "label": "تمكين المسجل الخارجي",
+            "info": "استخدم TensorBoard أو wandb لتسجيل التجربة",
+        },
         # "zh": {
         #     "label": "启用外部记录面板",
         #     "info": "使用 TensorBoard 或 wandb 记录实验。",
@@ -749,9 +749,9 @@ LOCALES = {
         "en": {
             "label": "Freeze tuning configurations",
         },
-        # "ru": {
-        #     "label": "конфигурации для настройки заморозки",
-        # },
+        "ar": {
+            "label": "تجميد تكوينات الضبط",
+        },
         # "zh": {
         #     "label": "部分参数微调设置",
         # },
@@ -764,10 +764,10 @@ LOCALES = {
             "label": "Trainable layers",
             "info": "Number of the last(+)/first(-) hidden layers to be set as trainable.",
         },
-        # "ru": {
-        #     "label": "Обучаемые слои",
-        #     "info": "Количество последних (+)/первых (-) скрытых слоев, которые будут установлены как обучаемые.",
-        # },
+        "ar": {
+            "label": "طبقات قابلة للتدريب",
+            "info": "عدد الطبقات المخفية الأخيرة (+) / الأولى (-) ليتم تعيينها على أنها قابلة للتدريب",
+        },
         # "zh": {
         #     "label": "可训练层数",
         #     "info": "最末尾（+）/最前端（-）可训练隐藏层的数量。",
@@ -782,10 +782,10 @@ LOCALES = {
             "label": "Trainable modules",
             "info": "Name(s) of trainable modules. Use commas to separate multiple modules.",
         },
-        # "ru": {
-        #     "label": "Обучаемые модули",
-        #     "info": "Название обучаемых модулей. Используйте запятые для разделения нескольких модулей.",
-        # },
+        "ar": {
+            "label": "وحدات قابلة للتدريب",
+            "info": "اسم (أسماء) الوحدات القابلة للتدريب. استخدم الفواصل لفصل وحدات متعددة",
+        },
         # "zh": {
         #     "label": "可训练模块",
         #     "info": "可训练模块的名称。使用英文逗号分隔多个名称。",
@@ -803,13 +803,13 @@ LOCALES = {
                 "Use commas to separate multiple modules."
             ),
         },
-        # "ru": {
-        #     "label": "Дополнительные модули (опционально)",
-        #     "info": (
-        #         "Имена модулей, кроме скрытых слоев, которые следует установить в качестве обучаемых. "
-        #         "Используйте запятые для разделения нескольких модулей."
-        #     ),
-        # },
+        "ar": {
+            "label": "وحدات إضافية (اختياري)",
+            "info": (
+                "اسم (أسماء) الوحدات بصرف النظر عن الطبقات المخفية ليتم تعيينها على أنها قابلة للتدريب. "
+                "استخدم الفواصل لفصل وحدات متعددة."
+            ),
+        },
         # "zh": {
         #     "label": "额外模块（非必填）",
         #     "info": "除隐藏层以外的可训练模块名称。使用英文逗号分隔多个名称。",
@@ -823,9 +823,9 @@ LOCALES = {
         "en": {
             "label": "LoRA configurations",
         },
-        # "ru": {
-        #     "label": "Конфигурации LoRA",
-        # },
+        "ar": {
+            "label": "اعدادت ال LoRA",
+        },
         # "zh": {
         #     "label": "LoRA 参数设置",
         # },
@@ -838,10 +838,10 @@ LOCALES = {
             "label": "LoRA rank",
             "info": "The rank of LoRA matrices.",
         },
-        # "ru": {
-        #     "label": "Ранг матриц LoRA",
-        #     "info": "Ранг матриц LoRA.",
-        # },
+        "ar": {
+            "label": "تقيم ال LoRA",
+            "info": "تقيم مقايس ال LoRA",
+        },
         # "zh": {
         #     "label": "LoRA 秩",
         #     "info": "LoRA 矩阵的秩大小。",
@@ -856,10 +856,10 @@ LOCALES = {
             "label": "LoRA alpha",
             "info": "Lora scaling coefficient.",
         },
-        # "ru": {
-        #     "label": "LoRA alpha",
-        #     "info": "Коэффициент масштабирования LoRA.",
-        # },
+        "ar": {
+            "label": "LoRA alpha",
+            "info": "معامل تحجيم لورا",
+        },
         # "zh": {
         #     "label": "LoRA 缩放系数",
         #     "info": "LoRA 缩放系数大小。",
@@ -874,10 +874,10 @@ LOCALES = {
             "label": "LoRA dropout",
             "info": "Dropout ratio of LoRA weights.",
         },
-        # "ru": {
-        #     "label": "Вероятность отсева LoRA",
-        #     "info": "Вероятность отсева весов LoRA.",
-        # },
+        "ar": {
+            "label": "LoRA dropout",
+            "info": "نسبة التسرب من أوزان LoRA.",
+        },
         # "zh": {
         #     "label": "LoRA 随机丢弃",
         #     "info": "LoRA 权重随机丢弃的概率。",
@@ -892,10 +892,10 @@ LOCALES = {
             "label": "LoRA+ LR ratio",
             "info": "The LR ratio of the B matrices in LoRA.",
         },
-        # "ru": {
-        #     "label": "LoRA+ LR коэффициент",
-        #     "info": "Коэффициент LR матриц B в LoRA.",
-        # },
+        "ar": {
+            "label": "نسبة لورا + LR ",
+            "info": "نسبة LR للمصفوفات B في LoRA",
+        },
         # "zh": {
         #     "label": "LoRA+ 学习率比例",
         #     "info": "LoRA+ 中 B 矩阵的学习率倍数。",
@@ -910,10 +910,10 @@ LOCALES = {
             "label": "Create new adapter",
             "info": "Create a new adapter with randomly initialized weight upon the existing one.",
         },
-        # "ru": {
-        #     "label": "Создать новый адаптер",
-        #     "info": "Создать новый адаптер с случайной инициализацией веса на основе существующего.",
-        # },
+        "ar": {
+            "label": "إنشاء محول جديد",
+            "info": "قم بإنشاء محول جديد بوزن تمت تهيئته عشوائيا على المحول الموجود",
+        },
         # "zh": {
         #     "label": "新建适配器",
         #     "info": "在现有的适配器上创建一个随机初始化后的新适配器。",
@@ -928,10 +928,10 @@ LOCALES = {
             "label": "Use rslora",
             "info": "Use the rank stabilization scaling factor for LoRA layer.",
         },
-        # "ru": {
-        #     "label": "Использовать rslora",
-        #     "info": "Использовать коэффициент масштабирования стабилизации ранга для слоя LoRA.",
-        # },
+        "ar": {
+            "label": "استخدم رسلورا",
+            "info": "استخدم عامل قياس تثبيت الترتيب لطبقة LoRA.",
+        },
         # "zh": {
         #     "label": "使用 rslora",
         #     "info": "对 LoRA 层使用秩稳定缩放方法。",
@@ -946,10 +946,10 @@ LOCALES = {
             "label": "Use DoRA",
             "info": "Use weight-decomposed LoRA.",
         },
-        # "ru": {
-        #     "label": "Используйте DoRA",
-        #     "info": "Используйте LoRA с декомпозицией весов.",
-        # },
+        "ar": {
+            "label": "استخدم DoRA",
+            "info": "استخدم LoRa المتحلل بالوزن",
+        },
         # "zh": {
         #     "label": "使用 DoRA",
         #     "info": "使用权重分解的 LoRA。",
@@ -964,10 +964,10 @@ LOCALES = {
             "label": "Use PiSSA",
             "info": "Use PiSSA method.",
         },
-        # "ru": {
-        #     "label": "используйте PiSSA",
-        #     "info": "Используйте метод PiSSA.",
-        # },
+        "ar": {
+            "label": "استخدام PiSSA",
+            "info": "استخدم طريقة PiSSA.",
+        },
         # "zh": {
         #     "label": "使用 PiSSA",
         #     "info": "使用 PiSSA 方法。",
@@ -982,10 +982,10 @@ LOCALES = {
             "label": "LoRA modules (optional)",
             "info": "Name(s) of modules to apply LoRA. Use commas to separate multiple modules.",
         },
-        # "ru": {
-        #     "label": "Модули LoRA (опционально)",
-        #     "info": "Имена модулей для применения LoRA. Используйте запятые для разделения нескольких модулей.",
-        # },
+        "ar": {
+            "label": "وحدات LoRA (اختيارية)",
+            "info": "اسم (أسماء) الوحدات لتطبيق LoRA. استخدم الفواصل لفصل وحدات متعددة.",
+        },
         # "zh": {
         #     "label": "LoRA 作用模块（非必填）",
         #     "info": "应用 LoRA 的模块名称。使用英文逗号分隔多个名称。",
@@ -1003,13 +1003,13 @@ LOCALES = {
                 "Use commas to separate multiple modules."
             ),
         },
-        # "ru": {
-        #     "label": "Дополнительные модули (опционально)",
-        #     "info": (
-        #         "Имена модулей, кроме слоев LoRA, которые следует установить в качестве обучаемых. "
-        #         "Используйте запятые для разделения нескольких модулей."
-        #     ),
-        # },
+        "ar": {
+            "label": "وحدات إضافية (اختياري)",
+            "info": (
+                "اسم (أسماء) الوحدات بصرف النظر عن طبقات LoRA ليتم تعيينها على أنها قابلة للتدريب. "
+                "استخدم الفواصل لفصل وحدات متعددة."
+            ),
+        },
         # "zh": {
         #     "label": "附加模块（非必填）",
         #     "info": "除 LoRA 层以外的可训练模块名称。使用英文逗号分隔多个名称。",
@@ -1023,9 +1023,9 @@ LOCALES = {
         "en": {
             "label": "RLHF configurations",
         },
-        # "ru": {
-        #     "label": "Конфигурации RLHF",
-        # },
+        "ar": {
+            "label": "اعدادات ال  RLHF",
+        },
         # "zh": {
         #     "label": "RLHF 参数设置",
         # },
@@ -1038,10 +1038,10 @@ LOCALES = {
             "label": "Beta value",
             "info": "Value of the beta parameter in the loss.",
         },
-        # "ru": {
-        #     "label": "Бета значение",
-        #     "info": "Значение параметра бета в функции потерь.",
-        # },
+        "ar": {
+            "label": "قيمة بيتا",
+            "info": "قيمة المعلمة بيتا في الخسارة.",
+        },
         # "zh": {
         #     "label": "Beta 参数",
         #     "info": "损失函数中 beta 超参数大小。",
@@ -1056,10 +1056,10 @@ LOCALES = {
             "label": "Ftx gamma",
             "info": "The weight of SFT loss in the final loss.",
         },
-        # "ru": {
-        #     "label": "Ftx гамма",
-        #     "info": "Вес потери SFT в итоговой потере.",
-        # },
+        "ar": {
+            "label": "Ftx gamma",
+            "info": "وزن خسارة SFT في الخسارة النهائية.",
+        },
         # "zh": {
         #     "label": "Ftx gamma",
         #     "info": "损失函数中 SFT 损失的权重大小。",
@@ -1074,10 +1074,10 @@ LOCALES = {
             "label": "Loss type",
             "info": "The type of the loss function.",
         },
-        # "ru": {
-        #     "label": "Тип потерь",
-        #     "info": "Тип функции потерь.",
-        # },
+        "ar": {
+            "label": "نوع الخسارة",
+            "info": "نوع دالة الخسارة.",
+        },
         # "zh": {
         #     "label": "损失类型",
         #     "info": "损失函数的类型。",
@@ -1092,10 +1092,10 @@ LOCALES = {
             "label": "Reward model",
             "info": "Adapter of the reward model in PPO training.",
         },
-        # "ru": {
-        #     "label": "Модель вознаграждения",
-        #     "info": "Адаптер модели вознаграждения для обучения PPO.",
-        # },
+        "ar": {
+            "label": "نموذج المكافأة",
+            "info": "محول نموذج المكافأة في تدريب PPO.",
+        },
         # "zh": {
         #     "label": "奖励模型",
         #     "info": "PPO 训练中奖励模型的适配器路径。",
@@ -1110,10 +1110,10 @@ LOCALES = {
             "label": "Score norm",
             "info": "Normalizing scores in PPO training.",
         },
-        # "ru": {
-        #     "label": "Норма оценок",
-        #     "info": "Нормализация оценок в тренировке PPO.",
-        # },
+        "ar": {
+            "label": "معيار النتيجة",
+            "info": "تطبيع الدرجات في تدريب PPO.",
+        },
         # "zh": {
         #     "label": "奖励模型",
         #     "info": "PPO 训练中归一化奖励分数。",
@@ -1128,10 +1128,10 @@ LOCALES = {
             "label": "Whiten rewards",
             "info": "Whiten the rewards in PPO training.",
         },
-        # "ru": {
-        #     "label": "Белые вознаграждения",
-        #     "info": "Осветлите вознаграждения в обучении PPO.",
-        # },
+        "ar": {
+            "label": "Whiten rewards",
+            "info": "تبييض المكافآت في تدريب PPO.",
+        },
         # "zh": {
         #     "label": "白化奖励",
         #     "info": "PPO 训练中将奖励分数做白化处理。",
@@ -1145,9 +1145,9 @@ LOCALES = {
         "en": {
             "label": "GaLore configurations",
         },
-        # "ru": {
-        #     "label": "Конфигурации GaLore",
-        # },
+        "ar": {
+            "label": "اعدادت ال GaLore",
+        },
         # "zh": {
         #     "label": "GaLore 参数设置",
         # },
@@ -1160,10 +1160,10 @@ LOCALES = {
             "label": "Use GaLore",
             "info": "Enable gradient low-Rank projection.",
         },
-        # "ru": {
-        #     "label": "Использовать GaLore",
-        #     "info": "Включить проекцию градиента на низкоранговое пространство.",
-        # },
+        "ar": {
+            "label": "استخدم GaLore",
+            "info": "تمكين الإسقاط المتدرج منخفض الرتبة.",
+        },
         # "zh": {
         #     "label": "使用 GaLore",
         #     "info": "使用梯度低秩投影。",
@@ -1178,10 +1178,10 @@ LOCALES = {
             "label": "GaLore rank",
             "info": "The rank of GaLore gradients.",
         },
-        # "ru": {
-        #     "label": "Ранг GaLore",
-        #     "info": "Ранг градиентов GaLore.",
-        # },
+        "ar": {
+            "label": "تقيم ال GaLore",
+            "info": "رتبة تدرجات GaLore.",
+        },
         # "zh": {
         #     "label": "GaLore 秩",
         #     "info": "GaLore 梯度的秩大小。",
@@ -1196,10 +1196,10 @@ LOCALES = {
             "label": "Update interval",
             "info": "Number of steps to update the GaLore projection.",
         },
-        # "ru": {
-        #     "label": "Интервал обновления",
-        #     "info": "Количество шагов для обновления проекции GaLore.",
-        # },
+        "ar": {
+            "label": "تحديث الفاصل الزمني",
+            "info": "عدد الخطوات لتحديث إسقاط GaLore.",
+        },
         # "zh": {
         #     "label": "更新间隔",
         #     "info": "相邻两次投影更新的步数。",
@@ -1214,10 +1214,10 @@ LOCALES = {
             "label": "GaLore scale",
             "info": "GaLore scaling coefficient.",
         },
-        # "ru": {
-        #     "label": "LoRA Alpha",
-        #     "info": "Коэффициент масштабирования GaLore.",
-        # },
+        "ar": {
+            "label": "مقياس غالور",
+            "info": "معامل تحجيم GaLore",
+        },
         # "zh": {
         #     "label": "GaLore 缩放系数",
         #     "info": "GaLore 缩放系数大小。",
@@ -1232,10 +1232,10 @@ LOCALES = {
             "label": "GaLore modules",
             "info": "Name(s) of modules to apply GaLore. Use commas to separate multiple modules.",
         },
-        # "ru": {
-        #     "label": "Модули GaLore",
-        #     "info": "Имена модулей для применения GaLore. Используйте запятые для разделения нескольких модулей.",
-        # },
+        "ar": {
+            "label": "وحدات GaLore",
+            "info": "اسم (أسماء) الوحدات النمطية لتطبيق GaLore. استخدم الفواصل لفصل وحدات متعددة.",
+        },
         # "zh": {
         #     "label": "GaLore 作用模块",
         #     "info": "应用 GaLore 的模块名称。使用英文逗号分隔多个名称。",
@@ -1249,9 +1249,9 @@ LOCALES = {
         "en": {
             "label": "BAdam configurations",
         },
-        # "ru": {
-        #     "label": "Конфигурации BAdam",
-        # },
+        "ar": {
+            "label": "اعدادات ال BAdam",
+        },
         # "zh": {
         #     "label": "BAdam 参数设置",
         # },
@@ -1264,10 +1264,10 @@ LOCALES = {
             "label": "Use BAdam",
             "info": "Enable the BAdam optimizer.",
         },
-        # "ru": {
-        #     "label": "Использовать BAdam",
-        #     "info": "Включите оптимизатор BAdam.",
-        # },
+        "ar": {
+            "label": "استخدام ال BAdam",
+            "info": "قم بتمكين محسن BAdam.",
+        },
         # "zh": {
         #     "label": "使用 BAdam",
         #     "info": "使用 BAdam 优化器。",
@@ -1282,10 +1282,10 @@ LOCALES = {
             "label": "BAdam mode",
             "info": "Whether to use layer-wise or ratio-wise BAdam optimizer.",
         },
-        # "ru": {
-        #     "label": "Режим BAdam",
-        #     "info": "Использовать ли оптимизатор BAdam с послоевой или пропорциональной настройкой.",
-        # },
+        "ar": {
+            "label": "BAdam mode",
+            "info": "سواء كنت تريد استخدام محسن BAdam من حيث الطبقة أو النسبة.",
+        },
         # "zh": {
         #     "label": "BAdam 模式",
         #     "info": "使用 layer-wise 或 ratio-wise BAdam 优化器。",
@@ -1300,10 +1300,10 @@ LOCALES = {
             "label": "Switch mode",
             "info": "The strategy of picking block to update for layer-wise BAdam.",
         },
-        # "ru": {
-        #     "label": "Режим переключения",
-        #     "info": "Стратегия выбора блока для обновления для послойного BAdam.",
-        # },
+        "ar": {
+            "label": "Switch mode",
+            "info": "استراتيجية اختيار الكتلة لتحديثها من أجل BAdam من حيث الطبقة.",
+        },
         # "zh": {
         #     "label": "切换策略",
         #     "info": "Layer-wise BAdam 优化器的块切换策略。",
@@ -1318,10 +1318,10 @@ LOCALES = {
             "label": "Switch interval",
             "info": "Number of steps to update the block for layer-wise BAdam.",
         },
-        # "ru": {
-        #     "label": "Интервал переключения",
-        #     "info": "количество шагов для обновления блока для пошагового BAdam.",
-        # },
+        "ar": {
+            "label": "تبديل الفاصل الزمني",
+            "info": "عدد الخطوات لتحديث الكتلة لطبقة BAdam",
+        },
         # "zh": {
         #     "label": "切换频率",
         #     "info": "Layer-wise BAdam 优化器的块切换频率。",
@@ -1336,10 +1336,10 @@ LOCALES = {
             "label": "Update ratio",
             "info": "The ratio of the update for ratio-wise BAdam.",
         },
-        # "ru": {
-        #     "label": "Коэффициент обновления",
-        #     "info": "Коэффициент обновления для BAdam с учётом соотношений.",
-        # },
+        "ar": {
+            "label": "نسبة التحديث",
+            "info": "نسبة التحديث لنسبة BAdam.",
+        },
         # "zh": {
         #     "label": "Block 更新比例",
         #     "info": "Ratio-wise BAdam 优化器的更新比例。",
@@ -1353,9 +1353,9 @@ LOCALES = {
         "en": {
             "value": "Preview command",
         },
-        # "ru": {
-        #     "value": "Просмотр команды",
-        # },
+        "ar": {
+            "value": "أمر المعاينة",
+        },
         # "zh": {
         #     "value": "预览命令",
         # },
@@ -1367,9 +1367,9 @@ LOCALES = {
         "en": {
             "value": "Save arguments",
         },
-        # "ru": {
-        #     "value": "Сохранить аргументы",
-        # },
+        "ar": {
+            "value": "حفظ الوسيطات",
+        },
         # "zh": {
         #     "value": "保存训练参数",
         # },
@@ -1381,9 +1381,9 @@ LOCALES = {
         "en": {
             "value": "Load arguments",
         },
-        # "ru": {
-        #     "value": "Загрузить аргументы",
-        # },
+        "ar": {
+            "value": "تحميل الوسيطات",
+        },
         # "zh": {
         #     "value": "载入训练参数",
         # },
@@ -1395,9 +1395,9 @@ LOCALES = {
         "en": {
             "value": "Start",
         },
-        # "ru": {
-        #     "value": "Начать",
-        # },
+        "ar": {
+            "value": "بدء",
+        },
         # "zh": {
         #     "value": "开始",
         # },
@@ -1409,9 +1409,9 @@ LOCALES = {
         "en": {
             "value": "Abort",
         },
-        # "ru": {
-        #     "value": "Прервать",
-        # },
+        "ar": {
+            "value": "أجهض",
+        },
         # "zh": {
         #     "value": "中断",
         # },
@@ -1424,10 +1424,10 @@ LOCALES = {
             "label": "Output dir",
             "info": "Directory for saving results.",
         },
-        # "ru": {
-        #     "label": "Выходной каталог",
-        #     "info": "Каталог для сохранения результатов.",
-        # },
+        "ar": {
+            "label": "مسار المخرجات",
+            "info": "المسار لحفظ المخرجات",
+        },
         # "zh": {
         #     "label": "输出目录",
         #     "info": "保存结果的路径。",
@@ -1442,10 +1442,10 @@ LOCALES = {
             "label": "Config path",
             "info": "Path to config saving arguments.",
         },
-        # "ru": {
-        #     "label": "Путь к конфигурации",
-        #     "info": "Путь для сохранения аргументов конфигурации.",
-        # },
+        "ar": {
+            "label": "مسار الضبط",
+            "info": "مسار حفظ الضبط",
+        },
         # "zh": {
         #     "label": "配置路径",
         #     "info": "保存训练参数的配置文件路径。",
@@ -1460,10 +1460,10 @@ LOCALES = {
             "label": "Device count",
             "info": "Number of devices available.",
         },
-        # "ru": {
-        #     "label": "Количество устройств",
-        #     "info": "Количество доступных устройств.",
-        # },
+        "ar": {
+            "label": "عدد الأجهزة",
+            "info": "عدد الأجهزة المتاحة.",
+        },
         # "zh": {
         #     "label": "设备数量",
         #     "info": "当前可用的运算设备数。",
@@ -1478,10 +1478,10 @@ LOCALES = {
             "label": "DeepSpeed stage",
             "info": "DeepSpeed stage for distributed training.",
         },
-        # "ru": {
-        #     "label": "Этап DeepSpeed",
-        #     "info": "Этап DeepSpeed для распределенного обучения.",
-        # },
+        "ar": {
+            "label": "مرحلة السرعة العميقة",
+            "info": "مرحلة DeepSpeed للتدريب الموزع.",
+        },
         # "zh": {
         #     "label": "DeepSpeed stage",
         #     "info": "多卡训练的 DeepSpeed stage。",
@@ -1496,10 +1496,10 @@ LOCALES = {
             "label": "Enable offload",
             "info": "Enable DeepSpeed offload (slow down training).",
         },
-        # "ru": {
-        #     "label": "Включить выгрузку",
-        #     "info": "включить выгрузку DeepSpeed (замедлит обучение).",
-        # },
+        "ar": {
+            "label": "تمكين إلغاء التحميل",
+            "info": "تمكين إلغاء تحميل DeepSpeed (إبطاء التدريب).",
+        },
         # "zh": {
         #     "label": "使用 offload",
         #     "info": "使用 DeepSpeed offload（会减慢速度）。",
@@ -1513,9 +1513,9 @@ LOCALES = {
         "en": {
             "value": "Ready.",
         },
-        # "ru": {
-        #     "value": "Готово.",
-        # },
+        "ar": {
+            "value": "جاهز.",
+        },
         # "zh": {
         #     "value": "准备就绪。",
         # },
@@ -1527,9 +1527,9 @@ LOCALES = {
         "en": {
             "label": "Loss",
         },
-        # "ru": {
-        #     "label": "Потери",
-        # },
+        "ar": {
+            "label": "الخسارة",
+        },
         # "zh": {
         #     "label": "损失",
         # },
@@ -1541,9 +1541,9 @@ LOCALES = {
         "en": {
             "label": "Save predictions",
         },
-        # "ru": {
-        #     "label": "Сохранить предсказания",
-        # },
+        "ar": {
+            "label": "حفظ التوقعات",
+        },
         # "zh": {
         #     "label": "保存预测结果",
         # },
@@ -1555,9 +1555,9 @@ LOCALES = {
         "en": {
             "label": "Inference engine",
         },
-        # "ru": {
-        #     "label": "Инференс движок",
-        # },
+        "ar": {
+            "label": "محرك الاستدلال",
+        },
         # "zh": {
         #     "label": "推理引擎",
         # },
@@ -1569,9 +1569,9 @@ LOCALES = {
         "en": {
             "label": "Inference data type",
         },
-        # "ru": {
-        #     "label": "Тип данных для вывода",
-        # },
+        "ar": {
+            "label": "نوع بيانات الاستدلال",
+        },
         # "zh": {
         #     "label": "推理数据类型",
         # },
@@ -1583,9 +1583,9 @@ LOCALES = {
         "en": {
             "value": "Load model",
         },
-        # "ru": {
-        #     "value": "Загрузить модель",
-        # },
+        "ar": {
+            "value": "تحميل النموذج",
+        },
         # "zh": {
         #     "value": "加载模型",
         # },
@@ -1597,9 +1597,9 @@ LOCALES = {
         "en": {
             "value": "Unload model",
         },
-        # "ru": {
-        #     "value": "Выгрузить модель",
-        # },
+        "ar": {
+            "value": "عدم تحميل المودل",
+        },
         # "zh": {
         #     "value": "卸载模型",
         # },
@@ -1611,9 +1611,9 @@ LOCALES = {
         "en": {
             "value": "Model unloaded, please load a model first.",
         },
-        # "ru": {
-        #     "value": "Модель не загружена, загрузите модель сначала.",
-        # },
+        "ar": {
+            "value": "تم تفريغ النموذج ، يرجى تحميل النموذج أولا.",
+        },
         # "zh": {
         #     "value": "模型未加载，请先加载模型。",
         # },
@@ -1625,9 +1625,9 @@ LOCALES = {
         "en": {
             "label": "Role",
         },
-        # "ru": {
-        #     "label": "Роль",
-        # },
+        "ar": {
+            "label": "الدور",
+        },
         # "zh": {
         #     "label": "角色",
         # },
@@ -1639,9 +1639,9 @@ LOCALES = {
         "en": {
             "placeholder": "System prompt (optional)",
         },
-        # "ru": {
-        #     "placeholder": "Системный запрос (по желанию)",
-        # },
+        "ar": {
+            "placeholder": "موجه النظام (اختياري)",
+        },
         # "zh": {
         #     "placeholder": "系统提示词（非必填）",
         # },
@@ -1653,9 +1653,9 @@ LOCALES = {
         "en": {
             "placeholder": "Tools (optional)",
         },
-        # "ru": {
-        #     "placeholder": "Инструменты (по желанию)",
-        # },
+        "ar": {
+            "placeholder": "الأدوات (اختياري)",
+        },
         # "zh": {
         #     "placeholder": "工具列表（非必填）",
         # },
@@ -1667,9 +1667,9 @@ LOCALES = {
         "en": {
             "label": "Image (optional)",
         },
-        # "ru": {
-        #     "label": "Изображение (по желанию)",
-        # },
+        "ar": {
+            "label": "صورة (اختياري)",
+        },
         # "zh": {
         #     "label": "图像（非必填）",
         # },
@@ -1681,9 +1681,9 @@ LOCALES = {
         "en": {
             "label": "Video (optional)",
         },
-        # "ru": {
-        #     "label": "Видео (по желанию)",
-        # },
+        "ar": {
+            "label": "فيديو (اختياري)",
+        },
         # "zh": {
         #     "label": "视频（非必填）",
         # },
@@ -1695,9 +1695,9 @@ LOCALES = {
         "en": {
             "placeholder": "Input...",
         },
-        # "ru": {
-        #     "placeholder": "Ввод...",
-        # },
+        "ar": {
+            "placeholder": "الادخال...",
+        },
         # "zh": {
         #     "placeholder": "输入...",
         # },
@@ -1709,9 +1709,9 @@ LOCALES = {
         "en": {
             "value": "Submit",
         },
-        # "ru": {
-        #     "value": "Отправить",
-        # },
+        "ar": {
+            "value": "إرسال",
+        },
         # "zh": {
         #     "value": "提交",
         # },
@@ -1723,9 +1723,9 @@ LOCALES = {
         "en": {
             "label": "Maximum length",
         },
-        # "ru": {
-        #     "label": "Максимальная длина",
-        # },
+        "ar": {
+            "label": "الحد الأقصى للطول",
+        },
         # "zh": {
         #     "label": "最大长度",
         # },
@@ -1737,9 +1737,9 @@ LOCALES = {
         "en": {
             "label": "Maximum new tokens",
         },
-        # "ru": {
-        #     "label": "Максимальное количество новых токенов",
-        # },
+        "ar": {
+            "label": "الحد الأقصى للرموز الجديدة",
+        },
         # "zh": {
         #     "label": "最大生成长度",
         # },
@@ -1751,9 +1751,9 @@ LOCALES = {
         "en": {
             "label": "Top-p",
         },
-        # "ru": {
-        #     "label": "Лучшие-p",
-        # },
+        "ar": {
+            "label": "Top-p",
+        },
         # "zh": {
         #     "label": "Top-p 采样值",
         # },
@@ -1765,9 +1765,9 @@ LOCALES = {
         "en": {
             "label": "Temperature",
         },
-        # "ru": {
-        #     "label": "Температура",
-        # },
+        "ar": {
+            "label": "درجة الحرارة",
+        },
         # "zh": {
         #     "label": "温度系数",
         # },
@@ -1779,9 +1779,9 @@ LOCALES = {
         "en": {
             "value": "Clear history",
         },
-        # "ru": {
-        #     "value": "Очистить историю",
-        # },
+        "ar": {
+            "value": "مسح التاريخ",
+        },
         # "zh": {
         #     "value": "清空历史",
         # },
@@ -1794,10 +1794,10 @@ LOCALES = {
             "label": "Max shard size (GB)",
             "info": "The maximum size for a model file.",
         },
-        # "ru": {
-        #     "label": "Максимальный размер фрагмента (ГБ)",
-        #     "info": "Максимальный размер файла модели.",
-        # },
+        "ar": {
+            "label": "الحد الأقصى لحجم القشرة (جيجابايت)",
+            "info": "الحد الأقصى لحجم ملف النموذج.",
+        },
         # "zh": {
         #     "label": "最大分块大小（GB）",
         #     "info": "单个模型文件的最大大小。",
@@ -1812,10 +1812,10 @@ LOCALES = {
             "label": "Export quantization bit.",
             "info": "Quantizing the exported model.",
         },
-        # "ru": {
-        #     "label": "Экспорт бита квантования",
-        #     "info": "Квантование экспортируемой модели.",
-        # },
+        "ar": {
+            "label": "تصدير بت الكمية.",
+            "info": "قياس النموذج المصدر.",
+        },
         # "zh": {
         #     "label": "导出量化等级",
         #     "info": "量化导出模型。",
@@ -1830,10 +1830,10 @@ LOCALES = {
             "label": "Export quantization dataset",
             "info": "The calibration dataset used for quantization.",
         },
-        # "ru": {
-        #     "label": "Экспорт набора данных для квантования",
-        #     "info": "Набор данных калибровки, используемый для квантования.",
-        # },
+        "ar": {
+            "label": "تصدير مجموعة بيانات التكميم",
+            "info": "مجموعة بيانات المعايرة المستخدمة في التكميم.",
+        },
         # "zh": {
         #     "label": "导出量化数据集",
         #     "info": "量化过程中使用的校准数据集。",
@@ -1848,10 +1848,10 @@ LOCALES = {
             "label": "Export device",
             "info": "Which device should be used to export model.",
         },
-        # "ru": {
-        #     "label": "Экспорт устройство",
-        #     "info": "Какое устройство следует использовать для экспорта модели.",
-        # },
+        "ar": {
+            "label": "تصدير الجهاز",
+            "info": "الجهاز الذي يجب استخدامه لتصدير النموذج.",
+        },
         # "zh": {
         #     "label": "导出设备",
         #     "info": "导出模型使用的设备类型。",
@@ -1866,10 +1866,10 @@ LOCALES = {
             "label": "Export legacy format",
             "info": "Do not use safetensors to save the model.",
         },
-        # "ru": {
-        #     "label": "Экспорт в устаревший формат",
-        #     "info": "Не использовать safetensors для сохранения модели.",
-        # },
+        "ar": {
+            "label": "تصدير التنسيق القديم",
+            "info": "لا تستخدم أجهزة الأمان لحفظ النموذج.",
+        },
         # "zh": {
         #     "label": "导出旧格式",
         #     "info": "不使用 safetensors 格式保存模型。",
@@ -1884,10 +1884,10 @@ LOCALES = {
             "label": "Export dir",
             "info": "Directory to save exported model.",
         },
-        # "ru": {
-        #     "label": "Каталог экспорта",
-        #     "info": "Каталог для сохранения экспортированной модели.",
-        # },
+        "ar": {
+            "label": "مسار الاخراج",
+            "info": "دليل لحفظ النموذج المصدر.",
+        },
         # "zh": {
         #     "label": "导出目录",
         #     "info": "保存导出模型的文件夹路径。",
@@ -1902,10 +1902,10 @@ LOCALES = {
             "label": "HF Hub ID (optional)",
             "info": "Repo ID for uploading model to Hugging Face hub.",
         },
-        # "ru": {
-        #     "label": "HF Hub ID (опционально)",
-        #     "info": "Идентификатор репозитория для загрузки модели на Hugging Face hub.",
-        # },
+        "ar": {
+            "label": "HF Hub ID (optional)",
+            "info": "معرف الريبو لتحميل النموذج إلى مركز معانقة الوجه.",
+        },
         # "zh": {
         #     "label": "HF Hub ID（非必填）",
         #     "info": "用于将模型上传至 Hugging Face Hub 的仓库 ID。",
@@ -1919,9 +1919,9 @@ LOCALES = {
         "en": {
             "value": "Export",
         },
-        # "ru": {
-        #     "value": "Экспорт",
-        # },
+        "ar": {
+            "value": "اصدار",
+        },
         # "zh": {
         #     "value": "开始导出",
         # },
@@ -1935,169 +1935,169 @@ LOCALES = {
 ALERTS = {
     "err_conflict": {
         "en": "A process is in running, please abort it first.",
-        # "ru": "Процесс уже запущен, пожалуйста, сначала прервите его.",
+        "ar": "هناك عملية قيد التشغيل ، يرجى إجهاضها أولا.",
         # "zh": "任务已存在，请先中断训练。",
         # "ko": "프로세스가 실행 중입니다. 먼저 중단하십시오.",
     },
     "err_exists": {
         "en": "You have loaded a model, please unload it first.",
-        # "ru": "Вы загрузили модель, сначала разгрузите ее.",
+        "ar": "لقد قمت بتحميل نموذج ، يرجى تفريغه أولا",
         # "zh": "模型已存在，请先卸载模型。",
         # "ko": "모델이 로드되었습니다. 먼저 언로드하십시오.",
     },
     "err_no_model": {
         "en": "Please select a model.",
-        # "ru": "Пожалуйста, выберите модель.",
+        "ar": "الرجاء اختيار نموذج.",
         # "zh": "请选择模型。",
         # "ko": "모델을 선택하십시오.",
     },
     "err_no_path": {
         "en": "Model not found.",
-        # "ru": "Модель не найдена.",
+        "ar": "لم يتم العثور على النموذج.",
         # "zh": "模型未找到。",
         # "ko": "모델을 찾을 수 없습니다.",
     },
     "err_no_dataset": {
         "en": "Please choose a dataset.",
-        # "ru": "Пожалуйста, выберите набор данных.",
+        "ar": "الرجاء اختيار مجموعة بيانات.",
         # "zh": "请选择数据集。",
         # "ko": "데이터 세트를 선택하십시오.",
     },
     "err_no_adapter": {
         "en": "Please select an adapter.",
-        # "ru": "Пожалуйста, выберите адаптер.",
+        "ar": "الرجاء تحديد محول.",
         # "zh": "请选择适配器。",
         # "ko": "어댑터를 선택하십시오.",
     },
     "err_no_output_dir": {
         "en": "Please provide output dir.",
-        # "ru": "Пожалуйста, укажите выходную директорию.",
+        "ar": "يرجي تقديم مسار المخرجات",
         # "zh": "请填写输出目录。",
         # "ko": "출력 디렉토리를 제공하십시오.",
     },
     "err_no_reward_model": {
         "en": "Please select a reward model.",
-        # "ru": "Пожалуйста, выберите модель вознаграждения.",
+        "ar": "يرجى تحديد نموذج المكافأة.",
         # "zh": "请选择奖励模型。",
         # "ko": "리워드 모델을 선택하십시오.",
     },
     "err_no_export_dir": {
         "en": "Please provide export dir.",
-        # "ru": "Пожалуйста, укажите каталог для экспорта.",
+        "ar": "يرجي تحديد مسار الاصدار",
         # "zh": "请填写导出目录。",
         # "ko": "Export 디렉토리를 제공하십시오.",
     },
     "err_gptq_lora": {
         "en": "Please merge adapters before quantizing the model.",
-        # "ru": "Пожалуйста, объедините адаптеры перед квантованием модели.",
+        "ar": "يرجى دمج المحولات قبل تحديد حجم النموذج.",
         # "zh": "量化模型前请先合并适配器。",
         # "ko": "모델을 양자화하기 전에 어댑터를 병합하십시오.",
     },
     "err_failed": {
         "en": "Failed.",
-        # "ru": "Ошибка.",
+        "ar": "فشل",
         # "zh": "训练出错。",
         # "ko": "실패했습니다.",
     },
     "err_demo": {
         "en": "Training is unavailable in demo mode, duplicate the space to a private one first.",
-        # "ru": "Обучение недоступно в демонстрационном режиме, сначала скопируйте пространство в частное.",
+        "ar": "التدريب غير متوفر في الوضع التجريبي ، قم بتكرار المساحة إلى مساحة خاصة أولا.",
         # "zh": "展示模式不支持训练，请先复制到私人空间。",
         # "ko": "데모 모드에서는 훈련을 사용할 수 없습니다. 먼저 프라이빗 레포지토리로 작업 공간을 복제하십시오.",
     },
     "err_tool_name": {
         "en": "Tool name not found.",
-        # "ru": "Имя инструмента не найдено.",
+        "ar": "لم يتم العثور على اسم الأداة.",
         # "zh": "工具名称未找到。",
         # "ko": "툴 이름을 찾을 수 없습니다.",
     },
     "err_json_schema": {
         "en": "Invalid JSON schema.",
-        # "ru": "Неверная схема JSON.",
+        "ar": "مخطط JSON غير صالح.",
         # "zh": "Json 格式错误。",
         # "ko": "잘못된 JSON 스키마입니다.",
     },
     "err_config_not_found": {
         "en": "Config file is not found.",
-        # "ru": "Файл конфигурации не найден.",
+        "ar": "لم يتم العثور على ملف الاعدادات",
         # "zh": "未找到配置文件。",
         # "ko": "Config 파일을 찾을 수 없습니다.",
     },
     "warn_no_cuda": {
         "en": "CUDA environment was not detected.",
-        # "ru": "Среда CUDA не обнаружена.",
+        "ar": "لم يتم الكشف عن بيئة CUDA.",
         # "zh": "未检测到 CUDA 环境。",
         # "ko": "CUDA 환경이 감지되지 않았습니다.",
     },
     "warn_output_dir_exists": {
         "en": "Output dir already exists, will resume training from here.",
-        # "ru": "Выходной каталог уже существует, обучение будет продолжено отсюда.",
+        "ar": "مسار المخرجات موجود مسبقا, سوف نستأنف التدريب من هنا ",
         # "zh": "输出目录已存在，将从该断点恢复训练。",
         # "ko": "출력 디렉토리가 이미 존재합니다. 위 출력 디렉토리에 저장된 학습을 재개합니다.",
     },
     "info_aborting": {
         "en": "Aborted, wait for terminating...",
-        # "ru": "Прервано, ожидание завершения...",
+        "ar": "تم إحباطه ، انتظر الإنهاء ...",
         # "zh": "训练中断，正在等待进程结束……",
         # "ko": "중단되었습니다. 종료를 기다리십시오...",
     },
     "info_aborted": {
         "en": "Ready.",
-        # "ru": "Готово.",
+        "ar": "جاهز.",
         # "zh": "准备就绪。",
         # "ko": "준비되었습니다.",
     },
     "info_finished": {
         "en": "Finished.",
-        # "ru": "Завершено.",
+        "ar": "منته",
         # "zh": "训练完毕。",
         # "ko": "완료되었습니다.",
     },
     "info_config_saved": {
         "en": "Arguments have been saved at: ",
-        # "ru": "Аргументы были сохранены по адресу: ",
+        "ar": "تم حفظ الوسيطات في: ",
         # "zh": "训练参数已保存至：",
         # "ko": "매개변수가 저장되었습니다: ",
     },
     "info_config_loaded": {
         "en": "Arguments have been restored.",
-        # "ru": "Аргументы были восстановлены.",
+        "ar": "تمت استعادة الحجج.",
         # "zh": "训练参数已载入。",
         # "ko": "매개변수가 복원되었습니다.",
     },
     "info_loading": {
         "en": "Loading model...",
-        # "ru": "Загрузка модели...",
+        "ar": "النموذج قيد التحميل",
         # "zh": "加载中……",
         # "ko": "모델 로딩 중...",
     },
     "info_unloading": {
         "en": "Unloading model...",
-        # "ru": "Выгрузка модели...",
+        "ar": "يتم رفع النموذج",
         # "zh": "卸载中……",
         # "ko": "모델 언로딩 중...",
     },
     "info_loaded": {
         "en": "Model loaded, now you can chat with your model!",
-        # "ru": "Модель загружена, теперь вы можете общаться с вашей моделью!",
+        "ar": "تم تحميل النموذج , الان يمكنك استخدام النموذج!",
         # "zh": "模型已加载，可以开始聊天了！",
         # "ko": "모델이 로드되었습니다. 이제 모델과 채팅할 수 있습니다!",
     },
     "info_unloaded": {
         "en": "Model unloaded.",
-        # "ru": "Модель выгружена.",
+        "ar": "تم تحميل النموذج",
         # "zh": "模型已卸载。",
         # "ko": "모델이 언로드되었습니다.",
     },
     "info_exporting": {
         "en": "Exporting model...",
-        # "ru": "Экспорт модели...",
+        "ar": "قيد الاصدار",
         # "zh": "正在导出模型……",
         # "ko": "모델 내보내기 중...",
     },
     "info_exported": {
         "en": "Model exported.",
-        # "ru": "Модель экспортирована.",
+        "ar": "تم اصدار النموذج",
         # "zh": "模型导出完成。",
         # "ko": "모델이 내보내졌습니다.",
     },
