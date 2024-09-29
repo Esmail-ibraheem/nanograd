@@ -305,12 +305,22 @@ function createGradioAnimation() {
 }
 """
 
-def toggle_info(visible):
-    if visible:
-        return gr.update(visible=True), gr.update(value="Hide Info"), False
-    else:
-        return gr.update(visible=False), gr.update(value="Learn More"), True
+def show_intro():
+    return """
+    ## Welcome to nanograd Engine!
+    nanograd is your comprehensive tool for AI-powered engine your Unreal engine but for AI.
+    - **20+ LLMs**: Leverage the Ollama model for flexible, multi-language text outputs.
+    - **Stable Diffusion**: Generate stunning images using Stable Diffusion with advanced customization options.
+    - **Vision Transformer**: your multimodal chatbot section, Arabic chatbot, upload images
+    - **Voice To Text**: your multimodal chatbot section, Arabic chatbot, upload images
+    - **Auto-Trainer using LLaMAFactory**: supporting more than 10+ models, dataset to train, and finetune.
 
+    Click "Get Started" to begin using the interface!
+    """
+
+# Function to hide the intro popup
+def dismiss_intro():
+    return gr.update(visible=False), gr.update(visible=False)
 
 
 import ollama
@@ -341,31 +351,22 @@ default_prompt = '''الان الموضوع كالتالي اريدك ان تج�
 def gradio_interface():
     with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
 
-        with gr.Row():
-            learn_more_button = gr.Button("Learn More")
+        with gr.Row(visible=True) as intro_popup:
+            intro_md = gr.Markdown(show_intro(), visible=True)
+            dismiss_button = gr.Button("Get Started")
+            dismiss_button.click(dismiss_intro, [], [intro_md, intro_popup])
 
-        # Expandable info panel
-        with gr.Row(visible=False) as info_panel:
-            gr.Markdown("""
-            ## About nanograd Engine
-            nanograd is a versatile AI tool for generating text using Ollama and images using Stable Diffusion.
-            - **Model Switching**: Easily switch between models for text generation.
-            - **Image Customization**: Adjust sampling methods, CFG scales, and steps for refined image outputs.
-            - **User Guide**: Enter prompts, select models, and explore the possibilities.
-            """)
-
-    # Define state to manage visibility
-        visible = gr.State(value=False)  # Start with the info panel hidden
-
-        # Toggle the info panel
-        learn_more_button.click(toggle_info, [visible], [info_panel, learn_more_button, visible])
-
-        with gr.Tab("nano-Engine"):
+        with gr.Tab("Stories"):
             with gr.Row():
                 with gr.Column(scale=1): 
                     # Text Generation with Ollama
                     gr.Markdown("### Generate Text with Ollama")
-                    ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=["aya", "llama3", "codellama"], value="aya")
+                    ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=
+                    ["aya", "llama3", "codellama", "gemma2", "qwen2.5"
+                    "phi3.5", "mistral-small", "mistral-nemo","mistral",
+                    "mixtral", "codegemma", "llava", "llama3", "gemma", "qwen",
+                    "llama2", "nomic-embed-text", "deepseek-coder", "starcoder2",
+                    "llava-llama3", "tinyllama", "codestral", "wizard-vicuna-uncensored"], value="aya")
                     ollama_prompts = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
                     ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=True)
                     ollama_btn = gr.Button("Generate", variant="primary")
@@ -373,11 +374,9 @@ def gradio_interface():
 
                     image_folder = "C:\\Users\\Esmail\\Desktop\\nanograd\\nanograd\\models\\stable_diffusion\\output"
 
-                    # List the image filenames in your local directory
                     cheetahs = [
                         os.path.join(image_folder, "c.png"),
                         os.path.join(image_folder, "d.png"),
-                        # os.path.join(image_folder, "image.jpg"),
                         os.path.join(image_folder, "output.png"),
                         os.path.join(image_folder, "output_image.png"),
                         os.path.join(image_folder, "R.png"),
@@ -389,16 +388,17 @@ def gradio_interface():
                         os.path.join(image_folder, "realistic_cat_in_animation_style.png"),
                         os.path.join(image_folder, "realistic_panda_in_animation_style.png"),
                         os.path.join(image_folder, "realistic_small_panda_in_animation_style.png"),
-                        # os.path.join(image_folder, "realistic_small_panda_in_animation_style.png"),
                         os.path.join(image_folder, "4373d3fd-5442-4499-9a77-9da589c94a68.jpg"),
-                        #nanograd\models\stable_diffusion\output\4373d3fd-5442-4499-9a77-9da589c94a68.jpg
                     ]
 
                    
                     gr.Gallery(value=cheetahs, columns=4)
 
                     gr.Markdown("### GPT Checkpoints Management")
-                    checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"], value="EleutherAI/gpt-neo-125M")
+                    checkpoint_dropdown = gr.Dropdown(label="Select Checkpoint", choices=["EleutherAI/gpt-neo-125M", "EleutherAI/gpt-neo-1.3B", "microsoft/phi-2", "codellama/CodeLlama-13b-hf"
+                                                                                          "codellama/CodeLlama-13b-Python-hf", "databricks/dolly-v2-3b", "garage-bAInd/Camel-Platypus2-13B",
+                                                                                          "google/gemma-2-9b", "lmsys/longchat-13b-16k", "meta-llama/Meta-Llama-3-8B-Instruct", "mistralai/Mistral-7B-v0.1",
+                                                                                          "tiiuae/falcon-180B", "togethercomputer/RedPajama-INCITE-Base-7B-v0.1"], value="EleutherAI/gpt-neo-125M")
                     download_btn = gr.Button("Download Checkpoint", variant="primary")
                     checkpoint_status = gr.Textbox(label="Download Status", placeholder="Status will appear here", interactive=True)
                     download_btn.click(fn=download_checkpoint, inputs=checkpoint_dropdown, outputs=checkpoint_status)
@@ -469,35 +469,24 @@ def gradio_interface():
                     gr.Markdown("<h1><center>BPE Tokenizer</h1></center>")
                     iface = gr.Interface(fn=tokenize, inputs="text", outputs="json")
                 
-
                 with gr.Column(scale=1):
                     gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
                     
-                    # Textbox for user to ask questions
                     user_input = gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines")
                     
-                    # Code editor for the user to customize the prompt
                     custom_prompt = gr.Code(value=default_prompt, language="python", label="Customize Prompt")
 
-                    # Output textbox for the AI response
                     ai_output = gr.Textbox(label="Aya's response")
                     
-                    # Button to submit the input and the modified prompt
                     submit_button = gr.Button("Submit")
                     
-                    # When the button is clicked, run the chatbot with the user's input and the custom prompt
                     submit_button.click(run, inputs=[user_input, custom_prompt], outputs=ai_output)
-                    
-            with gr.Tab("Dataset-Generator"):
-                with gr.Row():
-                    with gr.Column(scale=1):
-                        import nanograd.generated_dataset_ui
-                    
-        with gr.Tab("Trainer"):
+
+        with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
     
-    demo.launch()
+    demo.launch(server_name="0.0.0.0", server_port=7860)
 
 # Run the Gradio interface
 gradio_interface()
