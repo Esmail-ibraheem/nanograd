@@ -1,17 +1,3 @@
-# Copyright 2024 the LlamaFactory team.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import os
 
 from ..extras.packages import is_gradio_available
@@ -55,6 +41,11 @@ def create_ui(demo_mode: bool = False) -> "gr.Blocks":
 
         with gr.Tab("Chat"):
             engine.manager.add_elems("infer", create_infer_tab(engine))
+        
+        with gr.Tab("Dataset-Generator"):
+            with gr.Row():
+                with gr.Column(scale=1):
+                    import nanograd.generated_dataset_ui
 
         if not demo_mode:
             with gr.Tab("Export"):
