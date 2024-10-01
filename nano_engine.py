@@ -347,6 +347,11 @@ default_prompt = '''الان الموضوع كالتالي اريدك ان تج�
 شروط الاجابه هي : 1- اولا حاول التحدث و كأنك موظف في شركة الطيران , 2- ثانيا حاول ان تجيب على الاسئله باللهجة المصرية , 3- ثالثا حاول ان تعطي حلول اخرى اذا لم تعجبني مثلا طريقة قطع الجواز مثل انه تقول لي اذهب الى كذا و كذا 
 بالمختصر حاول ان تكون مساعدي الشخصي. شارة البدايه عندما اقول لك ابداء و انت ابداء بقول اهلا عزيزي المستخدم كيف يمكنني ان اساعدك هنا في شركة الطيران , طبعا تخيل ان شركة الطيران هذه يمنيه'''
 
+# Placeholder for the Vision Transformer image description logic
+def describe_image(image: Image.Image) -> str:
+    # Placeholder logic: You can replace this with actual Vision Transformer logic
+    return "This is a placeholder description for the uploaded image."
+
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
@@ -484,6 +489,21 @@ def gradio_interface():
                     submit_button = gr.Button("Submit")
                     
                     submit_button.click(run, inputs=[user_input, custom_prompt], outputs=ai_output)
+            with gr.Row():
+                with gr.Column(scale=1):
+                    gr.Markdown("<h1><center>Vision Transformer Image Description</h1></center>")
+                    
+                    # Input for image upload
+                    image_input = gr.Image(label="Upload an image", type="pil")
+                    
+                    # Output for image description
+                    image_description_output = gr.Textbox(label="Image Description")
+
+                    # Button to trigger the image description function
+                    describe_button = gr.Button("Describe Image")
+
+                    # Link button to function for generating image description
+                    describe_button.click(describe_image, inputs=image_input, outputs=image_description_output)
 
         with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
