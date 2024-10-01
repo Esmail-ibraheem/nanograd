@@ -350,7 +350,10 @@ default_prompt = '''الان الموضوع كالتالي اريدك ان تج�
 # Gradio interface
 def gradio_interface():
     with gr.Blocks(theme='ParityError/Interstellar', js=js) as demo:
-
+        gr.HTML(
+                '<h3><center>Visit <a href="https://github.com/Esmail-ibraheem/nanograd-Engine" target="_blank">'
+                "nanograd Ecosystem</a> for details.</center></h3>"
+            )
         with gr.Row(visible=True) as intro_popup:
             intro_md = gr.Markdown(show_intro(), visible=True)
             dismiss_button = gr.Button("Get Started")
