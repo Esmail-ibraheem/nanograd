@@ -355,8 +355,8 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ---
 
 ## Notes and Acknowledgments
-- Hugging-Face Transformers
-- Lightning AI
+- [Hugging-Face Transformers](https://github.com/huggingface/transformers)
+- [Lightning AI](https://github.com/Lightning-AI)
 - [Karpathy's miniGPT](https://github.com/karpathy/minGPT)
 - [GeoHotz's tinygrad](https://github.com/tinygrad/tinygrad)
 - OpenAI for pioneering the GPT architecture
