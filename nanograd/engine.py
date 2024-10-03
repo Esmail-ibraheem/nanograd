@@ -8,6 +8,7 @@ import os
 import random
 import io
 import sys
+import matplotlib.pyplot as plt 
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
 
@@ -328,7 +329,15 @@ def dismiss_intro():
 import ollama
 
 # Function to run the chatbot with user input and a customizable prompt
-def run(user_input, custom_prompt):
+default_prompt = '''الان الموضوع كالتالي اريدك ان تجيب على اسئلتي و التالي سوف تكون عن اي موضوع متعلق بالطيران او السفر او شركة الطيران مثل اريد انا اقطع جواز سفر الى اين اذهب بالضبط من الشركة او اريد انا اقطع فيزه للسفر مثلا الى اسبانيا و هكذا دواليك , 
+شروط الاجابه هي : 1- اولا حاول التحدث و كأنك موظف في شركة الطيران , 2- ثانيا حاول ان تجيب على الاسئله باللهجة المصرية , 3- ثالثا حاول ان تعطي حلول اخرى اذا لم تعجبني مثلا طريقة قطع الجواز مثل انه تقول لي اذهب الى كذا و كذا 
+بالمختصر حاول ان تكون مساعدي الشخصي. شارة البدايه عندما اقول لك ابداء و انت ابداء بقول اهلا عزيزي المستخدم كيف يمكنني ان اساعدك هنا في شركة الطيران , طبعا تخيل ان شركة الطيران هذه يمنيه'''
+
+# Define the run function to handle chatbot responses
+def run(user_input, custom_prompt, tone, response_style, personality, response_language):
+    # Construct the prompt based on user selections
+    custom_prompt += f"\n\nTone: {tone}. Response Style: {response_style}. Personality: {personality}. Language: {response_language}."
+
     # Initialize the chat with the custom or default prompt
     messages = [{'role': 'user', 'content': custom_prompt}]
 
@@ -344,10 +353,6 @@ def run(user_input, custom_prompt):
 
     return ai_response
 
-# Default prompt to show in the code editor
-default_prompt = '''الان الموضوع كالتالي اريدك ان تجيب على اسئلتي و التالي سوف تكون عن اي موضوع متعلق بالطيران او السفر او شركة الطيران مثل اريد انا اقطع جواز سفر الى اين اذهب بالضبط من الشركة او اريد انا اقطع فيزه للسفر مثلا الى اسبانيا و هكذا دواليك , 
-شروط الاجابه هي : 1- اولا حاول التحدث و كأنك موظف في شركة الطيران , 2- ثانيا حاول ان تجيب على الاسئله باللهجة المصرية , 3- ثالثا حاول ان تعطي حلول اخرى اذا لم تعجبني مثلا طريقة قطع الجواز مثل انه تقول لي اذهب الى كذا و كذا 
-بالمختصر حاول ان تكون مساعدي الشخصي. شارة البدايه عندما اقول لك ابداء و انت ابداء بقول اهلا عزيزي المستخدم كيف يمكنني ان اساعدك هنا في شركة الطيران , طبعا تخيل ان شركة الطيران هذه يمنيه'''
 
 def describe_image(image: Image.Image) -> str:
     # Placeholder logic: You can replace this with actual Vision Transformer logic
@@ -375,6 +380,7 @@ def execute_code(code):
     finally:
         # Reset stdout to the default
         sys.stdout = sys.__stdout__
+
 
 # Gradio interface
 def gradio_interface():
@@ -497,22 +503,43 @@ def gradio_interface():
         with gr.Tab("Chatbot-Prompts"):
             with gr.Row():
                 with gr.Column(scale=1):
-                    from nanograd.models.GPT.tokenizer import tokenize
+                    from nanograd.models.GPT.bpe_tokenizer import tokenize
                     gr.Markdown("<h1><center>BPE Tokenizer</h1></center>")
-                    iface = gr.Interface(fn=tokenize, inputs="text", outputs="json")
-                
+                    text_input = gr.Textbox(label="Input Text", placeholder="Type or paste your text here...")
+
+                    # Output components
+                    output_json = gr.JSON(label="Tokenization Output")
+                    output_table = gr.Dataframe(label="Tokenization Visualization", headers=["Token", "Token Bytes", "Token Translated", "Token Merged", "Token Index"])
+                    
+                    # Button to run the tokenizer
+                    btn = gr.Button("Tokenize")
+                    
+                    def run_tokenizer(text):
+                        result = tokenize(text)
+                        # Return structured output for JSON and DataFrame
+                        return result, result['Visualization Data']
+                    
+                    btn.click(run_tokenizer, inputs=text_input, outputs=[output_json, output_table])
+
                 with gr.Column(scale=1):
                     gr.Markdown("<h1><center>Chatbot (لغة عربية)</h1></center>")
                     
                     user_input = gr.Textbox(lines=1, placeholder="Ask a question about travel or airlines")
                     
+                    # Add customization fields for tone, style, and personality
+                    tone = gr.Dropdown(choices=["Friendly", "Formal", "Professional"], label="Tone", value="Friendly")
+                    response_style = gr.Dropdown(choices=["Concise", "Elaborate", "Creative"], label="Response Style", value="Elaborate")
+                    personality = gr.Dropdown(choices=["Helpful Travel Agent", "Friendly Assistant", "Strict Professional"], label="Personality", value="Helpful Travel Agent")
+                    response_language = gr.Dropdown(choices=["Egyptian Arabic", "Modern Standard Arabic", "Yemeni Arabic"], label="Response Language", value="Egyptian Arabic")
+
                     custom_prompt = gr.Code(value=default_prompt, language="python", label="Customize Prompt")
 
                     ai_output = gr.Textbox(label="Aya's response")
                     
                     submit_button = gr.Button("Submit")
                     
-                    submit_button.click(run, inputs=[user_input, custom_prompt], outputs=ai_output)
+                    # Pass all new inputs to the run function
+                    submit_button.click(run, inputs=[user_input, custom_prompt, tone, response_style, personality, response_language], outputs=ai_output)
             with gr.Row():
                 with gr.Column(scale=1):
                     gr.Markdown("<h1><center>Vision Transformer Image Description</h1></center>")
