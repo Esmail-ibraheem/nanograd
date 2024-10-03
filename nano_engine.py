@@ -6,6 +6,8 @@ import torch
 import subprocess
 import os 
 import random
+import io
+import sys
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
 
@@ -347,10 +349,32 @@ default_prompt = '''الان الموضوع كالتالي اريدك ان تج�
 شروط الاجابه هي : 1- اولا حاول التحدث و كأنك موظف في شركة الطيران , 2- ثانيا حاول ان تجيب على الاسئله باللهجة المصرية , 3- ثالثا حاول ان تعطي حلول اخرى اذا لم تعجبني مثلا طريقة قطع الجواز مثل انه تقول لي اذهب الى كذا و كذا 
 بالمختصر حاول ان تكون مساعدي الشخصي. شارة البدايه عندما اقول لك ابداء و انت ابداء بقول اهلا عزيزي المستخدم كيف يمكنني ان اساعدك هنا في شركة الطيران , طبعا تخيل ان شركة الطيران هذه يمنيه'''
 
-# Placeholder for the Vision Transformer image description logic
 def describe_image(image: Image.Image) -> str:
     # Placeholder logic: You can replace this with actual Vision Transformer logic
     return "This is a placeholder description for the uploaded image."
+
+
+
+# Define a function to execute the code and capture output
+def execute_code(code):
+    # Create an environment to execute the code in
+    local_env = {}
+    # Redirect standard output to capture print statements
+    output_capture = io.StringIO()
+    sys.stdout = output_capture
+    try:
+        # Execute the code in the local environment
+        exec(code, {}, local_env)
+        # Get the output from the captured stdout
+        output = output_capture.getvalue()
+        if output.strip() == "":
+            return "Code executed successfully, but no output was produced."
+        return output
+    except Exception as e:
+        return f"Error: {str(e)}"
+    finally:
+        # Reset stdout to the default
+        sys.stdout = sys.__stdout__
 
 # Gradio interface
 def gradio_interface():
@@ -508,6 +532,25 @@ def gradio_interface():
         with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
+        
+        with gr.Tab("AutoCoder"):
+            interface = gr.Interface(
+            fn=execute_code,  # Function to execute the code
+            inputs=gr.Code(language="python", label="Code Editor"),  # Realistic code editor with Python syntax highlighting
+            outputs="text",  # Output is displayed as text in the interface
+            title="Code Editor",
+            description="Write and execute Python code directly in the browser. Output will be displayed below."
+            )
+            with gr.Column(scale=1): 
+                    # Text Generation with Ollama
+                    gr.Markdown("### AutoCoder")
+                    ollama_model_name = gr.Dropdown(label="Select Ollama Model", choices=
+                    ["codellama",  "codegemma",  "deepseek-coder", "starcoder2",
+                    "tinyllama", "codestral"], value="codellama")
+                    ollama_prompts = gr.Textbox(label="Prompt", placeholder="Enter your prompt here")
+                    ollama_output = gr.Textbox(label="Output", placeholder="Model output will appear here", interactive=True)
+                    ollama_btn = gr.Button("Generate", variant="primary")
+                    ollama_btn.click(fn=chat_with_ollama, inputs=[ollama_model_name, ollama_prompts], outputs=ollama_output)
     
     demo.launch(server_name="0.0.0.0", server_port=7860)
 
