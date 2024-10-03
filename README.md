@@ -360,7 +360,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 - [Karpathy's miniGPT](https://github.com/karpathy/minGPT)
 - [GeoHotz's tinygrad](https://github.com/tinygrad/tinygrad)
 - [OpenAI for pioneering the GPT architecture](https://www.bing.com/ck/a?!&&p=9a9de5d499443c51JmltdHM9MTcyNzkxMzYwMCZpZ3VpZD0zMWRiYzRjZS1mZDI5LTY0Y2QtMmIxNy1kNTM1ZmM3YjY1ZjYmaW5zaWQ9NTQ4MQ&ptn=3&ver=2&hsh=3&fclid=31dbc4ce-fd29-64cd-2b17-d535fc7b65f6&psq=gpt+model+paper&u=a1aHR0cHM6Ly9jZG4ub3BlbmFpLmNvbS9yZXNlYXJjaC1jb3ZlcnMvbGFuZ3VhZ2UtdW5zdXBlcnZpc2VkL2xhbmd1YWdlX3VuZGVyc3RhbmRpbmdfcGFwZXIucGRm&ntb=1)
-- Meta for pioneering the Llama architecture
+- [Meta for pioneering the Llama architecture](https://www.bing.com/ck/a?!&&p=a6ef05b712210c58JmltdHM9MTcyNzkxMzYwMCZpZ3VpZD0zMWRiYzRjZS1mZDI5LTY0Y2QtMmIxNy1kNTM1ZmM3YjY1ZjYmaW5zaWQ9NTIwNQ&ptn=3&ver=2&hsh=3&fclid=31dbc4ce-fd29-64cd-2b17-d535fc7b65f6&psq=llama+paper&u=a1aHR0cHM6Ly9hcnhpdi5vcmcvYWJzLzIzMDIuMTM5NzE&ntb=1)
 - [hiyouga-PhD](https://github.com/hiyouga)
 
 > [!NOTE]
