@@ -8,7 +8,7 @@ import os
 import random
 import io
 import sys
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt  
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
 
