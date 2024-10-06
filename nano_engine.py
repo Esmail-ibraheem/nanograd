@@ -5,7 +5,7 @@ from transformers import CLIPTokenizer
 import torch
 import subprocess
 import os 
-import random
+import random 
 import io
 import sys
 import matplotlib.pyplot as plt 
