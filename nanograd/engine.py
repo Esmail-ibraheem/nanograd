@@ -2,7 +2,7 @@ import gradio as gr
 from PIL import Image
 from pathlib import Path
 from transformers import CLIPTokenizer
-import torch
+import torch 
 import subprocess
 import os  
 import random
