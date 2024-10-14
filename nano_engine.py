@@ -4,7 +4,7 @@ from pathlib import Path
 from transformers import CLIPTokenizer
 import torch
 import subprocess 
-import os 
+import os  
 import random 
 import io
 import sys
