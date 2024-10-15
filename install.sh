@@ -8,4 +8,4 @@ cd nanograd/trainer
 pip install --no-deps -e .
  
 # Navigate back to the original directory
-cd ../..
+cd ../.. 
