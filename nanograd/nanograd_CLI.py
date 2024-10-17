@@ -71,6 +71,7 @@ def gradio_interface(model_name):
     iface.launch()
 
 def main():
+    print("Nanograd-Engine Creator: Esmail Gumaan (The Mozart of AI and Mathematics (: )")
     parser = argparse.ArgumentParser(description="Nanograd CLI")
     subparsers = parser.add_subparsers(dest='command', help="Sub-commands")
 
@@ -154,6 +155,7 @@ def main():
         run_engine()
     else:
         parser.print_help()
+        
 
 nanograd = [
     "██     ██     ███     ██      ██  ████████     ██████   ████████       ███       ████████", 
