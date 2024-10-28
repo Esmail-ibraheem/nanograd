@@ -347,7 +347,7 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
   author  = "Gumaan, Esmail",
   howpublished = {\url{https://github.com/Esmail-ibraheem/nanograd}},
   year    = "2024",
-  month   = "",
+  month   = "May",
   note    = "[Online; accessed 2024-05-24]",
 }
 ```
