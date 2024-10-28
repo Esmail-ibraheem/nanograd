@@ -290,8 +290,8 @@ options:
 
 
 > [!NOTE]
-> you can use the nanograd library in your CLI, after installing it in your computer using `pip install -e`. then you can run any model you want,
-> here is some commands to run in the terminal
+> You can use the nanograd library in your CLI, after installing it on your computer using `pip install -e`. then you can run any model you want,
+> here are some commands to run in the terminal
 
 | command | Sub-command | type this |
 |---------|-------------|-----------|
@@ -301,6 +301,7 @@ options:
 | run_llama | run llama inference | `nanograd run_llama` |
 | run | run model inference (ollama models) | `nanograd run llama3.1` |
 | run_diffusion | run stable diffusion | `nanograd run_diffusion stable_diffusion` |
+| run_engine | run engine interface | `nanograd run_engine` |
 
 
 ## 2- [as an engine](https://github.com/Esmail-ibraheem/nanograd-engine/blob/main/nano_engine.py):
