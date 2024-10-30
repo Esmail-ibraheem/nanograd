@@ -342,12 +342,12 @@ run this command `python nanograd_API.py`;.;.
 
 ## ToDo:
 
-- [✓] stable diffusion.
-- [✓] ollama models support.
-- [✓] llama.
-- [✓] GPT.
-- [✓] AutoTrainer.
-- [✓] AutoCoder (**Copilot**).
+- [ ] stable diffusion.
+- [ ] ollama models support.
+- [ ] llama.
+- [ ] GPT.
+- [ ] AutoTrainer.
+- [ ] AutoCoder (**Copilot**).
 - [x] Path Management for other OSs.
 - [x] Parallelization: multiprocessing.
 - [x] Cuda Support. 
