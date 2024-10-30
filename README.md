@@ -350,7 +350,13 @@ run this command `python nanograd_API.py`;.;.
 - [x] AutoCoder (**Copilot**).
 - [ ] Path Management for other OSs.
 - [ ] Parallelization: multiprocessing.
-- [ ] Cuda Support. 
+- [ ] Cuda Support.
+     - [ ] rebuild the engine using C++. 
+- [ ] vision transformer.
+- [ ] 3D Tobia XL.
+- [ ] memory efficient weight loading.
+- [ ] AI Mathematician.
+
 
 
 ---
