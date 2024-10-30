@@ -345,7 +345,11 @@ run this command `python nanograd_API.py`;.;.
 - [x] stable diffusion.
 - [x] ollama models support.
 - [x] llama.
+     - [x] transformer architecture 
 - [x] GPT.
+     - [x] litGPT checkpoints installation
+     - [x] GPT Architecture
+     - [x] transformer architecture   
 - [x] AutoTrainer.
 - [x] AutoCoder (**Copilot**).
 - [ ] Path Management for other OSs.
@@ -356,6 +360,7 @@ run this command `python nanograd_API.py`;.;.
 - [ ] 3D Tobia XL.
 - [ ] memory efficient weight loading.
 - [ ] AI Mathematician.
+- [ ] Gamengen: games generation.
 
 
 
