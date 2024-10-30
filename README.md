@@ -311,16 +311,25 @@ in this feature you can do all you can do in the CLI feature but with an interfa
 - blueprints to generate different stories each time for the LLMs and stable diffusion
 - download checkpoints using litgpt
 - install ollama
-  run this command `python nano_engine.py`
-![photo_2024-09-06_21-04-12](https://github.com/user-attachments/assets/c7d2f608-b882-4f87-82d1-c59e00ecd312)
+  run this command\
+   `python nano_engine.py`
+  
+![image](https://github.com/user-attachments/assets/1f27cc7c-c7d6-4290-8aa4-3798aafa99dc)
+
 
 - run chatbot in Arabic using ollama
 - run BPE tokenizer
-![image](https://github.com/user-attachments/assets/e2a2bbdf-11f3-4aec-8e66-b4fc733de13a)
+- vision transformer
+![image](https://github.com/user-attachments/assets/9f68f909-988a-456b-bd1e-b67860cf99c5)
 
 
-- AutoTrainer (**`LLama-Factory`**)
-  ![image](https://github.com/user-attachments/assets/7576c27c-1b6d-4319-9f15-ce796b35a9b3)
+
+- AutoTrainer (**`LLama-Factory`**) with bilingual supported languages: Arabic and English
+  ![image](https://github.com/user-attachments/assets/30a696c8-501f-47ed-9f78-a0c0a5a217ee)
+
+- AutoCoder (**Copilot**) code editor with AI for helping in coding
+  ![image](https://github.com/user-attachments/assets/ae1688f3-3920-4381-86b2-71b3231144cf)
+
 
 
 ### 3- as an API:**still in developing process**
