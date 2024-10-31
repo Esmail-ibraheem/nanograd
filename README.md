@@ -369,7 +369,7 @@ run this command `python nanograd_API.py`;.;.
 ## Contributing
 We welcome contributions from the community. if you want to contribute just by:
 - adding models built from scratch to make them accessible without the internet needed (offline).
-— Fixing some issues if there are any or fixing something you discovered, and explain what you are trying to fix and why.
+- Fix some issues, if there are any, or fix something you discovered, and explain what you are trying to fix and why.
 - solving or building one of the ToDos list 
 
 ## License
