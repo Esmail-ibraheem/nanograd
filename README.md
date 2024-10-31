@@ -367,7 +367,10 @@ run this command `python nanograd_API.py`;.;.
 ---
 
 ## Contributing
-We welcome contributions from the community. Please read our contributing guidelines and submit your pull requests.
+We welcome contributions from the community. if you want to contribute just by:
+1- adding models built from scratch to make them accessible without the internet needed (offline).
+2— Fixing some issues if there are any or fix something you discovered, and explain what you are trying to fix and why.
+3- solving or building one of the ToDos list 
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE file](https://github.com/Esmail-ibraheem/omniGPT?tab=MIT-1-ov-file#) for more details.
