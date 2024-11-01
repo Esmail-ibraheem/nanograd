@@ -342,6 +342,15 @@ run this command `python nanograd_API.py`;.;.
 
 ## ToDo:
 
+- [ ] Path Management for other OSs.
+- [ ] Parallelization: multiprocessing.
+- [ ] Cuda Support.
+     - [ ] rebuild the engine using C++. 
+- [ ] vision transformer.
+- [ ] 3D Tobia XL.
+- [ ] memory efficient weight loading.
+- [ ] AI Mathematician.
+- [ ] Gamengen: games generation.
 - [x] stable diffusion.
 - [x] ollama models support.
 - [x] llama.
@@ -352,15 +361,6 @@ run this command `python nanograd_API.py`;.;.
      - [x] transformer architecture   
 - [x] AutoTrainer.
 - [x] AutoCoder (**Copilot**).
-- [ ] Path Management for other OSs.
-- [ ] Parallelization: multiprocessing.
-- [ ] Cuda Support.
-     - [ ] rebuild the engine using C++. 
-- [ ] vision transformer.
-- [ ] 3D Tobia XL.
-- [ ] memory efficient weight loading.
-- [ ] AI Mathematician.
-- [ ] Gamengen: games generation.
 
 
 
