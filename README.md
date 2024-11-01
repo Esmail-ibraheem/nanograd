@@ -1,6 +1,7 @@
 <h1 align="center">Nanograd Engine - AI Ecosystem</h1>
 
-```
+<p align="center">
+
 ██     ██     ███     ██      ██  ████████     ██████   ████████       ███       ████████
 ███    ██   ██   ██   ███     ██ ██      ██   ██   ██   ██     ██    ██   ██     ██      ██
 ████   ██  ██     ██  ████    ██ ██      ██  ██         ██     ██   ██      ██   ██       ██
@@ -8,7 +9,9 @@
 ██   ████ ███████████ ██    ████ ██      ██  ██    ██   ██    ██   ████████████  ██       ██
 ██    ███ ██       ██ ██      ██ ██      ██  ██    ██   ██    ██   ██        ██  ██      ██
 ██     ██ ██       ██ ██      ██  ████████    ██████    ██     ██  ██        ██  ████████
-```
+
+
+</p>
 
 nanograd is a neural net engine (**_command line interface and python library_**) inspired by **[micrograd](https://github.com/karpathy/micrograd)** and **[tinygrad](https://github.com/tinygrad/tinygrad)**, built upon a PyTorch-like API. It aims to provide users with easy-to-use tools for creating and utilizing various **neural network architectures**, including `GPT`, `llama`, `stable diffusion`, and `transformers` from scratch in Python. This library also offers `comprehensive data processing capabilities` from model training to providing a robust toolkit for developing and fine-tuning large language models. As the fastest and most efficient repository for continued pre-training and fine-tuning GPTs, nanograd sets a new standard in AI research and development. 
 
