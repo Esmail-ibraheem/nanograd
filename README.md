@@ -267,12 +267,13 @@ git clone https://github.com/Esmail-ibraheem/nanograd.git
 ██   ████ ███████████ ██    ████ ██      ██  ██    ██   ██    ██   ████████████  ██       ██
 ██    ███ ██       ██ ██      ██ ██      ██  ██    ██   ██    ██   ██        ██  ██      ██
 ██     ██ ██       ██ ██      ██  ████████    ██████    ██     ██  ██        ██  ████████
-usage: nanograd [-h] {install,generate,download,pretrain,run_gpt,run_llama,run_diffusion,run} ...
+Nanograd-Engine Creator: Esmail Gumaan (The Mozart of AI and Mathematics (: ))
+usage: nanograd [-h] {install,generate,download,pretrain,run_gpt,run_llama,run_engine,run_diffusion,run} ...
 
 Nanograd CLI
 
 positional arguments:
-  {install,generate,download,pretrain,run_gpt,run_llama,run_diffusion,run}
+  {install,generate,download,pretrain,run_gpt,run_llama,run_engine,run_diffusion,run}
                         Sub-commands
     install             Install dependencies
     generate            Generate datasets
@@ -280,6 +281,7 @@ positional arguments:
     pretrain            Pretrain a model
     run_gpt             Run GPT inference
     run_llama           Run LLaMA inference
+    run_engine          Run engine interface
     run_diffusion       Run Stable Diffusion
     run                 Run model inference
 
