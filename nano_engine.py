@@ -3,9 +3,9 @@ from PIL import Image
 from pathlib import Path
 from transformers import CLIPTokenizer
 import torch
-import subprocess 
-import os  
-import random 
+import subprocess
+import os 
+import random
 import io
 import sys
 import matplotlib.pyplot as plt 
@@ -380,6 +380,7 @@ def execute_code(code):
     finally:
         # Reset stdout to the default
         sys.stdout = sys.__stdout__
+
 
 
 # Gradio interface
