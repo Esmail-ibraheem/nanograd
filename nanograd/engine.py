@@ -2,13 +2,13 @@ import gradio as gr
 from PIL import Image
 from pathlib import Path
 from transformers import CLIPTokenizer
-import torch 
+import torch
 import subprocess
-import os  
+import os 
 import random
 import io
 import sys
-import matplotlib.pyplot as plt  
+import matplotlib.pyplot as plt 
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
 
@@ -380,6 +380,7 @@ def execute_code(code):
     finally:
         # Reset stdout to the default
         sys.stdout = sys.__stdout__
+
 
 
 # Gradio interface
