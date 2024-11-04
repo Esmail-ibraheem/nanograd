@@ -11,7 +11,7 @@ import sys
 import matplotlib.pyplot as plt 
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
-
+ 
 # Configure devices
 DEVICE = "cpu"
 ALLOW_CUDA = False 
