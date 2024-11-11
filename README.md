@@ -336,7 +336,8 @@ in this feature you can do all you can do in the CLI feature but with an interfa
   ![image](https://github.com/user-attachments/assets/30a696c8-501f-47ed-9f78-a0c0a5a217ee)
 
 - AutoCoder (**Copilot**) code editor with AI for helping in coding
-  ![image](https://github.com/user-attachments/assets/ae1688f3-3920-4381-86b2-71b3231144cf)
+  ![image](https://github.com/user-attachments/assets/a99932d2-1107-4567-9eac-95c74f84c7bd)
+
 
 
 
