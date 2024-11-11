@@ -320,10 +320,15 @@ in this feature you can do all you can do in the CLI feature but with an interfa
 ![image](https://github.com/user-attachments/assets/1f27cc7c-c7d6-4290-8aa4-3798aafa99dc)
 
 
-- run chatbot in Arabic using ollama
-- run BPE tokenizer
-- vision transformer
-![image](https://github.com/user-attachments/assets/9f68f909-988a-456b-bd1e-b67860cf99c5)
+- multimodal chatbot
+    - prompted-chatbot 
+    - run BPE tokenizer
+    - RAG chatbot
+    - vision transformer
+
+![image](https://github.com/user-attachments/assets/830d2961-f5b1-4633-acc2-97372055740e)
+![image](https://github.com/user-attachments/assets/7084e557-fb84-4732-ab7e-83de4d8f9887)
+
 
 
 
