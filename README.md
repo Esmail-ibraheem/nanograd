@@ -316,7 +316,7 @@ in this feature you can do all you can do in the CLI feature but with an interfa
 - install ollama
   run this command\
    `python nano_engine.py`
-  
+- generating story themes from pre-made blueprints
 ![image](https://github.com/user-attachments/assets/1f27cc7c-c7d6-4290-8aa4-3798aafa99dc)
 
 
