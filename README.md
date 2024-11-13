@@ -268,7 +268,17 @@ git clone https://github.com/Esmail-ibraheem/nanograd.git
 ██   ████ ███████████ ██    ████ ██      ██  ██    ██   ██    ██   ████████████  ██       ██
 ██    ███ ██       ██ ██      ██ ██      ██  ██    ██   ██    ██   ██        ██  ██      ██
 ██     ██ ██       ██ ██      ██  ████████    ██████    ██     ██  ██        ██  ████████
-Nanograd-Engine Creator: Esmail Gumaan (The Mozart of AI and Mathematics (: ))
++----------------------------------------------------------------------------+
+|     +----------------------------------------------------------------+     |
+|     | Developers: Esmail Gumaan/ ML Engineer.                        |     |
+|     | ( your Unreal Engine, but for AI, essentially making it an AI engine)|
+|     |     +----------------------------------------------------+     |     |
+|     |     | Contributors: Those who wants to contribute        |     |     |
+|     |     | (You make PR to this repo)                         |     |     |
+|     |     +----------------------------------------------------+     |     |
+|     +----------------------------------------------------------------+     |
++----------------------------------------------------------------------------+
+Nanograd-Engine🧠 Creator: Esmail Gumaan (The Mozart of AI and Mathematics (: ))
 usage: nanograd [-h] {install,generate,download,pretrain,run_gpt,run_llama,run_engine,run_diffusion,run} ...
 
 Nanograd CLI
