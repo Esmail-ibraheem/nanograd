@@ -1,3 +1,16 @@
+"""
++----------------------------------------------------------------------------+
+|     +----------------------------------------------------------------+     |
+|     | Developers: Esmail Gumaan/ ML Engineer.                        |     |
+|     | ( your Unreal Engine, but for AI, essentially making it an AI engine)|                
+|     |     +----------------------------------------------------+     |     |
+|     |     | Contributors: Those who wants to contribute        |     |     |
+|     |     | (You make PR to this repo)                         |     |     |
+|     |     +----------------------------------------------------+     |     |
+|     +----------------------------------------------------------------+     |
++----------------------------------------------------------------------------+
+"""
+
 import argparse
 import os
 import subprocess 
@@ -71,7 +84,7 @@ def gradio_interface(model_name):
     iface.launch()
 
 def main():
-    print("Nanograd-Engine Creator: Esmail Gumaan (The Mozart of AI and Mathematics (: )")
+    print("Nanograd-Engine🧠 Creator: Esmail Gumaan (The Mozart of AI and Mathematics (: ))")
     parser = argparse.ArgumentParser(description="Nanograd CLI")
     subparsers = parser.add_subparsers(dest='command', help="Sub-commands")
 
@@ -169,6 +182,19 @@ nanograd = [
 
 for line in nanograd:
     print(line)
+
+
+print("+----------------------------------------------------------------------------+")
+print("|     +----------------------------------------------------------------+     |")
+print("|     | Developers: Esmail Gumaan/ ML Engineer.                        |     |")
+print("|     | ( your Unreal Engine, but for AI, essentially making it an AI engine)|")                
+print("|     |     +----------------------------------------------------+     |     |")
+print("|     |     | Contributors: Those who wants to contribute        |     |     |")
+print("|     |     | (You make PR to this repo)                         |     |     |")
+print("|     |     +----------------------------------------------------+     |     |")
+print("|     +----------------------------------------------------------------+     |")
+print("+----------------------------------------------------------------------------+")
+
 
 if __name__ == '__main__':
     main()
