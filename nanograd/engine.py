@@ -11,6 +11,8 @@ import sys
 import matplotlib.pyplot as plt 
 
 from nanograd.models.stable_diffusion import model_loader, pipeline
+from RAG.controllers.chatbot_controller import ChatBotController
+from RAG.models.llms import OllamaModel
 
 # Configure devices
 DEVICE = "cpu"
@@ -382,9 +384,6 @@ def execute_code(code):
         sys.stdout = sys.__stdout__
 
 
-from chatbot.controllers.chatbot_controller import ChatBotController
-from chatbot.models.llms import OllamaModel
-
 undo_button = gr.Button("↩️ Undo")
 clear_button = gr.Button("🗑️  Clear")
 
@@ -565,30 +564,35 @@ def gradio_interface():
                     # Pass all new inputs to the run function
                     submit_button.click(run, inputs=[user_input, custom_prompt, tone, response_style, personality, response_language], outputs=ai_output)
                    
-        
-            with gr.Row():
-                with gr.Column(scale=1):
-                    model_label = gr.Label("Set your Model")
-                    model_type = gr.Radio(label="Model Source", value="Ollama", choices=["Ollama", "OpenAI", "HuggingFace"])
-                    selected_model = gr.Dropdown(label="Model Selection", value="orca-mini", choices=["orca-mini", "llama3:latest"])
-                    api_key = gr.Textbox(label="API key", type="password", visible=False)
-                    model_type.input(chatbot.set_model, inputs=[model_type, selected_model, api_key], outputs=[model_label])
-                    selected_model.input(chatbot.set_model, inputs=[model_type, selected_model, api_key], outputs=[model_label])
-                    api_key.input(chatbot.set_model, inputs=[model_type, selected_model, api_key], outputs=[model_label])
-                    model_type.change(filter_model_types, [model_type], outputs=[api_key, selected_model])
-                    doc_label = gr.Label("Set your Docs")
+            with gr.Tab("RAG-Chatbot"):
+                with gr.Row():
+                    with gr.Column(scale=1):
+                        model_label = gr.Label("Set your Model")
+                        model_type = gr.Radio(label="Model Source", value="Ollama", choices=["Ollama", "OpenAI", "HuggingFace"])
+                        selected_model = gr.Dropdown(label="Model Selection", value="orca-mini", choices=["orca-mini", "llama3:latest"])
+                        api_key = gr.Textbox(label="API key", type="password", visible=False)
+                        model_type.input(chatbot.set_model, inputs=[model_type, selected_model, api_key], outputs=[model_label])
+                        selected_model.input(chatbot.set_model, inputs=[model_type, selected_model, api_key], outputs=[model_label])
+                        api_key.input(chatbot.set_model, inputs=[model_type, selected_model, api_key], outputs=[model_label])
+                        model_type.change(filter_model_types, [model_type], outputs=[api_key, selected_model])
+                        doc_label = gr.Label("Set your Docs")
 
-                    doc_type = gr.Radio(label="Model Type", value="PDF", choices=["PDF", "WEB", "YouTube"])
-                    url = gr.Textbox(label="Document Source", placeholder="URL", visible=False)
-                    file = gr.File()
-                    doc_type.change(filter_doc_types, inputs=[doc_type], outputs=[url, file])
+                        doc_type = gr.Radio(label="Model Type", value="PDF", choices=["PDF", "WEB", "YouTube"])
+                        url = gr.Textbox(label="Document Source", placeholder="URL", visible=False)
+                        file = gr.File()
+                        doc_type.change(filter_doc_types, inputs=[doc_type], outputs=[url, file])
 
-                    process_button = gr.Button("Process")
-                    process_button.click(chatbot.set_retrieval, inputs=[doc_type, url, file], outputs=[doc_label])
+                        process_button = gr.Button("Process")
+                        process_button.click(chatbot.set_retrieval, inputs=[doc_type, url, file], outputs=[doc_label])
 
-                with gr.Column(scale=3):
-                    gr.ChatInterface(chatbot.predict, retry_btn="🔄  Retry", undo_btn=undo_button, clear_btn=clear_button)
+                    with gr.Column(scale=3):
+                        gr.ChatInterface(chatbot.predict, retry_btn="🔄  Retry", undo_btn=undo_button, clear_btn=clear_button)
 
+            with gr.Tab("Ask-nanoChat"):
+                import nanoChat
+
+            with gr.Tab("nanoChat-Advanced"):
+                import nanoChat_settings 
 
             with gr.Row():
                 with gr.Column(scale=1):
@@ -604,11 +608,13 @@ def gradio_interface():
                     describe_button = gr.Button("Describe Image")
 
                     # Link button to function for generating image description
-                    describe_button.click(describe_image, inputs=image_input, outputs=image_description_output)
+                    describe_button.click(describe_image, inputs=image_input, outputs=image_description_output)        
 
         with gr.Tab("Trainer-LlamaFactory"):
             from nanograd.trainer.src.llamafactory.webui.interface import create_ui
             create_ui().queue()
+            with gr.Tab("Datase-Visualize"):
+                from nanograd import visualize
         
         with gr.Tab("AutoCoder"):
             interface = gr.Interface(
