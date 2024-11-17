@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  nanograd:
+    build: .
+    container_name: nanograd_app
+    depends_on:
+      - ollama
+    environment:
+      # Define any environment variables your app needs
+      # Example:
+      # MODEL_PATH: /models/your_model
+    volumes:
+      # Mount volumes if necessary
+      # Example:
+      # - ./data:/app/data
+    networks:
+      - app-network
+    ports:
+      - "7860:7860"  # Maps port 7860 of the container to port 7860 on the host
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_service
+    restart: unless-stopped
+    environment:
+      # Define any environment variables Ollama requires
+      # Example:
+      # OLLAMA_API_KEY: your_api_key
+    volumes:
+      # Mount volumes for Ollama models if necessary
+      # Example:
+      # - ./ollama_models:/models
+    networks:
+      - app-network
+    ports:
+      # Map Ollama's API port if needed
+      # Example:
+      # - "11434:11434"
+
+networks:
+  app-network:
+    driver: bridge
