@@ -5,7 +5,6 @@ import requests
 import json
 from datetime import datetime
 
-# Initialize database and create tables if they don't exist
 def initialize_database():
     conn = sqlite3.connect('chat_history.db')
     c = conn.cursor()
