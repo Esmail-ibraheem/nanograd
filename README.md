@@ -433,6 +433,19 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 - [Meta for pioneering the Llama architecture](https://www.bing.com/ck/a?!&&p=a6ef05b712210c58JmltdHM9MTcyNzkxMzYwMCZpZ3VpZD0zMWRiYzRjZS1mZDI5LTY0Y2QtMmIxNy1kNTM1ZmM3YjY1ZjYmaW5zaWQ9NTIwNQ&ptn=3&ver=2&hsh=3&fclid=31dbc4ce-fd29-64cd-2b17-d535fc7b65f6&psq=llama+paper&u=a1aHR0cHM6Ly9hcnhpdi5vcmcvYWJzLzIzMDIuMTM5NzE&ntb=1)
 - [hiyouga-PhD](https://github.com/hiyouga)
 
+```BibTex
+@inproceedings{zheng2024llamafactory,
+  title={LlamaFactory: Unified Efficient Fine-Tuning of 100+ Language Models},
+  author={Yaowei Zheng and Richong Zhang and Junhao Zhang and Yanhan Ye and Zheyan Luo and Zhangchi Feng and Yongqiang Ma},
+  booktitle={Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)},
+  address={Bangkok, Thailand},
+  publisher={Association for Computational Linguistics},
+  year={2024},
+  url={http://arxiv.org/abs/2403.13372}
+}
+```
+
+
 > [!NOTE]
 > **nanograd** was developed with a specific vision and purpose in mind. This section provides insight into the motivations behind its creation and the approach taken during its development. The primary motivation for developing nanograd was to create a framework that emphasizes simplicity and transparency in neural network design and training. While many existing frameworks, such as PyTorch and TensorFlow, offer extensive features and optimizations, they can also be complex and challenging to fully understand, particularly for those new to deep learning or for educational purposes. nanograd aims to simplify access to models like GPT, LLaMA, Stable Diffusion, and others, making these technologies more approachable and easier to work with.
 
