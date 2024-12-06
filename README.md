@@ -457,6 +457,14 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
     pages = "38--45"
 }
 ```
+```BibTex
+@misc{litgpt-2023,
+  author       = {Lightning AI},
+  title        = {LitGPT},
+  howpublished = {\url{https://github.com/Lightning-AI/litgpt}},
+  year         = {2023},
+}
+```
 
 
 > [!NOTE]
